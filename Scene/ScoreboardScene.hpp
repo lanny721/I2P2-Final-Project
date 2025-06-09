@@ -43,6 +43,15 @@ private:
     int page;
     std::vector<PlayerData> playerDataList;
     void removePlayerLabels();
+
+    //zzy
+    int selectedIndex = -1;
+    float selectionBoxX = 0;
+    float selectionBoxY = 0;
+    Engine::Label* pageLabel = nullptr;
+    int totalPage = 1;
+    void OnMouseDown(int, int, int) override;
+    void Draw() const override;
 };
 
 #endif // SCOREBOARD_SCENE_HPP
