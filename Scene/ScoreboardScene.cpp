@@ -215,21 +215,30 @@ void ScoreboardScene::OnMouseDown(int button, int mx, int my) {
     IScene::OnMouseDown(button, mx, my);
     
     // Check if click is in the scoreboard area
-    int clickY = my - 200;
-    int recordIndex = clickY / 48;
-    int startIndex = (page - 1) * 10;
+    int itemY;
+    int recordIndex = -1;
+    
+    // Check each item's selection box range
+    for (int i = 0; i < 10; i++) {
+        itemY = 200 + i * 48;  // Center Y of the item
+        if (my >= itemY - 24 && my <= itemY + 24) {
+            recordIndex = i;
+            break;
+        }
+    }
 
-    int clickedRank = startIndex + recordIndex + 1;
+    if (recordIndex >= 0) {
+        int startIndex = (page - 1) * 10;
+        int clickedRank = startIndex + recordIndex + 1;
 
-    if (recordIndex >= 0 && recordIndex < 10 && 
-        (startIndex + recordIndex) < playerDataList.size()) {
-        
-        if (deleteRank == clickedRank) {
-            deleteRank = -1;  // Deselect
-        } else {
-            deleteRank = clickedRank;
-            selectionBoxY = 200 + 48 * recordIndex;
-            selectionBoxX = w/2;
+        if ((startIndex + recordIndex) < playerDataList.size()) {
+            if (deleteRank == clickedRank) {
+                deleteRank = -1;  // Deselect
+            } else {
+                deleteRank = clickedRank;
+                selectionBoxY = 200 + recordIndex * 48;
+                selectionBoxX = w/2;
+            }
         }
     }
 }
