@@ -223,6 +223,8 @@ void ScoreboardScene::LoadPlayerData() {
 }
 void ScoreboardScene::OnMouseDown(int button, int mx, int my) {
     IScene::OnMouseDown(button, mx, my);
+
+    
     
     // Check if click is in the scoreboard area
     int itemY;
