@@ -43,6 +43,9 @@ private:
     int page;
     std::vector<PlayerData> playerDataList;
     void removePlayerLabels();
+
+    void DeletePlayerData(int rank);
+    void LoadPlayerData();
 };
 
 #endif // SCOREBOARD_SCENE_HPP

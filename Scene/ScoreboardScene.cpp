@@ -54,20 +54,21 @@ void ScoreboardScene::Initialize() {
 
     bgmInstance = AudioHelper::PlaySample("select.ogg", true, AudioHelper::BGMVolume);
     
-    std::string line;
-    PlayerData tmpData;
-    ifstream scoreFile("../Resource/scoreboard.txt");
-    while (std::getline(scoreFile, line)) {
-        std::stringstream ss(line);
-        if (ss >> tmpData.name >> tmpData.score) {
-            ss >> tmpData.timeinfo;
-            playerDataList.push_back(tmpData);
-        }
-    }
-    sort(playerDataList.begin(), playerDataList.end(), [](const PlayerData& a, const PlayerData& b) {
-        if (a.score != b.score) return a.score > b.score;
-        return a.timeinfo < b.timeinfo; // Sort by time if scores are equal
-    });
+    LoadPlayerData();
+    // std::string line;
+    // PlayerData tmpData;
+    // ifstream scoreFile("../Resource/scoreboard.txt");
+    // while (std::getline(scoreFile, line)) {
+    //     std::stringstream ss(line);
+    //     if (ss >> tmpData.name >> tmpData.score) {
+    //         ss >> tmpData.timeinfo;
+    //         playerDataList.push_back(tmpData);
+    //     }
+    // }
+    // sort(playerDataList.begin(), playerDataList.end(), [](const PlayerData& a, const PlayerData& b) {
+    //     if (a.score != b.score) return a.score > b.score;
+    //     return a.timeinfo < b.timeinfo; // Sort by time if scores are equal
+    // });
 
     ToPage(1);
 }
@@ -86,6 +87,10 @@ void ScoreboardScene::OnKeyDown(int keyCode) {
     if (keyCode == ALLEGRO_KEY_ESCAPE) {
         Engine::GameEngine::GetInstance().ChangeScene("start");
         return;
+    } else if (keyCode == ALLEGRO_KEY_D) {
+        // Handle delete key
+        int rank = 3; // Get the rank to delete (you may want to implement a way to select this)
+        DeletePlayerData(rank);
     }
 }
 void ScoreboardScene::PrevOnClick() {
@@ -159,3 +164,79 @@ void ScoreboardScene::updateColor() {
         playerDataList[i+10*(page-1)].timeLabel->Color = al_map_rgb(co[i + 3].r, co[i + 3].g, co[i + 3].b);
     }
 }
+void ScoreboardScene::DeletePlayerData(int rank) {
+    removePlayerLabels();
+
+    if (rank < 1 || rank > playerDataList.size()) return; // Invalid rank
+    playerDataList.erase(playerDataList.begin() + rank - 1);
+    
+    // Rewrite the scoreboard file
+    std::ofstream scoreFile("../Resource/scoreboard.txt", std::ios::trunc);
+    for (const auto& data : playerDataList) {
+        scoreFile << data.name << " " << data.score;
+        if (!data.timeinfo.empty()) scoreFile << " " << data.timeinfo;
+        scoreFile << "\n";
+    }
+    scoreFile.close();
+    
+    // Update the display
+    ToPage(page);
+}
+void ScoreboardScene::LoadPlayerData() {
+    playerDataList.clear();
+    std::string line;
+    PlayerData tmpData;
+    ifstream scoreFile("../Resource/scoreboard.txt");
+    while (std::getline(scoreFile, line)) {
+        std::stringstream ss(line);
+        if (ss >> tmpData.name >> tmpData.score) {
+            ss >> tmpData.timeinfo;
+            playerDataList.push_back(tmpData);
+        }
+    }
+    sort(playerDataList.begin(), playerDataList.end(), [](const PlayerData& a, const PlayerData& b) {
+        if (a.score != b.score) return a.score > b.score;
+        return a.timeinfo < b.timeinfo; // Sort by time if scores are equal
+    });
+}
+
+/*
+    if (recordIndex >= 0 && recordIndex < 7 && 
+        (startIndex + recordIndex) < scores.size()) {
+        
+        if (selectedIndex == startIndex + recordIndex) {
+            selectedIndex = -1;  // 取消選擇
+            return;
+        }
+
+        selectedIndex = startIndex + recordIndex;
+        selectionBoxY = halfH / 3 + 80 + 75 * recordIndex;
+        selectionBoxX = halfW;
+    }
+
+
+
+    if (keyCode == ALLEGRO_KEY_BACKSPACE && selectedIndex >= 0) {
+        scores.erase(scores.begin() + selectedIndex);
+
+        std::ofstream file("C:/miniproject2/2025_I2P2_TowerDefense-main/Resource/scoreboard.txt",std::ios::trunc);
+        for (const auto& score : scores) {
+            file << std::get<0>(score) << " " 
+                 << std::get<1>(score) << " " 
+                 << std::get<2>(score) << "\n";
+        }
+        file.close();
+        
+        if (scores.size() <= 7)
+            totalPage = 1;
+        else if (scores.size() % 7 == 0)
+            totalPage = scores.size() / 7;
+        else
+            totalPage = scores.size() / 7 + 1;
+        if (curPage > totalPage)
+            curPage = totalPage;
+
+        selectedIndex = -1;
+        UpdateScoreboardDisplay();
+    }
+*/
