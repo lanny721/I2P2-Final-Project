@@ -165,9 +165,9 @@ void ScoreboardScene::updateColor() {
     }
 }
 void ScoreboardScene::DeletePlayerData(int rank) {
+    if (rank < 1 || rank > playerDataList.size()) return; // Invalid rank
     removePlayerLabels();
 
-    if (rank < 1 || rank > playerDataList.size()) return; // Invalid rank
     playerDataList.erase(playerDataList.begin() + rank - 1);
     
     // Rewrite the scoreboard file
