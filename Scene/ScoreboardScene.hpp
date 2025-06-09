@@ -31,7 +31,7 @@ private:
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> bgmInstance;
     int w=Engine::GameEngine::GetInstance().GetScreenSize().x;
     int h=Engine::GameEngine::GetInstance().GetScreenSize().y;
-    Engine::Label *UIscoreboardTitle, *UIrank, *UIname, *UIscore, *UItime;
+    Engine::Label *UIscoreboardTitle, *UIrank, *UIname, *UIscore, *UItime, *UIpage;
 
     const int cUp = 225;
     const int cLow = 175;

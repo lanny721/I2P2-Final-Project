@@ -107,6 +107,10 @@ void ScoreboardScene::NextOnClick() {
     }
 }
 void ScoreboardScene::removePlayerLabels() {
+    if (UIpage) {
+        RemoveObject(UIpage->GetObjectIterator());
+        UIpage = nullptr;
+    }
     for(size_t i = 0 ; i < min<size_t>(playerDataList.size()-10*(page-1), 10); ++i) {
         RemoveObject(playerDataList[i+10*(page-1)].rankLabel->GetObjectIterator());
         RemoveObject(playerDataList[i+10*(page-1)].nameLabel->GetObjectIterator());
@@ -121,6 +125,8 @@ void ScoreboardScene::removePlayerLabels() {
 }
 void ScoreboardScene::ToPage(int page) {
     this->page = page;
+    UIpage = new Engine::Label("(" + to_string(page) + "/" + to_string((playerDataList.size() - 1) / 10 + 1) + ")", "pirulen.ttf", 48, w/2 + 400, 50, 255, 255, 255, 255, 0.5, 0.5);
+    AddNewObject(UIpage);
     for (size_t i = 0 ; i < min<size_t>(playerDataList.size()-10*(page-1), 10); ++i) {
         playerDataList[i+10*(page-1)].rankLabel = new Engine::Label(to_string(i+1+10*(page-1)), "pirulen.ttf", 36, w/2-460, 200 + i * 48, 255, 255, 255, 255, 1, 0.5);
         playerDataList[i+10*(page-1)].nameLabel = new Engine::Label(playerDataList[i+10*(page-1)].name, "pirulen.ttf", 36, w/2-350, 200 + i * 48, 255, 255, 255, 255, 0, 0.5);
@@ -158,6 +164,7 @@ void ScoreboardScene::updateColor() {
     UIname ->Color           = al_map_rgb(co[defaultColorIdx].r, co[defaultColorIdx].g, co[defaultColorIdx].b);
     UIscore->Color           = al_map_rgb(co[defaultColorIdx].r, co[defaultColorIdx].g, co[defaultColorIdx].b);
     UItime ->Color           = al_map_rgb(co[defaultColorIdx].r, co[defaultColorIdx].g, co[defaultColorIdx].b);
+    UIpage->Color = al_map_rgb(co[defaultColorIdx].r, co[defaultColorIdx].g, co[defaultColorIdx].b);
     for (size_t i = 0 ; i < min<size_t>(playerDataList.size()-10*(page-1), 10); ++i) {
         playerDataList[i+10*(page-1)].rankLabel->Color = al_map_rgb(co[i + 0].r, co[i + 0].g, co[i + 0].b);
         playerDataList[i+10*(page-1)].nameLabel->Color = al_map_rgb(co[i + 1].r, co[i + 1].g, co[i + 1].b);
