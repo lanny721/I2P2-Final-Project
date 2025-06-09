@@ -44,8 +44,12 @@ private:
     std::vector<PlayerData> playerDataList;
     void removePlayerLabels();
 
+    float selectionBoxX = 0, selectionBoxY = 0;
     void DeletePlayerData(int rank);
     void LoadPlayerData();
+    void OnMouseDown(int, int, int) override;
+    void Draw() const override;
+    int deleteRank = -1; // Rank to delete, -1 means no deletion
 };
 
 #endif // SCOREBOARD_SCENE_HPP

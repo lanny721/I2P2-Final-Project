@@ -1,4 +1,5 @@
 #include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_primitives.h>
 #include <functional>
 #include <memory>
 #include <string>
@@ -89,8 +90,8 @@ void ScoreboardScene::OnKeyDown(int keyCode) {
         return;
     } else if (keyCode == ALLEGRO_KEY_D) {
         // Handle delete key
-        int rank = 3; // Get the rank to delete (you may want to implement a way to select this)
-        DeletePlayerData(rank);
+         // Get the rank to delete (you may want to implement a way to select this)
+        DeletePlayerData(deleteRank);
     }
 }
 void ScoreboardScene::PrevOnClick() {
@@ -178,6 +179,10 @@ void ScoreboardScene::DeletePlayerData(int rank) {
         scoreFile << "\n";
     }
     scoreFile.close();
+
+    deleteRank = -1;
+    selectionBoxY = 0;
+    selectionBoxX = 0;
     
     // Update the display
     ToPage(page);
@@ -199,7 +204,41 @@ void ScoreboardScene::LoadPlayerData() {
         return a.timeinfo < b.timeinfo; // Sort by time if scores are equal
     });
 }
+void ScoreboardScene::OnMouseDown(int button, int mx, int my) {
+    IScene::OnMouseDown(button, mx, my);
+    
+    // Check if click is in the scoreboard area
+    int clickY = my - 200;
+    int recordIndex = clickY / 48;
+    int startIndex = (page - 1) * 10;
 
+    int clickedRank = startIndex + recordIndex + 1;
+
+    if (recordIndex >= 0 && recordIndex < 10 && 
+        (startIndex + recordIndex) < playerDataList.size()) {
+        
+        if (deleteRank == clickedRank) {
+            deleteRank = -1;  // Deselect
+        } else {
+            deleteRank = clickedRank;
+            selectionBoxY = 200 + 48 * recordIndex;
+            selectionBoxX = w/2;
+        }
+    }
+}
+void ScoreboardScene::Draw() const {
+    IScene::Draw();
+    int selectedIndex = deleteRank - (page-1)*10 ;
+    if (selectedIndex > 0 && selectedIndex > 0) {
+        al_draw_filled_rectangle(
+            w/2 - 750,        // x1
+            selectionBoxY - 24,         // y1
+            w/2 + 750,        // x2
+            selectionBoxY + 24,         // y2
+            al_map_rgba(0, 0, 255, 64)  // Semi-transparent blue
+        );
+    }
+}
 /*
     if (recordIndex >= 0 && recordIndex < 7 && 
         (startIndex + recordIndex) < scores.size()) {
