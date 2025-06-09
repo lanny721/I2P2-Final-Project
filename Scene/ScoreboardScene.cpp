@@ -88,6 +88,16 @@ void ScoreboardScene::OnKeyDown(int keyCode) {
     if (keyCode == ALLEGRO_KEY_ESCAPE) {
         Engine::GameEngine::GetInstance().ChangeScene("start");
         return;
+    } else if (keyCode == ALLEGRO_KEY_BACKSPACE) {
+        // Handle backspace key
+        if (deleteRank != -1) {
+            DeletePlayerData(deleteRank);
+            deleteRank = -1; // Reset delete rank after deletion
+        }
+    } else if (keyCode == ALLEGRO_KEY_LEFT) {
+        PrevOnClick();
+    } else if (keyCode == ALLEGRO_KEY_RIGHT) {
+        NextOnClick();
     } else if (keyCode == ALLEGRO_KEY_D) {
         // Handle delete key
          // Get the rank to delete (you may want to implement a way to select this)
