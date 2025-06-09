@@ -1,161 +1,224 @@
+#include "ScoreBoardScene.hpp"
 #include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_primitives.h>
 #include <functional>
 #include <memory>
 #include <string>
-#include <fstream>
 #include <vector>
 #include <algorithm>
+#include <utility>
+#include <fstream>
+#include <ctime>
+#include <iomanip>
 #include <sstream>
-#include <iostream>
 
 #include "Engine/AudioHelper.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Point.hpp"
 #include "Engine/Resources.hpp"
-#include "PlayScene.hpp"
-#include "Scene/ScoreboardScene.hpp"
+#include "Scene/StartScene.h"
+#include "Scene/ScoreBoardScene.hpp"
 #include "UI/Component/ImageButton.hpp"
 #include "UI/Component/Label.hpp"
 #include "UI/Component/Slider.hpp"
 
-using namespace std;
-
+// TODO HACKATHON-2 (1/3): You can imitate the 2 files: 'StartScene.hpp', 'StartScene.cpp' to implement your SettingsScene.
 void ScoreboardScene::Initialize() {
-    w = Engine::GameEngine::GetInstance().GetScreenSize().x;
-    h = Engine::GameEngine::GetInstance().GetScreenSize().y;
-    for (int i = 0; i < 20; i++) co.push_back({cUp, 0, cLow - i * 10});
-    UIscoreboardTitle = new Engine::Label("Scoreboard", "pirulen.ttf", 64, w / 2, 50, 255, 255, 255, 255, 0.5, 0.5);
-    UIrank = new Engine::Label("Rank", "pirulen.ttf", 44, w / 2 - 480, 130, 255, 255, 255, 255, 0.5, 0.5);
-    UIname = new Engine::Label("Player", "pirulen.ttf", 44, w / 2 - 100, 130, 255, 255, 255, 255, 0.5, 0.5);
-    UIscore = new Engine::Label("Score", "pirulen.ttf", 44, w / 2 + 240, 130, 255, 255, 255, 255, 0.5, 0.5);
-    UItime = new Engine::Label("Time", "pirulen.ttf", 44, w / 2 + 500, 130, 255, 255, 255, 255, 0.5, 0.5);
-    AddNewObject(UIscoreboardTitle);
-    AddNewObject(UIrank);
-    AddNewObject(UIname);
-    AddNewObject(UIscore);
-    AddNewObject(UItime);
+    UIGroup = new Group(); // Initialize UIGroup
+    AddNewControlObject(UIGroup);
 
+    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
+    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
+    int halfW = w / 2;
+    int halfH = h / 2;
     Engine::ImageButton *btn;
+    // std::vector<std::pair<std::string, int>> scores;
+    curPage=1;
+    selectedIndex=-1;
 
-    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w/2 - 200, 700, 400, 100);
+    getScoreboard(scores);
+    UpdateScoreboardDisplay();
+
+    //stable label
+    AddNewObject(new Engine::Label("Score Board", "pirulen.ttf", 60, halfW - 80, halfH / 3 -80 ,255, 255, 255, 255, 0.5, 0.5));
+    AddNewObject(new Engine::Label("name", "pirulen.ttf", 38, halfW - 525, halfH / 3 , 255, 255, 255, 255, 0.5, 0.5));
+    AddNewObject(new Engine::Label("score", "pirulen.ttf", 38, halfW - 25 , halfH / 3 , 255, 255, 255, 255, 0.5, 0.5));
+    AddNewObject(new Engine::Label("time", "pirulen.ttf", 38, halfW + 475, halfH / 3, 255, 255, 255, 255, 0.5, 0.5));
+
+    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW - 150 , halfH * 3 / 2 + 100, 300, 75);
     btn->SetOnClickCallback(std::bind(&ScoreboardScene::BackOnClick, this, 1));
     AddNewControlObject(btn);
-    AddNewObject(new Engine::Label("Back", "pirulen.ttf", 48, w/2, 750, 0, 0, 0, 255, 0.5, 0.5));
+    AddNewObject(new Engine::Label("Back", "pirulen.ttf", 36, halfW + 5, halfH * 3 / 2 +140, 0, 0, 0, 255, 0.5, 0.5));
 
-    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w/2 - 700, 700, 400, 100);
-    btn->SetOnClickCallback(std::bind(&ScoreboardScene::PrevOnClick, this));
+    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW - 720, halfH * 3 / 2 + 100, 300, 75);
+    btn->SetOnClickCallback(std::bind(&ScoreboardScene::PrevOnClick, this, 1));
     AddNewControlObject(btn);
-    AddNewObject(new Engine::Label("Prev Page", "pirulen.ttf", 36, w/2 - 700 + 200, 750, 0, 0, 0, 255, 0.5, 0.5));
+    AddNewObject(new Engine::Label("<- Prev", "pirulen.ttf", 36, halfW - 575, halfH * 3 / 2 +140, 0, 0, 0, 255, 0.5, 0.5));
 
-    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", w/2 + 300, 700, 400, 100);
-    btn->SetOnClickCallback(std::bind(&ScoreboardScene::NextOnClick, this));
+    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW + 430, halfH * 3 / 2 + 100, 300, 75);
+    btn->SetOnClickCallback(std::bind(&ScoreboardScene::NextOnClick, this, 1));
     AddNewControlObject(btn);
-    AddNewObject(new Engine::Label("Next Page", "pirulen.ttf", 36, w/2 + 300 + 200, 750, 0, 0, 0, 255, 0.5, 0.5));
+    AddNewObject(new Engine::Label("Next ->", "pirulen.ttf", 36, halfW + 600, halfH * 3 / 2 +140, 0, 0, 0, 255, 0.5, 0.5));
 
-    bgmInstance = AudioHelper::PlaySample("select.ogg", true, AudioHelper::BGMVolume);
-    
-    std::string line;
-    PlayerData tmpData;
-    ifstream scoreFile("../Resource/scoreboard.txt");
-    while (std::getline(scoreFile, line)) {
-        std::stringstream ss(line);
-        if (ss >> tmpData.name >> tmpData.score) {
-            ss >> tmpData.timeinfo;
-            playerDataList.push_back(tmpData);
-        }
-    }
-    sort(playerDataList.begin(), playerDataList.end(), [](const PlayerData& a, const PlayerData& b) {
-        if (a.score != b.score) return a.score > b.score;
-        return a.timeinfo < b.timeinfo; // Sort by time if scores are equal
-    });
+    UpdateScoreboardDisplay();
 
-    ToPage(1);
 }
 void ScoreboardScene::Terminate() {
-    playerDataList.clear();
-    co.clear();
-    AudioHelper::StopSample(bgmInstance);
-    bgmInstance = std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE>();
+    printf("Terminate ScoreboardScene\n");
+
+    scoreLabels.clear();
+    printf("scoreLabels clear\n");
+
     IScene::Terminate();
+    printf("IScene Terminate\n");
+
+    UIGroup = nullptr;
+    printf("Terminate ScoreboardScene end\n");
+}
+void ScoreboardScene::getScoreboard(std::vector<std::tuple<std::string, int, std::string>>& scores) {
+    scores.clear();
+    std::ifstream file("C:/miniproject2/2025_I2P2_TowerDefense-main/Resource/scoreboard.txt");
+    std::string name,timestamp;
+    int score;
+
+    if(!file.is_open()) {
+        printf( "Error opening scoreboard.txt!!!\n");
+        return;
+    }
+    while (file >> name >> score >> timestamp) {
+        scores.push_back({name, score,timestamp});
+    }
+    file.close();
+
+    if(scores.size()<=7)
+        totalPage=1;
+    else if(scores.size()%7==0)
+        totalPage=scores.size()/7;
+    else
+        totalPage=scores.size()/7+1;
+}
+void ScoreboardScene::UpdateScoreboardDisplay(){
+    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
+    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
+    int halfW = w / 2;
+    int halfH = h / 2;
+    //std::vector<std::tuple<std::string, int, std::string>> scores;
+    //getScoreboard(scores);
+
+    for (auto* label : scoreLabels) {
+        UIGroup->RemoveObject(label->GetObjectIterator());
+    }
+    scoreLabels.clear();
+
+    std::string pageText = "(" + std::to_string(curPage) + "/" + std::to_string(totalPage) + ")";
+    Engine::Label* pageLabel = new Engine::Label(pageText, "pirulen.ttf", 45, halfW + 325, halfH / 3 - 80, 255, 255, 255, 255, 0.5, 0.5);
+    AddNewObject(pageLabel);
+    scoreLabels.push_back(pageLabel);
+
+    int startIndex = (curPage - 1) * 7;
+    int endIndex = std::min(startIndex + 7, static_cast<int>(scores.size()));
+
+    for(int i=startIndex;i<endIndex;i++){
+        //name
+        Engine::Label* nameLabel = new Engine::Label(std::get<0>(scores[i]), "pirulen.ttf", 48, halfW - 525, halfH / 3 + 80 + 75 * (i - startIndex), 255, 255, 255, 255, 0.5, 0.5);
+        AddNewObject(nameLabel);
+        scoreLabels.push_back(nameLabel);
+        //score
+        Engine::Label* scoreLabel = new Engine::Label(std::to_string(std::get<1>(scores[i])), "pirulen.ttf", 48,
+            halfW - 25 , halfH / 3 + 80 + 75 * (i - startIndex), 255, 255, 255, 255, 0.5, 0.5);
+        AddNewObject(scoreLabel);
+        scoreLabels.push_back(scoreLabel);
+        //time
+        Engine::Label* timeLabel = new Engine::Label(std::get<2>(scores[i]), "pirulen.ttf", 48,
+            halfW + 475, halfH / 3 + 80 + 75 * (i - startIndex), 255, 255, 255, 255, 0.5, 0.5);
+        AddNewObject(timeLabel);
+        scoreLabels.push_back(timeLabel);
+    }
+    //最多七個每個height +75
 }
 void ScoreboardScene::BackOnClick(int stage) {
     Engine::GameEngine::GetInstance().ChangeScene("start");
 }
-void ScoreboardScene::OnKeyDown(int keyCode) {
-    IScene::OnKeyDown(keyCode);
-    if (keyCode == ALLEGRO_KEY_ESCAPE) {
-        Engine::GameEngine::GetInstance().ChangeScene("start");
+void ScoreboardScene::PrevOnClick(int stage) {
+    if(curPage==1)
         return;
+    else{
+        --curPage;
+        selectedIndex = -1;
+        UpdateScoreboardDisplay();
     }
+    
+    // Engine::GameEngine::GetInstance().ChangeScene("start");
 }
-void ScoreboardScene::PrevOnClick() {
-    if (page > 1) {
-        removePlayerLabels();
-        ToPage(page - 1);
+void ScoreboardScene::NextOnClick(int stage) {
+    if(curPage==totalPage)
+        return;
+    else{
+        ++curPage;
+        selectedIndex = -1;
+        UpdateScoreboardDisplay();
     }
+    // Engine::GameEngine::GetInstance().ChangeScene("start");
 }
-void ScoreboardScene::NextOnClick() {
-    if (page < (playerDataList.size() - 1) / 10 + 1) {
-        removePlayerLabels();
-        ToPage(page + 1);
-    }
-}
-void ScoreboardScene::removePlayerLabels() {
-    for(size_t i = 0 ; i < min<size_t>(playerDataList.size()-10*(page-1), 10); ++i) {
-        RemoveObject(playerDataList[i+10*(page-1)].rankLabel->GetObjectIterator());
-        RemoveObject(playerDataList[i+10*(page-1)].nameLabel->GetObjectIterator());
-        RemoveObject(playerDataList[i+10*(page-1)].scoreLabel->GetObjectIterator());
-        playerDataList[i+10*(page-1)].rankLabel = nullptr;
-        playerDataList[i+10*(page-1)].nameLabel = nullptr;
-        playerDataList[i+10*(page-1)].scoreLabel = nullptr;
+void ScoreboardScene::OnMouseDown(int button, int mx, int my) {
+    IScene::OnMouseDown(button, mx, my);
 
-        RemoveObject(playerDataList[i+10*(page-1)].timeLabel->GetObjectIterator());
-        playerDataList[i+10*(page-1)].timeLabel = nullptr;
-    }
-}
-void ScoreboardScene::ToPage(int page) {
-    this->page = page;
-    for (size_t i = 0 ; i < min<size_t>(playerDataList.size()-10*(page-1), 10); ++i) {
-        playerDataList[i+10*(page-1)].rankLabel = new Engine::Label(to_string(i+1+10*(page-1)), "pirulen.ttf", 36, w/2-460, 200 + i * 48, 255, 255, 255, 255, 1, 0.5);
-        playerDataList[i+10*(page-1)].nameLabel = new Engine::Label(playerDataList[i+10*(page-1)].name, "pirulen.ttf", 36, w/2-350, 200 + i * 48, 255, 255, 255, 255, 0, 0.5);
-        playerDataList[i+10*(page-1)].scoreLabel = new Engine::Label(to_string(playerDataList[i+10*(page-1)].score), "pirulen.ttf", 36, w/2+330, 200 + i * 48, 255, 255, 255, 255, 1, 0.5);
-        AddNewObject(playerDataList[i+10*(page-1)].rankLabel);
-        AddNewObject(playerDataList[i+10*(page-1)].nameLabel);
-        AddNewObject(playerDataList[i+10*(page-1)].scoreLabel);
+    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
+    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
+    int halfW = w / 2;
+    int halfH = h / 2;
+
+    int clickY = my - (halfH / 3 + 80);
+    int recordIndex = clickY / 75;
+    int startIndex = (curPage - 1) * 7;
+
+    if (recordIndex >= 0 && recordIndex < 7 && 
+        (startIndex + recordIndex) < scores.size()) {
         
-        playerDataList[i+10*(page-1)].timeLabel = new Engine::Label(playerDataList[i+10*(page-1)].timeinfo, "pirulen.ttf", 24, w/2+400, 200 + i * 48, 255, 255, 255, 255, 0, 0.5);
-        AddNewObject(playerDataList[i+10*(page-1)].timeLabel);
-    }
-    updateColor();
-}
-void ScoreboardScene::Update(float deltaTime) {
-    ticks += deltaTime;
-    if (ticks > 0.05f) {
-        ticks -= 0.05f;
-        updateColor();
-    }   
-}
-void ScoreboardScene::updateColor() {
-    for (size_t i = 0; i < co.size(); i++) {
-        if      (co[i].r >= cUp  && co[i].g <  cUp  && co[i].b <= cLow) co[i].g += 5;
-        else if (co[i].r >  cLow && co[i].g >= cUp  && co[i].b <= cLow) co[i].r -= 5;
-        else if (co[i].r <= cLow && co[i].g >= cUp  && co[i].b <  cUp ) co[i].b += 5;
-        else if (co[i].r <= cLow && co[i].g >  cLow && co[i].b >= cUp ) co[i].g -= 5;
-        else if (co[i].r <  cUp  && co[i].g <= cLow && co[i].b >= cUp ) co[i].r += 5;
-        else if (co[i].r >= cUp  && co[i].g <= cLow && co[i].b >  cLow) co[i].b -= 5;
-        else std::cout << "not chang" << ' ' << co[i].r << ' ' << co[i].g << ' ' << co[i].b << std::endl;
-        //std::cout << "Color " << i << ": (" << co[i].r << ", " << co[i].g << ", " << co[i].b << ")" << std::endl;
-    }
+        if (selectedIndex == startIndex + recordIndex) {
+            selectedIndex = -1;  // 取消選擇
+            return;
+        }
 
-    UIscoreboardTitle->Color = al_map_rgb(co[defaultColorIdx].r, co[defaultColorIdx].g, co[defaultColorIdx].b);
-    UIrank ->Color           = al_map_rgb(co[defaultColorIdx].r, co[defaultColorIdx].g, co[defaultColorIdx].b);
-    UIname ->Color           = al_map_rgb(co[defaultColorIdx].r, co[defaultColorIdx].g, co[defaultColorIdx].b);
-    UIscore->Color           = al_map_rgb(co[defaultColorIdx].r, co[defaultColorIdx].g, co[defaultColorIdx].b);
-    UItime ->Color           = al_map_rgb(co[defaultColorIdx].r, co[defaultColorIdx].g, co[defaultColorIdx].b);
-    for (size_t i = 0 ; i < min<size_t>(playerDataList.size()-10*(page-1), 10); ++i) {
-        playerDataList[i+10*(page-1)].rankLabel->Color = al_map_rgb(co[i + 0].r, co[i + 0].g, co[i + 0].b);
-        playerDataList[i+10*(page-1)].nameLabel->Color = al_map_rgb(co[i + 1].r, co[i + 1].g, co[i + 1].b);
-        playerDataList[i+10*(page-1)].scoreLabel->Color= al_map_rgb(co[i + 2].r, co[i + 2].g, co[i + 2].b);
-        playerDataList[i+10*(page-1)].timeLabel->Color = al_map_rgb(co[i + 3].r, co[i + 3].g, co[i + 3].b);
+        selectedIndex = startIndex + recordIndex;
+        selectionBoxY = halfH / 3 + 80 + 75 * recordIndex;
+        selectionBoxX = halfW;
+    }
+}
+void ScoreboardScene::OnKeyDown(int keyCode) {
+    if (keyCode == ALLEGRO_KEY_BACKSPACE && selectedIndex >= 0) {
+        scores.erase(scores.begin() + selectedIndex);
+
+        std::ofstream file("C:/miniproject2/2025_I2P2_TowerDefense-main/Resource/scoreboard.txt",std::ios::trunc);
+        for (const auto& score : scores) {
+            file << std::get<0>(score) << " " 
+                 << std::get<1>(score) << " " 
+                 << std::get<2>(score) << "\n";
+        }
+        file.close();
+        
+        if (scores.size() <= 7)
+            totalPage = 1;
+        else if (scores.size() % 7 == 0)
+            totalPage = scores.size() / 7;
+        else
+            totalPage = scores.size() / 7 + 1;
+        if (curPage > totalPage)
+            curPage = totalPage;
+
+        selectedIndex = -1;
+        UpdateScoreboardDisplay();
+    }
+}
+void ScoreboardScene::Draw() const{
+    IScene::Draw();
+    if(selectedIndex>=0){
+        al_draw_filled_rectangle(
+            selectionBoxX - 750,        // x1
+            selectionBoxY - 35,         // y1
+            selectionBoxX + 750,        // x2
+            selectionBoxY + 35,         // y2
+            al_map_rgba(0, 0, 255, 64)  // 藍色半透明
+        );
     }
 }
