@@ -87,7 +87,7 @@ void PlayScene::Initialize() {
     Engine::Resources::GetInstance().GetBitmap("lose/benjamin-happy.png");
     // Start BGM.
     bgmId = AudioHelper::PlayBGM("play.ogg");
-    player = new Player("images/play/enemy-1.png", MapWidth * BlockSize / 2.0f, MapHeight * BlockSize / 2.0f, 400.0f); // 路徑、初始座標、速度
+   player = new Player("images/play/Player1.png", MapWidth * BlockSize / 2.0f, MapHeight * BlockSize / 2.0f, 400.0f, 0.1f); // 每 0.1 秒切換幀
 }
 void PlayScene::Terminate() {
     AudioHelper::StopBGM(bgmId);
@@ -227,6 +227,9 @@ void PlayScene::Draw() const {
         }
     }
     player->Draw(); // Draw the player character.
+    float scale = 2.0f; // 放大比例
+
+    
 }
 void PlayScene::OnMouseDown(int button, int mx, int my) {
     if ((button & 1) && !imgTarget->Visible && preview) {

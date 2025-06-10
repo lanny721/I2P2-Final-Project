@@ -8,8 +8,14 @@ public:
     Engine::Point position; // 角色座標
     float speed = 400.f;            // 移動速度
     ALLEGRO_BITMAP *image;  // 角色圖片
+    ALLEGRO_BITMAP* spriteSheet;
+    int currentFrame; // 當前動畫幀
+    int maxFrames; // 最大幀數
+    float animationTimer; // 計時器
+    float animationInterval; // 每幀切換的間隔
+    bool isMoving; // 是否正在移動
 
-    Player(const char *imagePath, float x, float y, float speed);
+    Player(const char* spriteSheetPath, float x, float y, float speed, float interval);
     ~Player();
 
     void Update(float deltaTime); // 更新角色位置

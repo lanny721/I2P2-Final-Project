@@ -6,17 +6,16 @@
 #include <stdexcept>
 #include <iostream>
 
-Player::Player(const char *imagePath, float x, float y, float speed)
-    : position(x, y), speed(speed) {
-    image = al_load_bitmap(imagePath);
-    if (!image) {
-        throw std::runtime_error("Failed to load player image.");
+Player::Player(const char* spriteSheetPath, float x, float y, float speed, float interval)
+    : position(x, y), speed(speed), animationTimer(0), animationInterval(interval), currentFrame(0), maxFrames(3), isMoving(false) {
+    spriteSheet = al_load_bitmap(spriteSheetPath);
+    if (!spriteSheet) {
+        throw std::runtime_error("Failed to load sprite sheet.");
     }
 }
-
 Player::~Player() {
-    if (image) {
-        al_destroy_bitmap(image);
+    if (spriteSheet) {
+        al_destroy_bitmap(spriteSheet);
     }
 }
 
@@ -25,6 +24,7 @@ void Player::Update(float deltaTime) {
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] ||
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] ||
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
+            isMoving = true;
             if        (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP]) {
                 Engine::GameEngine::GetInstance().GetActiveScene()->camera.y -= speed * deltaTime;
                 // if (camera.y < 0) camera.y = 0;
@@ -38,8 +38,22 @@ void Player::Update(float deltaTime) {
             }
             std::cout << "Camera position: (" << Engine::GameEngine::GetInstance().GetActiveScene()->camera.x << ", " << 
                 Engine::GameEngine::GetInstance().GetActiveScene()->camera.y << ")" << std::endl;
+            animationTimer += deltaTime;
+            if (animationTimer >= animationInterval) {
+                animationTimer = 0;
+                currentFrame = (currentFrame + 1) % maxFrames; // 循環切換幀
+            }
     }
 }
 void Player::Draw() const {
-    al_draw_bitmap(image, position.x, position.y, 0);
+    int frameWidth = 32; // 每幀的寬度
+    int frameHeight = 32; // 每幀的高度
+    int row = isMoving ? 1 : 0; // 第二列為移動動畫，第一列為靜止動畫
+
+   float scale = 1.5f; // 放大比例
+
+    al_draw_scaled_bitmap(spriteSheet, 
+                          currentFrame * frameWidth, row * frameHeight, frameWidth, frameHeight, // 原始圖片區域
+                          position.x, position.y, frameWidth * scale, frameHeight * scale,      // 放大後的位置和大小
+                          0);
 }
