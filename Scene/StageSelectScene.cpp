@@ -28,6 +28,10 @@ void StageSelectScene::Initialize() {
     btn->SetOnClickCallback(std::bind(&StageSelectScene::PlayOnClick, this, 2));
     AddNewControlObject(btn);
     AddNewObject(new Engine::Label("Stage 2", "pirulen.ttf", 48, halfW, halfH / 2 + 150, 0, 0, 0, 255, 0.5, 0.5));
+    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW - 200, halfH / 2 + 250, 400, 100);
+    btn->SetOnClickCallback(std::bind(&StageSelectScene::PlayOnClick, this, 3));
+    AddNewControlObject(btn);
+    AddNewObject(new Engine::Label("Stage 3", "pirulen.ttf", 48, halfW, halfH / 2 + 300, 0, 0, 0, 255, 0.5, 0.5));
 
     btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW - 200, halfH / 2 + 400, 400, 100);
     btn->SetOnClickCallback(std::bind(&StageSelectScene::BackOnClick, this, 0));
@@ -67,7 +71,7 @@ void StageSelectScene::OnKeyDown(int keyCode) {
     }
     if (keyCode >= ALLEGRO_KEY_1 && keyCode <= ALLEGRO_KEY_9) {
         int stage = keyCode - ALLEGRO_KEY_0;
-        if (stage >= 1 && stage <= 2) PlayOnClick(stage);
+        if (stage >= 1 && stage <= 3) PlayOnClick(stage);
     }
 }
 void StageSelectScene::PlayOnClick(int stage) {

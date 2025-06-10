@@ -93,5 +93,7 @@ public:
 
     std::vector<std::vector<Engine::Image*>> TileMapImages;
     std::vector<std::vector<Turret*>> Towers;
+
+    Engine::Point GetRandomSpawnPoint() const;
 };
 #endif   // PLAYSCENE_HPP

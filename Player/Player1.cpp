@@ -31,7 +31,8 @@ void Player::Update(float deltaTime) {
             } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
                 Engine::GameEngine::GetInstance().GetActiveScene()->camera.y += speed * deltaTime;
                 // if (camera.y > MapHeight * BlockSize - GetClientSize().y) camera.y = MapHeight * BlockSize - GetClientSize().y;
-            } if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT]) {
+            }
+            if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT]) {
                 Engine::GameEngine::GetInstance().GetActiveScene()->camera.x -= speed * deltaTime;
             } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
                 Engine::GameEngine::GetInstance().GetActiveScene()->camera.x += speed * deltaTime;
