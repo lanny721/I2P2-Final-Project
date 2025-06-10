@@ -87,7 +87,7 @@ void PlayScene::Initialize() {
     Engine::Resources::GetInstance().GetBitmap("lose/benjamin-happy.png");
     // Start BGM.
     bgmId = AudioHelper::PlayBGM("play.ogg");
-    player = new Player("images/play/enemy-1.png", MapWidth * BlockSize / 2.0f, MapHeight * BlockSize / 2.0f, 5.0f); // 路徑、初始座標、速度
+    player = new Player("images/play/enemy-1.png", MapWidth * BlockSize / 2.0f, MapHeight * BlockSize / 2.0f, 400.0f); // 路徑、初始座標、速度
 }
 void PlayScene::Terminate() {
     AudioHelper::StopBGM(bgmId);
@@ -191,23 +191,24 @@ void PlayScene::Update(float deltaTime) {
         preview->Update(deltaTime);
     }
 
-    if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
-        Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D]) {
-            if        (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W]) {
-                camera.y -= cameraSpeed * deltaTime;
-                // if (camera.y < 0) camera.y = 0;
-            } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S]) {
-                camera.y += cameraSpeed * deltaTime;
-                // if (camera.y > MapHeight * BlockSize - GetClientSize().y) camera.y = MapHeight * BlockSize - GetClientSize().y;
-            } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A]) {
-                camera.x -= cameraSpeed * deltaTime;
-                // if (camera.x < 0) camera.x = 0;
-            } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D]) {
-                camera.x += cameraSpeed * deltaTime;
-                // if (camera.x > MapWidth * BlockSize - GetClientSize().x) camera.x = MapWidth * BlockSize - GetClientSize().x;
-            }
-            std::cout << "Camera Position: (" << camera.x << ", " << camera.y << ")" << std::endl;
-    }
+    player->Update(deltaTime); // Update the player character.
+    // if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
+    //     Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D]) {
+    //         if        (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W]) {
+    //             camera.y -= cameraSpeed * deltaTime;
+    //             // if (camera.y < 0) camera.y = 0;
+    //         } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S]) {
+    //             camera.y += cameraSpeed * deltaTime;
+    //             // if (camera.y > MapHeight * BlockSize - GetClientSize().y) camera.y = MapHeight * BlockSize - GetClientSize().y;
+    //         } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A]) {
+    //             camera.x -= cameraSpeed * deltaTime;
+    //             // if (camera.x < 0) camera.x = 0;
+    //         } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D]) {
+    //             camera.x += cameraSpeed * deltaTime;
+    //             // if (camera.x > MapWidth * BlockSize - GetClientSize().x) camera.x = MapWidth * BlockSize - GetClientSize().x;
+    //         }
+    //         std::cout << "Camera Position: (" << camera.x << ", " << camera.y << ")" << std::endl;
+    // }
 }
 void PlayScene::Draw() const {
     IScene::Draw();
