@@ -18,6 +18,7 @@ Bullet::Bullet(std::string img, float speed, float damage, Engine::Point positio
     Velocity = forwardDirection.Normalize() * speed;
     Rotation = rotation;
     CollisionRadius = 4;
+    followCamera = true;  // Follow camera by default.
 }
 void Bullet::Update(float deltaTime) {
     Sprite::Update(deltaTime);

@@ -22,7 +22,7 @@ class PlayScene final : public Engine::IScene {
 private:
     ALLEGRO_SAMPLE_ID bgmId;
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> deathBGMInstance;
-    float cameraSpeed = 300.f;
+    float cameraSpeed = 400.f;
 
 protected:
     int lives;

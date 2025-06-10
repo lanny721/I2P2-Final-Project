@@ -35,6 +35,7 @@ void Enemy::OnExplode() {
 Enemy::Enemy(std::string img, float x, float y, float radius, float speed, float hp, int money) : Engine::Sprite(img, x, y), speed(speed), hp(hp), money(money) {
     CollisionRadius = radius;
     reachEndTime = 0;
+    followCamera = true;  // Follow camera by default.
 }
 void Enemy::Hit(float damage) {
     hp -= damage;
@@ -121,6 +122,7 @@ void Enemy::Draw() const {
     Sprite::Draw();
     if (PlayScene::DebugMode) {
         // Draw collision radius.
-        al_draw_circle(Position.x, Position.y, CollisionRadius, al_map_rgb(255, 0, 0), 2);
+        al_draw_circle(Position.x - followCamera * Engine::GameEngine::GetInstance().GetActiveScene()->camera.x, 
+                       Position.y - followCamera * Engine::GameEngine::GetInstance().GetActiveScene()->camera.y, CollisionRadius, al_map_rgb(255, 0, 0), 2);
     }
 }

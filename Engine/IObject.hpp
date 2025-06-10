@@ -70,6 +70,7 @@ namespace Engine {
         /// </summary>
         /// <param name="deltaTime">Time elapsed since last update, can be used to calculate value changes.</param>
         virtual void Update(float deltaTime);
+        bool followCamera = false;  // Whether the image should follow the camera position.
     };
 }
 #endif   // IOBJECT_HPP

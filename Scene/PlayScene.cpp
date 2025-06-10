@@ -222,6 +222,7 @@ void PlayScene::Draw() const {
                     // Not elegant nor efficient, but it's quite enough for debugging.
                     Engine::Label label(std::to_string(mapDistance[i][j]), "pirulen.ttf", 32, (j + 0.5) * BlockSize, (i + 0.5) * BlockSize);
                     label.Anchor = Engine::Point(0.5, 0.5);
+                    label.followCamera = true;
                     label.Draw();
                 }
             }
@@ -261,7 +262,9 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
             // Check if valid.
             if (!CheckSpaceValid(x, y)) {
                 Engine::Sprite *sprite;
-                GroundEffectGroup->AddNewObject(sprite = new DirtyEffect("play/target-invalid.png", 1, x * BlockSize + BlockSize / 2, y * BlockSize + BlockSize / 2));
+                sprite = new DirtyEffect("play/target-invalid.png", 1, x * BlockSize + BlockSize / 2, y * BlockSize + BlockSize / 2);
+                sprite->followCamera = true;
+                GroundEffectGroup->AddNewObject(sprite);
                 sprite->Rotation = 0;
                 return;
             }
@@ -278,6 +281,7 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
             preview->Preview = false;
             preview->Tint = al_map_rgba(255, 255, 255, 255);
 
+            preview->followCamera = true;
             if (!preview->isTool) {
                 TowerGroup->AddNewObject(preview);
                 Towers[y][x] = preview;
@@ -388,13 +392,13 @@ void PlayScene::ReadMap() {
         for (int j = 0; j < MapWidth; j++) {
             const int num = mapData[i * MapWidth + j];
             mapState[i][j] = num ? TILE_FLOOR : TILE_DIRT;
-            if (num){
+            if (num) {
                 TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-                TileMapGroup->AddNewObject(TileMapImages[i][j]);
             } else {
                 TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-                TileMapGroup->AddNewObject(TileMapImages[i][j]);
             }
+            TileMapImages[i][j]->followCamera = true;
+            TileMapGroup->AddNewObject(TileMapImages[i][j]);
         }
     }
 }
