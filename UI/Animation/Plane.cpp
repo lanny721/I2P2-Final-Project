@@ -18,6 +18,7 @@ PlayScene *Plane::getPlayScene() {
     return dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetActiveScene());
 }
 Plane::Plane() : Sprite("play/plane.png", -100, Engine::GameEngine::GetInstance().GetScreenHeight() / 2), stage(0), timeTicks(0) {
+    followCamera = true;  // Follow camera by default.
     for (int i = 1; i <= 10; i++) {
         bmps.push_back(Engine::Resources::GetInstance().GetBitmap("play/light-" + std::to_string(i) + ".png"));
     }

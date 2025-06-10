@@ -18,6 +18,7 @@ PlayScene *Turret::getPlayScene() {
 Turret::Turret(std::string imgBase, std::string imgTurret, float x, float y, float radius, int price, float coolDown) 
     : Sprite(imgTurret, x, y), price(price), coolDown(coolDown), imgBase(imgBase, x, y) {
         CollisionRadius = radius;
+        // followCamera = this->imgBase.followCamera = true;
 }
 void Turret::Update(float deltaTime) {
     Sprite::Update(deltaTime);

@@ -252,8 +252,8 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
     IScene::OnMouseUp(button, mx, my);
     if (!imgTarget->Visible)
         return;
-    const int x = mx / BlockSize;
-    const int y = my / BlockSize;
+    const int x = (mx + camera.x) / BlockSize;
+    const int y = (my + camera.y) / BlockSize;
     if (button & 1) {
         if (mapState[y][x] != TILE_OCCUPIED || preview->isTool) {
             if (!preview)
@@ -280,7 +280,7 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
             preview->Preview = false;
             preview->Tint = al_map_rgba(255, 255, 255, 255);
 
-            preview->followCamera = true;
+            preview->followCamera = preview->imgBase.followCamera = true;
             if (!preview->isTool) {
                 TowerGroup->AddNewObject(preview);
                 Towers[y][x] = preview;
