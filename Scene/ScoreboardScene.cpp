@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iostream>
-
+#include "Player/Player1.hpp"
 #include "Engine/AudioHelper.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Point.hpp"
@@ -18,7 +18,6 @@
 #include "UI/Component/ImageButton.hpp"
 #include "UI/Component/Label.hpp"
 #include "UI/Component/Slider.hpp"
-
 using namespace std;
 
 void ScoreboardScene::Initialize() {

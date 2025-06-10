@@ -5,7 +5,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
-
+#include "Player/Player1.hpp"
 #include "Engine/IScene.hpp"
 #include "Engine/Point.hpp"
 
@@ -23,6 +23,7 @@ private:
     ALLEGRO_SAMPLE_ID bgmId;
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> deathBGMInstance;
     float cameraSpeed = 400.f;
+    Player* player;
 
 protected:
     int lives;
