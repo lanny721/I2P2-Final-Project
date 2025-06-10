@@ -97,11 +97,13 @@ namespace Engine {
                 case ALLEGRO_EVENT_KEY_DOWN:
                     // Event for keyboard key down.
                     LOG(VERBOSE) << "Key with keycode " << event.keyboard.keycode << " down";
+                    keyStates[event.keyboard.keycode] = true;
                     activeScene->OnKeyDown(event.keyboard.keycode);
                     break;
                 case ALLEGRO_EVENT_KEY_UP:
                     // Event for keyboard key up.
                     LOG(VERBOSE) << "Key with keycode " << event.keyboard.keycode << " up";
+                    keyStates[event.keyboard.keycode] = false;
                     activeScene->OnKeyUp(event.keyboard.keycode);
                     break;
                 case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:

@@ -3,7 +3,7 @@
 #include <allegro5/allegro.h>
 #include <string>
 #include <unordered_map>
-
+#include <vector>
 #include "Point.hpp"
 
 /// <summary>
@@ -155,6 +155,7 @@ namespace Engine {
         /// </summary>
         /// <returns>The Singleton instance of GameEngine.</returns>
         static GameEngine &GetInstance();
+        bool keyStates[256]{};
     };
 }
 #endif   // GAMEENGINE_HPP

@@ -63,6 +63,7 @@ void PlayScene::Initialize() {
     lives = 10;
     money = 150;
     SpeedMult = 1;
+    camera.x=camera.y=0;
     // Add groups from bottom to top.
     AddNewObject(TileMapGroup = new Group());
     AddNewObject(GroundEffectGroup = new Group());
@@ -192,6 +193,54 @@ void PlayScene::Update(float deltaTime) {
         // To keep responding when paused.
         preview->Update(deltaTime);
     }
+
+    if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
+        Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D]) {
+            if        (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W]) {
+                camera.y -= cameraSpeed * deltaTime;
+                // if (camera.y < 0) camera.y = 0;
+            } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S]) {
+                camera.y += cameraSpeed * deltaTime;
+                // if (camera.y > MapHeight * BlockSize - GetClientSize().y) camera.y = MapHeight * BlockSize - GetClientSize().y;
+            } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A]) {
+                camera.x -= cameraSpeed * deltaTime;
+                // if (camera.x < 0) camera.x = 0;
+            } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D]) {
+                camera.x += cameraSpeed * deltaTime;
+                // if (camera.x > MapWidth * BlockSize - GetClientSize().x) camera.x = MapWidth * BlockSize - GetClientSize().x;
+            }
+            //std::cout << camera.x << ' ' << camera.y << std::endl;
+
+            for(auto &it : TileMapGroup->GetObjects()) {
+                Engine::IObject *obj = it;
+                obj->Position = obj->originPosition + camera;
+            }
+            for(auto &it : GroundEffectGroup->GetObjects()) {
+                Engine::IObject *obj = it;
+                obj->Position = obj->originPosition + camera;
+            }
+            for(auto &it : DebugIndicatorGroup->GetObjects()) {
+                Engine::IObject *obj = it;
+                obj->Position = obj->originPosition + camera;
+            }
+            for(auto &it : TowerGroup->GetObjects()) {
+                Engine::IObject *obj = it;
+                obj->Position = obj->originPosition + camera;
+            }
+            for(auto &it : EnemyGroup->GetObjects()) {
+                Engine::IObject *obj = it;
+                obj->Position = obj->originPosition + camera;
+            }
+            for(auto &it : BulletGroup->GetObjects()) {
+                Engine::IObject *obj = it;
+                obj->Position = obj->originPosition + camera;
+            }
+            for(auto &it : EffectGroup->GetObjects()) {
+                Engine::IObject *obj = it;
+                obj->Position = obj->originPosition + camera;
+            }
+    }
+    //std::cout << deltaTime << std::endl;
 }
 void PlayScene::Draw() const {
     IScene::Draw();
@@ -277,10 +326,7 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 }
 void PlayScene::OnKeyDown(int keyCode) {
     IScene::OnKeyDown(keyCode);
-    if( keyCode == ALLEGRO_KEY_ESCAPE) {
-        Engine::GameEngine::GetInstance().ChangeScene("stage-select");
-    }
-    else if (keyCode == ALLEGRO_KEY_TAB) {
+    if (keyCode == ALLEGRO_KEY_TAB) {
         DebugMode = !DebugMode;
     } else {
         keyStrokes.push_back(keyCode);
@@ -305,26 +351,30 @@ void PlayScene::OnKeyDown(int keyCode) {
         }
     }
 
-    if (keyCode == ALLEGRO_KEY_Q) {
-        // Hotkey for MachineGunTurret.
-        UIBtnClicked(0);
-    } else if (keyCode == ALLEGRO_KEY_W) {
-        // Hotkey for LaserTurret.
-        UIBtnClicked(1);
-    } else if (keyCode == ALLEGRO_KEY_E) {
-        // Hotkey for SniperTurret.
-        UIBtnClicked(2);
-    } else if (keyCode == ALLEGRO_KEY_R) {
-        // Hotkey for ShovelTool.
-        UIBtnClicked(3);
+    if( keyCode == ALLEGRO_KEY_ESCAPE) {
+        Engine::GameEngine::GetInstance().ChangeScene("stage-select");
     } 
-    
+    // else if (keyCode == ALLEGRO_KEY_Q) {
+    //     // Hotkey for MachineGunTurret.
+    //     UIBtnClicked(0);
+    // } else if (keyCode == ALLEGRO_KEY_W) {
+    //     // Hotkey for LaserTurret.
+    //     UIBtnClicked(1);
+    // } else if (keyCode == ALLEGRO_KEY_E) {
+    //     // Hotkey for SniperTurret.
+    //     UIBtnClicked(2);
+    // } else if (keyCode == ALLEGRO_KEY_R) {
+    //     // Hotkey for ShovelTool.
+    //     UIBtnClicked(3);
+    // } 
     else if (keyCode >= ALLEGRO_KEY_0 && keyCode <= ALLEGRO_KEY_9) {
         // Hotkey for Speed up.
         SpeedMult = (keyCode - ALLEGRO_KEY_0);
     } else if (keyCode == ALLEGRO_KEY_PAD_0) {
         SpeedMult = 25;
     }
+    // for(int i=ALLEGRO_KEY_A;i<=ALLEGRO_KEY_Z;i++) std::cout << Engine::GameEngine::GetInstance().keyStates[i] << ' ';
+    // std::cout << std::endl;
 }
 void PlayScene::Hit() {
     lives--;

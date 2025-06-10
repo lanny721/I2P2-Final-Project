@@ -3,6 +3,7 @@
 
 namespace Engine {
     void IScene::Terminate() {
+        camera = Point(0, 0);
         Clear();
     }
     void IScene::Draw() const {

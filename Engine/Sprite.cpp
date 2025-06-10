@@ -4,6 +4,8 @@
 #include "Engine/Point.hpp"
 #include "Sprite.hpp"
 #include "UI/Component/Image.hpp"
+#include "Engine/GameEngine.hpp"
+#include "Engine/Iscene.hpp"
 
 namespace Engine {
     Sprite::Sprite(std::string img, float x, float y, float w, float h, float anchorX, float anchorY,
@@ -12,7 +14,8 @@ namespace Engine {
     void Sprite::Draw() const {
         if(Visible){
             al_draw_tinted_scaled_rotated_bitmap(bmp.get(), Tint, Anchor.x * GetBitmapWidth(), Anchor.y * GetBitmapHeight(),
-                                                 Position.x, Position.y, Size.x / GetBitmapWidth(), Size.y / GetBitmapHeight(), Rotation, 0);
+                                                 Position.x/* - GameEngine::GetInstance().GetActiveScene()->camera.x*/, Position.y/* - GameEngine::GetInstance().GetActiveScene()->camera.y*/,
+                                                 Size.x / GetBitmapWidth(), Size.y / GetBitmapHeight(), Rotation, 0);
         }
     }
     void Sprite::Update(float deltaTime) {

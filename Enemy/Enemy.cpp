@@ -16,6 +16,7 @@
 #include "Turret/Turret.hpp"
 #include "UI/Animation/DirtyEffect.hpp"
 #include "UI/Animation/ExplosionEffect.hpp"
+#include <iostream>
 
 PlayScene *Enemy::getPlayScene() {
     return dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetActiveScene());
@@ -51,8 +52,8 @@ void Enemy::Hit(float damage) {
     }
 }
 void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
-    int x = static_cast<int>(floor(Position.x / PlayScene::BlockSize));
-    int y = static_cast<int>(floor(Position.y / PlayScene::BlockSize));
+    int x = static_cast<int>(floor((originPosition.x) / PlayScene::BlockSize));
+    int y = static_cast<int>(floor((originPosition.y) / PlayScene::BlockSize));
     if (x < 0) x = 0;
     if (x >= PlayScene::MapWidth) x = PlayScene::MapWidth - 1;
     if (y < 0) y = 0;
@@ -82,8 +83,13 @@ void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
         num--;
     }
     path[0] = PlayScene::EndGridPoint;
+    // all path + originPosition.
+    // for (auto &p : path) {
+    //     p = p + originPosition;
+    // }
 }
 void Enemy::Update(float deltaTime) {
+    //std::cout << deltaTime << std::endl;
     // Pre-calculate the velocity.
     float remainSpeed = speed * deltaTime;
     while (remainSpeed != 0) {
@@ -94,7 +100,7 @@ void Enemy::Update(float deltaTime) {
             reachEndTime = 0;
             return;
         }
-        Engine::Point target = path.back() * PlayScene::BlockSize + Engine::Point(PlayScene::BlockSize / 2, PlayScene::BlockSize / 2);
+        Engine::Point target = path.back() * PlayScene::BlockSize + Engine::Point(PlayScene::BlockSize / 2, PlayScene::BlockSize / 2) + getPlayScene()->camera;
         Engine::Point vec = target - Position;
         // Add up the distances:
         // 1. to path.back()
@@ -105,6 +111,7 @@ void Enemy::Update(float deltaTime) {
         Engine::Point normalized = vec.Normalize();
         if (remainSpeed - vec.Magnitude() > 0) {
             Position = target;
+            originPosition = Position - getPlayScene()->camera;
             path.pop_back();
             remainSpeed -= vec.Magnitude();
         } else {
