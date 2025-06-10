@@ -24,22 +24,6 @@ Player::~Player()
 
 void Player::Update(int keyCode)
 {
-    // 使用按鍵控制角色移動
-    switch (keyCode)
-    {
-    case ALLEGRO_KEY_W: // 向上移動
-        position.y -= speed;
-        break;
-    case ALLEGRO_KEY_S: // 向下移動
-        position.y += speed;
-        break;
-    case ALLEGRO_KEY_A: // 向左移動
-        position.x -= speed;
-        break;
-    case ALLEGRO_KEY_D: // 向右移動
-        position.x += speed;
-        break;
-    }
 
     // 確保角色不超出螢幕邊界
     position.x = std::max(0.0f, std::min(position.x, 1280.0f - al_get_bitmap_width(image))); // 假設螢幕寬度為 1280
