@@ -3,7 +3,7 @@
 #include <allegro5/bitmap.h>
 #include <memory>
 #include <vector>
-
+#include "Engine/Point.hpp"
 #include "Engine/Sprite.hpp"
 
 class PlayScene;
@@ -21,6 +21,7 @@ protected:
     float scale;
     std::vector<std::shared_ptr<ALLEGRO_BITMAP>> bmps;
     std::shared_ptr<ALLEGRO_BITMAP> shockwave;
+    Engine::Point newPosition;
 
 public:
     Plane();

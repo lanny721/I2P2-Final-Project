@@ -36,7 +36,8 @@ void Player::Update(float deltaTime) {
             } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
                 Engine::GameEngine::GetInstance().GetActiveScene()->camera.x += speed * deltaTime;
             }
-            std::cout << "Position: (" << position.x << ", " << position.y << ")" << std::endl;
+            std::cout << "Camera position: (" << Engine::GameEngine::GetInstance().GetActiveScene()->camera.x << ", " << 
+                Engine::GameEngine::GetInstance().GetActiveScene()->camera.y << ")" << std::endl;
     }
 }
 void Player::Draw() const {
