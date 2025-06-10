@@ -38,6 +38,10 @@ Enemy::Enemy(std::string img, float x, float y, float radius, float speed, float
     followCamera = true;  // Follow camera by default.
 }
 void Enemy::Hit(float damage) {
+    int destX = PlayScene::MapWidth/2 * PlayScene::BlockSize + PlayScene::BlockSize/2;
+    int destY = PlayScene::MapHeight/2 * PlayScene::BlockSize + PlayScene::BlockSize/2;
+    std::cout << "Enemy position: (" << Position.x << "," << Position.y << ") Target: (" 
+          << destX << "," << destY << ")" << std::endl;
     hp -= damage;
     feature();
     if (hp <= 0) {
@@ -47,12 +51,47 @@ void Enemy::Hit(float damage) {
             it->Target = nullptr;
         for (auto &it : lockedBullets)
             it->Target = nullptr;
-        getPlayScene()->EarnMoney(money);
+        if(Position.x!=destX && Position.y!=destY)
+            getPlayScene()->EarnMoney(money);
         getPlayScene()->EnemyGroup->RemoveObject(objectIterator);
         AudioHelper::PlayAudio("explosion.wav");
     }
 }
 void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
+    int currentX = static_cast<int>(std::floor(Position.x / PlayScene::BlockSize));
+    int currentY = static_cast<int>(std::floor(Position.y / PlayScene::BlockSize));
+    
+    currentX = std::max(0, std::min(currentX, PlayScene::MapWidth - 1));
+    currentY = std::max(0, std::min(currentY, PlayScene::MapHeight - 1));
+    
+    int targetX = PlayScene::MapWidth / 2;
+    int targetY = PlayScene::MapHeight / 2;
+    
+    path.clear();
+    
+    if (currentX == targetX && currentY == targetY) {
+        return;
+    }
+    
+    float dx = targetX - currentX;
+    float dy = targetY - currentY;
+    float length = std::sqrt(dx * dx + dy * dy);
+    
+    if (length > 0) {
+        dx /= length;
+        dy /= length;
+        
+        float nextX = currentX + dx;
+        float nextY = currentY + dy;
+        
+        path.push_back(Engine::Point(
+            targetX * PlayScene::BlockSize + PlayScene::BlockSize / 2,
+            targetY * PlayScene::BlockSize + PlayScene::BlockSize / 2
+        ));
+    }
+}
+//original UpdatePath function
+/*void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
     int x = static_cast<int>(floor(Position.x / PlayScene::BlockSize));
     int y = static_cast<int>(floor(Position.y / PlayScene::BlockSize));
     if (x < 0) x = 0;
@@ -84,13 +123,20 @@ void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
         num--;
     }
     path[0] = PlayScene::EndGridPoint;
-}
+}*/
 void Enemy::Update(float deltaTime) {
+    int x = static_cast<int>(floor(Position.x / PlayScene::BlockSize));
+    int y = static_cast<int>(floor(Position.y / PlayScene::BlockSize));
     //std::cout << deltaTime << std::endl;
     // Pre-calculate the velocity.
     float remainSpeed = speed * deltaTime;
+    if (x == PlayScene::MapWidth/2 && y == PlayScene::MapHeight/2) {
+        Hit(hp);
+        getPlayScene()->Hit();
+        return;
+    }
     while (remainSpeed != 0) {
-        if (path.empty()) {
+        if (path.empty() /*|| (x== PlayScene::EndGridPoint.x && y == PlayScene::EndGridPoint.y)*/ ) {
             // Reach end point.
             Hit(hp);
             getPlayScene()->Hit();

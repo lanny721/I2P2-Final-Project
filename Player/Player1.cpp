@@ -33,7 +33,8 @@ void Player::Update(float deltaTime) {
                 // position.y += speed * deltaTime;
                 Engine::GameEngine::GetInstance().GetActiveScene()->camera.y += speed * deltaTime;
                 // if (camera.y > MapHeight * BlockSize - GetClientSize().y) camera.y = MapHeight * BlockSize - GetClientSize().y;
-            } if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT]) {
+            }
+            if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT]) {
                 // position.x -= speed * deltaTime;
                 Engine::GameEngine::GetInstance().GetActiveScene()->camera.x -= speed * deltaTime;
                 // if (camera.x < 0) camera.x = 0;

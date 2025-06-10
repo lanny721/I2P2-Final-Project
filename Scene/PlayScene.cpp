@@ -39,12 +39,14 @@
 // TODO HACKATHON-5 (2/4): The "LIFE" label are not updated when you lose a life. Try to fix it.
 
 bool PlayScene::DebugMode = false;
-const std::vector<Engine::Point> PlayScene::directions = { Engine::Point(-1, 0), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(0, 1) };
+const std::vector<Engine::Point> PlayScene::directions = { 
+    Engine::Point(1, 0), Engine::Point(0, 1), Engine::Point(-1, 0), Engine::Point(0, -1),
+    Engine::Point(1, 1), Engine::Point(1, -1), Engine::Point(-1, 1), Engine::Point(-1, -1) };
 const int PlayScene::MapWidth = 20, PlayScene::MapHeight = 13;
 const int PlayScene::BlockSize = 64;
 const float PlayScene::DangerTime = 7.61;
 const Engine::Point PlayScene::SpawnGridPoint = Engine::Point(-1, 0);
-const Engine::Point PlayScene::EndGridPoint = Engine::Point(MapWidth, MapHeight - 1);
+const Engine::Point PlayScene::EndGridPoint = Engine::Point(PlayScene::MapWidth/2, PlayScene::MapHeight/2);
 const std::vector<int> PlayScene::cheatcode = {
     ALLEGRO_KEY_UP, ALLEGRO_KEY_UP, ALLEGRO_KEY_DOWN, ALLEGRO_KEY_DOWN,
     ALLEGRO_KEY_LEFT, ALLEGRO_KEY_RIGHT, ALLEGRO_KEY_LEFT, ALLEGRO_KEY_RIGHT,
@@ -491,7 +493,7 @@ bool PlayScene::CheckSpaceValid(int x, int y) {
     mapState[y][x] = TILE_OCCUPIED;
     std::vector<std::vector<int>> map = CalculateBFSDistance();
     mapState[y][x] = map00;
-    if (map[0][0] == -1)
+    if (map[MapHeight/2][MapWidth/2] == -1)
         return false;
 
     for (auto &it : EnemyGroup->GetObjects()) {
@@ -518,10 +520,10 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
     std::queue<Engine::Point> que;
     // Push end point.
     // BFS from end point.
-    if (mapState[MapHeight - 1][MapWidth - 1] != TILE_DIRT)
+    if (mapState[MapHeight/2][MapWidth/2] != TILE_DIRT)//todo-list
         return map;
-    que.push(Engine::Point(MapWidth - 1, MapHeight - 1));
-    map[MapHeight - 1][MapWidth - 1] = 0;
+    que.push(Engine::Point(MapWidth /2, MapHeight /2));
+    map[MapHeight /2][MapWidth /2] = 0;
     while (!que.empty()) {
         Engine::Point p = que.front();
         que.pop();
@@ -540,15 +542,16 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
             }
         }
     }
+
     //print mapstate
-    // for (int i = 0; i < MapHeight; i++) {
-    //     for (int j = 0; j < MapWidth; j++) {
-    //         if (mapState[i][j] == TILE_DIRT)
-    //             std::cout << "D ";
-    //         else
-    //             std::cout << mapState[i][j] << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
+    for (int i = 0; i < MapHeight; i++) {
+        for (int j = 0; j < MapWidth; j++) {
+            if (mapState[i][j] == TILE_DIRT)
+                std::cout << "D ";
+            else
+                std::cout << mapState[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
     return map;
 }
