@@ -3,8 +3,7 @@
 #include "Engine/Point.hpp"
 #include <allegro5/allegro5.h>
 
-class Player
-{
+class Player {
 public:
     Engine::Point position; // 角色座標
     float speed;            // 移動速度
