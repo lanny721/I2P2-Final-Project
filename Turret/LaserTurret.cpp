@@ -1,5 +1,5 @@
 #include <allegro5/base.h>
-#include <cmath>
+#include <cmath>     
 #include <string>
 
 #include "Bullet/LaserBullet.hpp"

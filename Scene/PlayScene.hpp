@@ -8,20 +8,24 @@
 
 #include "Engine/IScene.hpp"
 #include "Engine/Point.hpp"
+#include "Player/Player1.hpp"
 
 class Turret;
 class Tool;
-namespace Engine {
+namespace Engine
+{
     class Group;
     class Image;
     class Label;
     class Sprite;
-}   // namespace Engine
+} // namespace Engine
 
-class PlayScene final : public Engine::IScene {
+class PlayScene final : public Engine::IScene
+{
 private:
     ALLEGRO_SAMPLE_ID bgmId;
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> deathBGMInstance;
+    Player *player;
 
 protected:
     int lives;
@@ -29,7 +33,8 @@ protected:
     int SpeedMult;
 
 public:
-    enum TileType {
+    enum TileType
+    {
         TILE_DIRT,
         TILE_FLOOR,
         TILE_OCCUPIED,
@@ -89,7 +94,7 @@ public:
     std::vector<std::vector<int>> CalculateBFSDistance();
     // void ModifyReadMapTiles();
 
-    std::vector<std::vector<Engine::Image*>> TileMapImages;
-    std::vector<std::vector<Turret*>> Towers;
+    std::vector<std::vector<Engine::Image *>> TileMapImages;
+    std::vector<std::vector<Turret *>> Towers;
 };
-#endif   // PLAYSCENE_HPP
+#endif // PLAYSCENE_HPP
