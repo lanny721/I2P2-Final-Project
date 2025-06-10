@@ -43,7 +43,7 @@ namespace Engine {
         /// Delegate the draw event to all visible objects.
         /// </summary>
         void Draw() const override;
-        Point camera;
+        Point camera = Point(0, 0);  // The camera position in the scene, used for rendering objects relative to camera.
     };
 }
 #endif   // ISCENE_HPP

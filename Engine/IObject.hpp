@@ -38,7 +38,6 @@ namespace Engine {
         bool Visible = true;
         // The object's position, center depends on Anchor.
         Point Position;
-        Point originPosition; // The original position of the object, used for reset.
         // The object's size.
         Point Size;
         // The center of the object. (0, 0) means top-left, (1, 1) means bottom-right.

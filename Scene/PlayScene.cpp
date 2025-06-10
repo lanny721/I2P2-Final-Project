@@ -63,7 +63,7 @@ void PlayScene::Initialize() {
     lives = 10;
     money = 150;
     SpeedMult = 1;
-    camera.x=camera.y=0;
+    camera = Engine::Point(0, 0);
     // Add groups from bottom to top.
     AddNewObject(TileMapGroup = new Group());
     AddNewObject(GroundEffectGroup = new Group());
@@ -209,38 +209,8 @@ void PlayScene::Update(float deltaTime) {
                 camera.x += cameraSpeed * deltaTime;
                 // if (camera.x > MapWidth * BlockSize - GetClientSize().x) camera.x = MapWidth * BlockSize - GetClientSize().x;
             }
-            //std::cout << camera.x << ' ' << camera.y << std::endl;
-
-            for(auto &it : TileMapGroup->GetObjects()) {
-                Engine::IObject *obj = it;
-                obj->Position = obj->originPosition + camera;
-            }
-            for(auto &it : GroundEffectGroup->GetObjects()) {
-                Engine::IObject *obj = it;
-                obj->Position = obj->originPosition + camera;
-            }
-            for(auto &it : DebugIndicatorGroup->GetObjects()) {
-                Engine::IObject *obj = it;
-                obj->Position = obj->originPosition + camera;
-            }
-            for(auto &it : TowerGroup->GetObjects()) {
-                Engine::IObject *obj = it;
-                obj->Position = obj->originPosition + camera;
-            }
-            for(auto &it : EnemyGroup->GetObjects()) {
-                Engine::IObject *obj = it;
-                obj->Position = obj->originPosition + camera;
-            }
-            for(auto &it : BulletGroup->GetObjects()) {
-                Engine::IObject *obj = it;
-                obj->Position = obj->originPosition + camera;
-            }
-            for(auto &it : EffectGroup->GetObjects()) {
-                Engine::IObject *obj = it;
-                obj->Position = obj->originPosition + camera;
-            }
+            std::cout << "Camera Position: (" << camera.x << ", " << camera.y << ")" << std::endl;
     }
-    //std::cout << deltaTime << std::endl;
 }
 void PlayScene::Draw() const {
     IScene::Draw();
@@ -373,8 +343,6 @@ void PlayScene::OnKeyDown(int keyCode) {
     } else if (keyCode == ALLEGRO_KEY_PAD_0) {
         SpeedMult = 25;
     }
-    // for(int i=ALLEGRO_KEY_A;i<=ALLEGRO_KEY_Z;i++) std::cout << Engine::GameEngine::GetInstance().keyStates[i] << ' ';
-    // std::cout << std::endl;
 }
 void PlayScene::Hit() {
     lives--;

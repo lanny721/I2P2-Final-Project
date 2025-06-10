@@ -14,8 +14,7 @@ namespace Engine {
     void Sprite::Draw() const {
         if(Visible){
             al_draw_tinted_scaled_rotated_bitmap(bmp.get(), Tint, Anchor.x * GetBitmapWidth(), Anchor.y * GetBitmapHeight(),
-                                                 Position.x/* - GameEngine::GetInstance().GetActiveScene()->camera.x*/, Position.y/* - GameEngine::GetInstance().GetActiveScene()->camera.y*/,
-                                                 Size.x / GetBitmapWidth(), Size.y / GetBitmapHeight(), Rotation, 0);
+                                                 Position.x, Position.y, Size.x / GetBitmapWidth(), Size.y / GetBitmapHeight(), Rotation, 0);
         }
     }
     void Sprite::Update(float deltaTime) {
