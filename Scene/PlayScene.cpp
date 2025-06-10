@@ -7,6 +7,7 @@
 #include <queue>
 #include <string>
 #include <vector>
+#include <random>
 
 #include "Enemy/Enemy.hpp"
 #include "Enemy/SoldierEnemy.hpp"
@@ -45,7 +46,7 @@ const std::vector<Engine::Point> PlayScene::directions = {
 const int PlayScene::MapWidth = 20, PlayScene::MapHeight = 13;
 const int PlayScene::BlockSize = 64;
 const float PlayScene::DangerTime = 7.61;
-const Engine::Point PlayScene::SpawnGridPoint = Engine::Point(-1, 0);
+//const Engine::Point PlayScene::SpawnGridPoint = Engine::Point(-1, 0);
 const Engine::Point PlayScene::EndGridPoint = Engine::Point(PlayScene::MapWidth/2, PlayScene::MapHeight/2);
 const std::vector<int> PlayScene::cheatcode = {
     ALLEGRO_KEY_UP, ALLEGRO_KEY_UP, ALLEGRO_KEY_DOWN, ALLEGRO_KEY_DOWN,
@@ -164,6 +165,7 @@ void PlayScene::Update(float deltaTime) {
             continue;
         ticks -= current.second;
         enemyWaveData.pop_front();
+        const Engine::Point SpawnGridPoint = GetRandomSpawnPoint();
         const Engine::Point SpawnCoordinate = Engine::Point(SpawnGridPoint.x * BlockSize + BlockSize / 2, SpawnGridPoint.y * BlockSize + BlockSize / 2);
         Enemy *enemy;
         switch (current.first) {
@@ -211,6 +213,23 @@ void PlayScene::Update(float deltaTime) {
     //         }
     //         std::cout << "Camera Position: (" << camera.x << ", " << camera.y << ")" << std::endl;
     // }
+}
+Engine::Point PlayScene::GetRandomSpawnPoint() const {
+    std::vector<Engine::Point> candidates;
+    int cx = MapWidth / 2;
+    int cy = MapHeight / 2;
+    for (int y = -1; y <= MapHeight; ++y) {
+        for (int x = -1; x <= MapWidth; ++x) {
+            int dist = std::abs(x - cx) + std::abs(y - cy);
+            if (dist < 10) continue;
+            candidates.emplace_back(x, y);
+        }
+    }
+    if (candidates.empty()) return Engine::Point(0, 0); 
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::uniform_int_distribution<> distIdx(0, candidates.size() - 1);
+    return candidates[distIdx(rng)];
 }
 void PlayScene::Draw() const {
     IScene::Draw();

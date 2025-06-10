@@ -58,37 +58,15 @@ void Enemy::Hit(float damage) {
     }
 }
 void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
-    int currentX = static_cast<int>(std::floor(Position.x / PlayScene::BlockSize));
-    int currentY = static_cast<int>(std::floor(Position.y / PlayScene::BlockSize));
-    
-    currentX = std::max(0, std::min(currentX, PlayScene::MapWidth - 1));
-    currentY = std::max(0, std::min(currentY, PlayScene::MapHeight - 1));
-    
+    path.clear();
+
     int targetX = PlayScene::MapWidth / 2;
     int targetY = PlayScene::MapHeight / 2;
-    
-    path.clear();
-    
-    if (currentX == targetX && currentY == targetY) {
-        return;
-    }
-    
-    float dx = targetX - currentX;
-    float dy = targetY - currentY;
-    float length = std::sqrt(dx * dx + dy * dy);
-    
-    if (length > 0) {
-        dx /= length;
-        dy /= length;
-        
-        float nextX = currentX + dx;
-        float nextY = currentY + dy;
-        
-        path.push_back(Engine::Point(
-            targetX * PlayScene::BlockSize + PlayScene::BlockSize / 2,
-            targetY * PlayScene::BlockSize + PlayScene::BlockSize / 2
-        ));
-    }
+
+    path.push_back(Engine::Point(
+        targetX * PlayScene::BlockSize + PlayScene::BlockSize / 2,
+        targetY * PlayScene::BlockSize + PlayScene::BlockSize / 2)
+    );
 }
 //original UpdatePath function
 /*void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
@@ -143,8 +121,10 @@ void Enemy::Update(float deltaTime) {
             reachEndTime = 0;
             return;
         }
-        Engine::Point target = path.back() * PlayScene::BlockSize + Engine::Point(PlayScene::BlockSize / 2, PlayScene::BlockSize / 2);
+        Engine::Point target = path.back();
+        // Engine::Point target = path.back() * PlayScene::BlockSize + Engine::Point(PlayScene::BlockSize / 2, PlayScene::BlockSize / 2);
         Engine::Point vec = target - Position;
+
         // Add up the distances:
         // 1. to path.back()
         // 2. path.back() to border
