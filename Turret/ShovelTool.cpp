@@ -24,6 +24,7 @@ void ShovelTool::Use() {
         getPlayScene()->mapState[y][x] = PlayScene::TILE_DIRT;
         getPlayScene()->TileMapGroup->RemoveObject(getPlayScene()->TileMapImages[y][x]->GetObjectIterator());
         getPlayScene()->TileMapImages[y][x] = new Engine::Image("play/dirt.png", x * PlayScene::BlockSize, y * PlayScene::BlockSize, PlayScene::BlockSize, PlayScene::BlockSize);
+        getPlayScene()->TileMapImages[y][x]->followCamera = true;
         getPlayScene()->TileMapGroup->AddNewObject(getPlayScene()->TileMapImages[y][x]);
         getPlayScene()->mapDistance = getPlayScene()->CalculateBFSDistance();
         // Update Enemy Path

@@ -44,7 +44,7 @@ const std::vector<Engine::Point> PlayScene::directions = {
     Engine::Point(1, 0), Engine::Point(0, 1), Engine::Point(-1, 0), Engine::Point(0, -1),
     Engine::Point(1, 1), Engine::Point(1, -1), Engine::Point(-1, 1), Engine::Point(-1, -1) };
 const int PlayScene::MapWidth = 20, PlayScene::MapHeight = 13;
-const int PlayScene::BlockSize = 64;
+int PlayScene::BlockSize = 64;
 const float PlayScene::DangerTime = 7.61;
 //const Engine::Point PlayScene::SpawnGridPoint = Engine::Point(-1, 0);
 const Engine::Point PlayScene::EndGridPoint = Engine::Point(PlayScene::MapWidth/2, PlayScene::MapHeight/2);
@@ -66,6 +66,7 @@ void PlayScene::Initialize() {
     lives = 100;
     money = 150;
     SpeedMult = 1;
+    // this->BlockSize = 64;
     camera = Engine::Point(0, 0);
     // Add groups from bottom to top.
     AddNewObject(TileMapGroup = new Group());
@@ -250,15 +251,13 @@ void PlayScene::Draw() const {
                     Engine::Label label(std::to_string(mapDistance[i][j]), "pirulen.ttf", 32, (j + 0.5) * BlockSize, (i + 0.5) * BlockSize);
                     label.Anchor = Engine::Point(0.5, 0.5);
                     label.followCamera = true;
+                    // DebugIndicatorGroup->AddNewObject(&label);
                     label.Draw();
                 }
             }
         }
     }
     player->Draw(); // Draw the player character.
-    float scale = 2.0f; // 放大比例
-
-    
 }
 void PlayScene::OnMouseDown(int button, int mx, int my) {
     if ((button & 1) && !imgTarget->Visible && preview) {
