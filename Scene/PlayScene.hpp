@@ -66,7 +66,7 @@ public:
     Engine::Image *imgTarget;
     Engine::Sprite *dangerIndicator;
     Turret *preview;
-    std::vector<std::vector<TileType>> mapState;
+    std::vector<std::vector<TileType>> mapState; // [y][x] important!!!!!!!!!!!!!! 
     std::vector<std::vector<int>> mapDistance;
     std::list<std::pair<int, float>> enemyWaveData;
     std::list<int> keyStrokes;

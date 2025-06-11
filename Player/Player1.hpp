@@ -4,6 +4,10 @@
 #include <allegro5/allegro5.h>
 
 class Player {
+private:
+    float cameraTicks;
+    bool leftRight; // left: false, right: true
+    
 public:
     Engine::Point position; // 角色座標
     float speed = 400.f;            // 移動速度

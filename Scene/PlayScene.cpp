@@ -63,7 +63,7 @@ void PlayScene::Initialize() {
     keyStrokes.clear();
     ticks = 0;
     deathCountDown = -1;
-    lives = 10;
+    lives = 100;
     money = 150;
     SpeedMult = 1;
     camera = Engine::Point(0, 0);
@@ -90,7 +90,7 @@ void PlayScene::Initialize() {
     Engine::Resources::GetInstance().GetBitmap("lose/benjamin-happy.png");
     // Start BGM.
     bgmId = AudioHelper::PlayBGM("play.ogg");
-   player = new Player("images/play/Player1.png", MapWidth * BlockSize / 2.0f, MapHeight * BlockSize / 2.0f, 400.0f, 0.1f); // 每 0.1 秒切換幀
+    player = new Player("images/play/Player1.png", MapWidth * BlockSize / 2.0f, MapHeight * BlockSize / 2.0f, 400.0f, 0.1f); // 每 0.1 秒切換幀
 }
 void PlayScene::Terminate() {
     AudioHelper::StopBGM(bgmId);
@@ -216,16 +216,24 @@ void PlayScene::Update(float deltaTime) {
 }
 Engine::Point PlayScene::GetRandomSpawnPoint() const {
     std::vector<Engine::Point> candidates;
-    int cx = MapWidth / 2;
-    int cy = MapHeight / 2;
-    for (int y = -1; y <= MapHeight; ++y) {
-        for (int x = -1; x <= MapWidth; ++x) {
-            int dist = std::abs(x - cx) + std::abs(y - cy);
-            if (dist < 10) continue;
-            candidates.emplace_back(x, y);
-        }
+    // int cx = MapWidth / 2;
+    // int cy = MapHeight / 2;
+    // for (int y = -1; y <= MapHeight; ++y) {
+    //     for (int x = -1; x <= MapWidth; ++x) {
+    //         int dist = std::abs(x - cx) + std::abs(y - cy);
+    //         if (dist < 10) continue;
+    //         candidates.emplace_back(x, y);
+    //     }
+    // }
+    for (int x = 0 ; x < MapWidth ; ++x) {
+        candidates.emplace_back(x, -1);
+        candidates.emplace_back(x, MapHeight);
     }
-    if (candidates.empty()) return Engine::Point(0, 0); 
+    for (int y = 0 ; y < MapHeight ; ++y) {
+        candidates.emplace_back(-1, y);
+        candidates.emplace_back(MapWidth, y);
+    }
+    if (candidates.empty()) return Engine::Point(0, 0);
     std::random_device rd;
     std::mt19937 rng(rd());
     std::uniform_int_distribution<> distIdx(0, candidates.size() - 1);
@@ -515,8 +523,7 @@ bool PlayScene::CheckSpaceValid(int x, int y) {
     mapState[y][x] = TILE_OCCUPIED;
     std::vector<std::vector<int>> map = CalculateBFSDistance();
     mapState[y][x] = map00;
-    if (map[MapHeight/2][MapWidth/2] == -1)
-        return false;
+    if (map[0][0] == -1) return false;
 
     for (auto &it : EnemyGroup->GetObjects()) {
         Engine::Point pnt;
@@ -542,10 +549,13 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
     std::queue<Engine::Point> que;
     // Push end point.
     // BFS from end point.
-    if (mapState[MapHeight/2][MapWidth/2] != TILE_DIRT)//todo-list
+    if (mapState[EndGridPoint.y][EndGridPoint.x] != TILE_DIRT) {
+        std::cout << EndGridPoint.x << " " << EndGridPoint.y << ": " <<
+            mapState[EndGridPoint.y][EndGridPoint.x] << " not dirt" << std::endl;
         return map;
-    que.push(Engine::Point(MapWidth /2, MapHeight /2));
-    map[MapHeight /2][MapWidth /2] = 0;
+    }
+    que.push(EndGridPoint);
+    map[EndGridPoint.y][EndGridPoint.x] = 0;
     while (!que.empty()) {
         Engine::Point p = que.front();
         que.pop();
@@ -568,10 +578,8 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
     //print mapstate
     for (int i = 0; i < MapHeight; i++) {
         for (int j = 0; j < MapWidth; j++) {
-            if (mapState[i][j] == TILE_DIRT)
-                std::cout << "D ";
-            else
-                std::cout << mapState[i][j] << " ";
+            if (mapState[i][j] == TILE_DIRT) std::cout << "D ";
+            else std::cout << mapState[i][j] << " ";
         }
         std::cout << std::endl;
     }

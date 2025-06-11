@@ -1,6 +1,6 @@
 #ifndef POINT_HPP
 #define POINT_HPP
-
+#include <iostream>
 namespace Engine {
     /// <summary>
     /// Can be used as 2D coordinate point or 2D vector.
@@ -69,6 +69,10 @@ namespace Engine {
         /// </summary>
         /// <returns>Magnitude of vector.</returns>
         float Magnitude() const;
+        friend std::ostream& operator<<(std::ostream &os, const Point &point) {
+            os << "(" << point.x << ", " << point.y << ")";
+            return os;
+        }
     };
     Point operator*(const float &lhs, const Point &rhs);
 }

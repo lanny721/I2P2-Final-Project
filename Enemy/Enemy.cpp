@@ -44,36 +44,33 @@ Enemy::Enemy(std::string img, float x, float y, float radius, float speed, float
 void Enemy::Hit(float damage) {
     int destX = PlayScene::MapWidth/2 * PlayScene::BlockSize + PlayScene::BlockSize/2;
     int destY = PlayScene::MapHeight/2 * PlayScene::BlockSize + PlayScene::BlockSize/2;
-    std::cout << "Enemy position: (" << Position.x << "," << Position.y << ") Target: (" 
+    std::cout << "Hit Enemy position: (" << Position.x << "," << Position.y << ") Target: (" 
           << destX << "," << destY << ")" << std::endl;
     hp -= damage;
     feature();
     if (hp <= 0) {
         OnExplode();
         // Remove all turret's reference to target.
-        for (auto &it : lockedTurrets)
-            it->Target = nullptr;
-        for (auto &it : lockedBullets)
-            it->Target = nullptr;
-        if(Position.x!=destX && Position.y!=destY)
-            getPlayScene()->EarnMoney(money);
+        for (auto &it : lockedTurrets) it->Target = nullptr;
+        for (auto &it : lockedBullets) it->Target = nullptr;
+        if(Position.x!=destX && Position.y!=destY) getPlayScene()->EarnMoney(money);
         getPlayScene()->EnemyGroup->RemoveObject(objectIterator);
         AudioHelper::PlayAudio("explosion.wav");
     }
 }
-void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
-    path.clear();
+// void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
+//     path.clear();
 
-    int targetX = PlayScene::MapWidth / 2;
-    int targetY = PlayScene::MapHeight / 2;
+//     int targetX = PlayScene::MapWidth / 2;
+//     int targetY = PlayScene::MapHeight / 2;
 
-    path.push_back(Engine::Point(
-        targetX * PlayScene::BlockSize + PlayScene::BlockSize / 2,
-        targetY * PlayScene::BlockSize + PlayScene::BlockSize / 2)
-    );
-}
+//     path.push_back(Engine::Point(
+//         targetX/* * PlayScene::BlockSize + PlayScene::BlockSize / 2*/,
+//         targetY/* * PlayScene::BlockSize + PlayScene::BlockSize / 2*/)
+//     );
+// }
 //original UpdatePath function
-/*void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
+void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
     int x = static_cast<int>(floor(Position.x / PlayScene::BlockSize));
     int y = static_cast<int>(floor(Position.y / PlayScene::BlockSize));
     if (x < 0) x = 0;
@@ -105,7 +102,7 @@ void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
         num--;
     }
     path[0] = PlayScene::EndGridPoint;
-}*/
+}
 void Enemy::Update(float deltaTime) {
     int x = static_cast<int>(floor(Position.x / PlayScene::BlockSize));
     int y = static_cast<int>(floor(Position.y / PlayScene::BlockSize));
@@ -125,8 +122,8 @@ void Enemy::Update(float deltaTime) {
             reachEndTime = 0;
             return;
         }
-        Engine::Point target = path.back();
-        // Engine::Point target = path.back() * PlayScene::BlockSize + Engine::Point(PlayScene::BlockSize / 2, PlayScene::BlockSize / 2);
+        // Engine::Point target = path.back();
+        Engine::Point target = path.back() * PlayScene::BlockSize + Engine::Point(PlayScene::BlockSize / 2, PlayScene::BlockSize / 2);
         Engine::Point vec = target - Position;
 
         // Add up the distances:
