@@ -43,7 +43,7 @@ bool PlayScene::DebugMode = false;
 const std::vector<Engine::Point> PlayScene::directions = { 
     Engine::Point(1, 0), Engine::Point(0, 1), Engine::Point(-1, 0), Engine::Point(0, -1),
     Engine::Point(1, 1), Engine::Point(1, -1), Engine::Point(-1, 1), Engine::Point(-1, -1) };
-const int PlayScene::MapWidth = 20, PlayScene::MapHeight = 13;
+int PlayScene::MapWidth , PlayScene::MapHeight;
 int PlayScene::BlockSize = 64;
 const float PlayScene::DangerTime = 7.61;
 //const Engine::Point PlayScene::SpawnGridPoint = Engine::Point(-1, 0);
@@ -395,37 +395,37 @@ void PlayScene::EarnMoney(int money) {
 void PlayScene::ReadMap() {
     std::string filename = std::string("Resource/map") + std::to_string(MapId) + ".txt";
     // Read map file.
-    char c;
-    std::vector<bool> mapData;
     std::ifstream fin(filename);
-    while (fin >> c) {
-        switch (c) {
-            case '0': mapData.push_back(false); break;
-            case '1': mapData.push_back(true); break;
-            case '\n':
-            case '\r':
-                if (static_cast<int>(mapData.size()) / MapWidth != 0)
-                    throw std::ios_base::failure("Map data is corrupted.");
-                break;
-            default: throw std::ios_base::failure("Map data is corrupted.");
-        }
-    }
+    std::string line;
+    std::vector<std::string> lines;
+    while(std::getline(fin, line)) {
+        if (line.empty() || line[0] == '#') continue;
+        lines.push_back(line);
+    }    
     fin.close();
+
+    MapHeight=lines.size();
+    MapWidth=lines.empty() ? 0 : lines[0].size();
+
     // Validate map data.
-    if (static_cast<int>(mapData.size()) != MapWidth * MapHeight)
-        throw std::ios_base::failure("Map data is corrupted.");
+    for (const auto& l : lines) {
+        if (l.size() != MapWidth)
+            throw std::ios_base::failure("Map data is corrupted: inconsistent row length.");
+    }
+
     // Store map in 2d array.
     mapState = std::vector<std::vector<TileType>>(MapHeight, std::vector<TileType>(MapWidth));
     TileMapImages = std::vector<std::vector<Engine::Image*>>(MapHeight, std::vector<Engine::Image*>(MapWidth));
     Towers = std::vector<std::vector<Turret*>>(MapHeight, std::vector<Turret*>(MapWidth));
     for (int i = 0; i < MapHeight; i++) {
         for (int j = 0; j < MapWidth; j++) {
-            const int num = mapData[i * MapWidth + j];
-            mapState[i][j] = num ? TILE_FLOOR : TILE_DIRT;
-            if (num) {
-                TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-            } else {
+            char c = lines[i][j];
+            if (c == '0') {
+                mapState[i][j]=TILE_DIRT;
                 TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+            } else if(c == '1') {
+                mapState[i][j]=TILE_FLOOR;
+                TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
             }
             TileMapImages[i][j]->followCamera = true;
             TileMapGroup->AddNewObject(TileMapImages[i][j]);
