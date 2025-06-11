@@ -91,7 +91,7 @@ void PlayScene::Initialize() {
     Engine::Resources::GetInstance().GetBitmap("lose/benjamin-happy.png");
     // Start BGM.
     bgmId = AudioHelper::PlayBGM("play.ogg");
-    player = new Player("images/play/Player1.png", MapWidth * BlockSize / 2.0f, MapHeight * BlockSize / 2.0f, 400.0f, 0.1f); // 每 0.1 秒切換幀
+    player = new Player("images/play/Player2.png", MapWidth * BlockSize / 2.0f, MapHeight * BlockSize / 2.0f, 400.0f, 0.1f); // 每 0.1 秒切換幀
 }
 void PlayScene::Terminate() {
     AudioHelper::StopBGM(bgmId);
