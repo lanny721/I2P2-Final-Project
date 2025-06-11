@@ -47,7 +47,7 @@ int PlayScene::MapWidth , PlayScene::MapHeight;
 int PlayScene::BlockSize = 64;
 const float PlayScene::DangerTime = 7.61;
 //const Engine::Point PlayScene::SpawnGridPoint = Engine::Point(-1, 0);
-const Engine::Point PlayScene::EndGridPoint = Engine::Point(PlayScene::MapWidth/2, PlayScene::MapHeight/2);
+Engine::Point PlayScene::EndGridPoint;
 const std::vector<int> PlayScene::cheatcode = {
     ALLEGRO_KEY_UP, ALLEGRO_KEY_UP, ALLEGRO_KEY_DOWN, ALLEGRO_KEY_DOWN,
     ALLEGRO_KEY_LEFT, ALLEGRO_KEY_RIGHT, ALLEGRO_KEY_LEFT, ALLEGRO_KEY_RIGHT,
@@ -406,6 +406,7 @@ void PlayScene::ReadMap() {
 
     MapHeight=lines.size();
     MapWidth=lines.empty() ? 0 : lines[0].size();
+    EndGridPoint= Engine::Point(MapWidth /2, MapHeight /2);
 
     // Validate map data.
     for (const auto& l : lines) {
