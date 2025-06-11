@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 #include <random>
-
+#include <iostream>
 #include "Enemy/Enemy.hpp"
 #include "Enemy/SoldierEnemy.hpp"
 #include "Enemy/TankEnemy.hpp"
@@ -417,7 +417,8 @@ void PlayScene::ReadMap() {
         MapWidth=lines1[0].size() + lines2[0].size();
         MapHeight=std::max(lines1.empty() ? 0 : lines1.size(), lines2.empty() ? 0 : lines2.size());
         EndGridPoint = Engine::Point(MapWidth / 2, MapHeight / 2);
-        printf("MapId: %d, MapWidth: %d, MapHeight: %d\n", MapId, MapWidth, MapHeight);
+        // printf("MapId: %d, MapWidth: %d, MapHeight: %d\n", MapId, MapWidth, MapHeight);
+        Engine::LOG(Engine::LogType::INFO) << "MapId: " << MapId << ", MapWidth: " << MapWidth << ", MapHeight: " << MapHeight;
 
         mapState = std::vector<std::vector<TileType>>(MapHeight, std::vector<TileType>(MapWidth));
         TileMapImages = std::vector<std::vector<Engine::Image*>>(MapHeight, std::vector<Engine::Image*>(MapWidth));
@@ -484,8 +485,7 @@ void PlayScene::ReadMap() {
 
     // Validate map data.
     for (const auto& l : lines) {
-        if (l.size() != MapWidth)
-            throw std::ios_base::failure("Map data is corrupted: inconsistent row length.");
+        if (l.size() != MapWidth) throw std::ios_base::failure("Map data is corrupted: inconsistent row length.");
     }
 
     // Store map in 2d array.
@@ -651,9 +651,10 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
     }
 
     //print mapstate
+    Engine::LOG(Engine::LogType::INFO) << "Map State:";
     for (int i = 0; i < MapHeight; i++) {
         for (int j = 0; j < MapWidth; j++) {
-            if (mapState[i][j] == TILE_DIRT) std::cout << "D ";
+            if (mapState[i][j] == TILE_DIRT) std::cout << "0 ";
             else std::cout << mapState[i][j] << " ";
         }
         std::cout << std::endl;
