@@ -9,6 +9,7 @@
 #include "Engine/Resources.hpp"
 #include "PlayScene.hpp"
 #include "StageSelectScene.hpp"
+#include "MapSelectScene.hpp"
 #include "UI/Component/ImageButton.hpp"
 #include "UI/Component/Label.hpp"
 #include "UI/Component/Slider.hpp"
@@ -61,9 +62,9 @@ void StageSelectScene::OnKeyDown(int keyCode) {
     }
 }
 void StageSelectScene::PlayOnClick(int stage) {
-    PlayScene *scene = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetScene("play"));
+    MapSelectScene *scene = dynamic_cast<MapSelectScene *>(Engine::GameEngine::GetInstance().GetScene("map-select"));
     scene->MapId = stage;
-    Engine::GameEngine::GetInstance().ChangeScene("play");
+    Engine::GameEngine::GetInstance().ChangeScene("map-select");
 }
 void StageSelectScene::ScoreboardOnClick() {
     Engine::GameEngine::GetInstance().ChangeScene("scoreboard");

@@ -6,6 +6,7 @@
 #include "Scene/LoseScene.hpp"
 #include "Scene/PlayScene.hpp"
 #include "Scene/StageSelectScene.hpp"
+#include "Scene/MapSelectScene.hpp"
 #include "Scene/WinScene.hpp"
 #include "Scene/StartScene.h"
 #include "Scene/SettingsScene.hpp"
@@ -17,6 +18,7 @@ int main(int argc, char **argv) {
 
     // TODO HACKATHON-2 (2/3): Register Scenes here
     game.AddNewScene("stage-select", new StageSelectScene());
+    game.AddNewScene("map-select", new MapSelectScene());
 	game.AddNewScene("play", new PlayScene());
 	game.AddNewScene("lose", new LoseScene());
 	game.AddNewScene("win", new WinScene());
