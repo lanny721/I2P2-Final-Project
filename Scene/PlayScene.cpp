@@ -66,8 +66,6 @@ void PlayScene::Initialize() {
     lives = 100;
     money = 150;
     SpeedMult = 1;
-    // this->BlockSize = 64;
-    camera = Engine::Point(0, 0);
     // Add groups from bottom to top.
     AddNewObject(TileMapGroup = new Group());
     AddNewObject(GroundEffectGroup = new Group());
@@ -79,6 +77,8 @@ void PlayScene::Initialize() {
     // Should support buttons.
     AddNewControlObject(UIGroup = new Group());
     ReadMap();
+    // this->BlockSize = 64;
+    camera = Engine::Point( (MapWidth/4)*BlockSize, 0);
     ReadEnemyWave();
     mapDistance = CalculateBFSDistance();
     ConstructUI();
@@ -393,6 +393,80 @@ void PlayScene::EarnMoney(int money) {
     UIMoney->Text = std::string("$") + std::to_string(this->money);
 }
 void PlayScene::ReadMap() {
+    //test in stage3 combine 1 2
+    if(MapId == 3) {
+        std::string filename1 = std::string("Resource/map1.txt");
+        std::string filename2 = std::string("Resource/map2.txt");
+        std::ifstream fin1(filename1);
+        std::ifstream fin2(filename2);
+        if (!fin1.is_open() || !fin2.is_open()) {
+            throw std::ios_base::failure("Failed to open map files for stage 3.");
+        }
+        std::string line1, line2;
+        std::vector<std::string> lines1, lines2;
+        while(std::getline(fin1, line1)) {
+            if (line1.empty() || line1[0] == '#') continue;
+            lines1.push_back(line1);
+        }
+        while(std::getline(fin2, line2)) {
+            if (line2.empty() || line2[0] == '#') continue;
+            lines2.push_back(line2);
+        }
+        fin1.close();
+        fin2.close();
+        MapWidth=lines1[0].size() + lines2[0].size();
+        MapHeight=std::max(lines1.empty() ? 0 : lines1.size(), lines2.empty() ? 0 : lines2.size());
+        EndGridPoint = Engine::Point(MapWidth / 2, MapHeight / 2);
+        printf("MapId: %d, MapWidth: %d, MapHeight: %d\n", MapId, MapWidth, MapHeight);
+
+        mapState = std::vector<std::vector<TileType>>(MapHeight, std::vector<TileType>(MapWidth));
+        TileMapImages = std::vector<std::vector<Engine::Image*>>(MapHeight, std::vector<Engine::Image*>(MapWidth));
+        Towers = std::vector<std::vector<Turret*>>(MapHeight, std::vector<Turret*>(MapWidth));
+        for (int i = 0; i < MapHeight; i++) {
+            for (int j = 0; j < MapWidth; j++) {
+                if (/*i < lines1.size() &&*/ j < lines1[i].size()) {
+                    // Use line1 data.
+                    char c = lines1[i][j];
+                    if (c == '0') {
+                        mapState[i][j]=TILE_DIRT;
+                        TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    } else if(c == '1') {
+                        mapState[i][j]=TILE_FLOOR;
+                        TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    }
+                    TileMapImages[i][j]->followCamera = true;
+                    TileMapGroup->AddNewObject(TileMapImages[i][j]);
+                } else if (i < lines2.size() && j >= lines1[i].size()) {
+                    // Use line2 data.
+                    char c = lines2[i][j-lines1[i].size()];
+                    if (c == '0') {
+                        mapState[i][j]=TILE_DIRT;
+                        TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    } else if(c == '1') {
+                        mapState[i][j]=TILE_FLOOR;
+                        TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    }
+                    TileMapImages[i][j]->followCamera = true;
+                    TileMapGroup->AddNewObject(TileMapImages[i][j]);
+                } else /*if (i >= lines1.size() && j < lines2[i].size())*/ {
+                    // Use line2 data.
+                    char c = lines2[i][j-lines1[i].size()];
+                    if (c == '0') {
+                        mapState[i][j]=TILE_DIRT;
+                        TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    } else if(c == '1') {
+                        mapState[i][j]=TILE_FLOOR;
+                        TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    }
+                    TileMapImages[i][j]->followCamera = true;
+                    TileMapGroup->AddNewObject(TileMapImages[i][j]);
+                }
+            }
+        }
+        return;
+    }
+    //
+
     std::string filename = std::string("Resource/map") + std::to_string(MapId) + ".txt";
     // Read map file.
     std::ifstream fin(filename);
@@ -433,6 +507,7 @@ void PlayScene::ReadMap() {
         }
     }
 }
+
 void PlayScene::ReadEnemyWave() {
     std::string filename = std::string("Resource/enemy") + std::to_string(MapId) + ".txt";
     // Read enemy file.
