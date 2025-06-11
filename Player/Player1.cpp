@@ -69,4 +69,5 @@ void Player::Draw() const {
                           currentFrame * frameWidth, row * frameHeight, frameWidth, frameHeight, // 原始圖片區域
                           position.x, position.y, frameWidth * scale, frameHeight * scale,      // 放大後的位置和大小
                           leftRight);
+                          
 }
