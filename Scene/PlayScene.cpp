@@ -92,6 +92,9 @@ void PlayScene::Initialize() {
     // Start BGM.
     bgmId = AudioHelper::PlayBGM("play.ogg");
     player = new Player("images/play/Player2.png", MapWidth * BlockSize / 2.0f, MapHeight * BlockSize / 2.0f, 400.0f, 0.1f); // 每 0.1 秒切換幀
+    
+    mapState = std::vector<std::vector<TileType>>(MapHeight, std::vector<TileType>(MapWidth, TILE_UNKNOWN));
+    TileMapImages = std::vector<std::vector<Engine::Image*>>(MapHeight, std::vector<Engine::Image*>(MapWidth, nullptr));
 }
 void PlayScene::Terminate() {
     AudioHelper::StopBGM(bgmId);
@@ -196,7 +199,14 @@ void PlayScene::Update(float deltaTime) {
         preview->Update(deltaTime);
     }
 
-    player->Update(deltaTime); // Update the player character.
+    player->Update(deltaTime);
+    int cameraX = static_cast<int>(camera.x / BlockSize);
+    int cameraY = static_cast<int>(camera.y / BlockSize);
+    int chunkSize = 10; // 每次生成 10x10 的區塊
+
+    GenerateMapChunk(cameraX - chunkSize / 2, cameraY - chunkSize / 2, chunkSize, chunkSize);
+    
+    // Update the player character.
     // if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
     //     Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D]) {
     //         if        (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W]) {
@@ -583,4 +593,28 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
         std::cout << std::endl;
     }
     return map;
+}
+void PlayScene::GenerateMapChunk(int startX, int startY, int chunkWidth, int chunkHeight) {
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::uniform_int_distribution<> dist(0, 1); // 0: TILE_DIRT, 1: TILE_FLOOR
+
+    for (int i = startY; i < startY + chunkHeight; i++) {
+        for (int j = startX; j < startX + chunkWidth; j++) {
+            if (i < 0 || i >= MapHeight || j < 0 || j >= MapWidth) continue; // 確保不超出地圖範圍
+            if (mapState[i][j] != TILE_UNKNOWN) continue; // 如果已生成，跳過
+
+            int tileType = dist(rng);
+            mapState[i][j] = tileType ? TILE_FLOOR : TILE_DIRT;
+
+            // 根據地圖狀態生成地圖圖片
+            if (tileType) {
+                TileMapImages[i][j] = new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize);
+            } else {
+                TileMapImages[i][j] = new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize);
+            }
+            TileMapImages[i][j]->followCamera = true;
+            TileMapGroup->AddNewObject(TileMapImages[i][j]);
+        }
+    }
 }

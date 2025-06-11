@@ -90,7 +90,7 @@ public:
     bool CheckSpaceValid(int x, int y);
     std::vector<std::vector<int>> CalculateBFSDistance();
     // void ModifyReadMapTiles();
-
+    void PlayScene::GenerateMapChunk(int startX, int startY, int chunkWidth, int chunkHeight) 
     std::vector<std::vector<Engine::Image*>> TileMapImages;
     std::vector<std::vector<Turret*>> Towers;
 
