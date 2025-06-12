@@ -51,7 +51,6 @@ public:
     static const Engine::Point SpawnGridPoint;
     static Engine::Point EndGridPoint;
     static const std::vector<int> cheatcode;
-
     static const std::vector<int> wincode;
     static const std::vector<int> losecode;
 
@@ -95,12 +94,10 @@ public:
     void UIBtnClicked(int id);
     bool CheckSpaceValid(int x, int y);
     std::vector<std::vector<int>> CalculateBFSDistance();
-    // void ModifyReadMapTiles();
-
     std::vector<std::vector<Engine::Image*>> TileMapImages; // [y][x]
     std::vector<std::vector<Turret*>> Towers; // [y][x]
-
     Engine::Point GetRandomSpawnPoint() const;
-    int mapCombineW=3, mapCombineH=4;
+    int mapCombineW, mapCombineH;
+    bool canWalk(int y, int x) const;
 };
 #endif   // PLAYSCENE_HPP

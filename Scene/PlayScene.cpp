@@ -826,3 +826,7 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
     }
     return map;
 }
+bool PlayScene::canWalk(int y, int x) const {
+    if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) return false;
+    return mapState[y][x] == TILE_DIRT || mapState[y][x] == TILE_FLOOR;
+}
