@@ -7,13 +7,15 @@
 #include <iostream>
 #include "Engine/LOG.hpp"
 
-Player::Player(const char* spriteSheetPath, float x, float y, float speed, float interval)
-    : position(x, y), initialPosition(x, y), speed(speed), animationTimer(0), animationInterval(interval), currentFrame(0), maxFrames(4), isMoving(false) {
+Player::Player(const char* spriteSheetPath, Engine::Point initialPosition, float speed, float interval)
+    : position(initialPosition), speed(speed), animationTimer(0), animationInterval(interval), currentFrame(0), maxFrames(4), isMoving(false) {
     spriteSheet = al_load_bitmap(spriteSheetPath);
     if (!spriteSheet) {
         Engine::LOG(Engine::LogType::ERROR) << "Failed to load sprite sheet: " << spriteSheetPath;
     }
-    Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - initialPosition;
+    //Update(0); // 初始化時更新一次位置
+    // Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
+    //     Engine::Point(Engine::GameEngine::GetInstance().GetScreenWidth() / 4, Engine::GameEngine::GetInstance().GetScreenHeight() / 2);
 }
 Player::~Player() {
     if (spriteSheet) {
@@ -30,6 +32,9 @@ void Player::Update(float deltaTime) {
         animationTimer = 0;
         currentFrame = (currentFrame + 1) % maxFrames; // 循環切換幀
     }
+    Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
+        Engine::Point(Engine::GameEngine::GetInstance().GetScreenWidth() / 4, Engine::GameEngine::GetInstance().GetScreenHeight() / 2);
+
     if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] ||
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] ||
@@ -53,7 +58,6 @@ void Player::Update(float deltaTime) {
                 // Engine::GameEngine::GetInstance().GetActiveScene()->camera.x += speed * deltaTime;
                 leftRight = true;
             }
-            Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - initialPosition;
 
             if (cameraTicks > 1.f) {
                 cameraTicks = 0.f;
