@@ -502,10 +502,10 @@ void PlayScene::ReadMap() {
             char c = lines[i][j];
             if (c == '0') {
                 mapState[i][j]=TILE_DIRT;
-                TileMapImages[i][j] = (new Engine::Image("play/floor1.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                TileMapImages[i][j] = (new Engine::Image("play/grass2.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
             } else if(c == '1') {
                 mapState[i][j]=TILE_FLOOR;
-                TileMapImages[i][j] = (new Engine::Image("play/grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
             }
             TileMapImages[i][j]->followCamera = true;
             TileMapGroup->AddNewObject(TileMapImages[i][j]);
@@ -550,10 +550,10 @@ void PlayScene::ReadSpecialMap(int mapId) {
                     char c = lines1[i][j];
                     if (c == '0') {
                         mapState[i][j]=TILE_DIRT;
-                        TileMapImages[i][j] = (new Engine::Image("play/floor1.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                        TileMapImages[i][j] = (new Engine::Image("play/grass2.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                     } else if(c == '1') {
                         mapState[i][j]=TILE_FLOOR;
-                        TileMapImages[i][j] = (new Engine::Image("play/grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                        TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                     }
                     TileMapImages[i][j]->followCamera = true;
                     TileMapGroup->AddNewObject(TileMapImages[i][j]);
@@ -562,10 +562,10 @@ void PlayScene::ReadSpecialMap(int mapId) {
                     char c = lines2[i][j-lines1[i].size()];
                     if (c == '0') {
                         mapState[i][j]=TILE_DIRT;
-                        TileMapImages[i][j] = (new Engine::Image("play/floor1.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                        TileMapImages[i][j] = (new Engine::Image("play/grass2.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                     } else if(c == '1') {
                         mapState[i][j]=TILE_FLOOR;
-                        TileMapImages[i][j] = (new Engine::Image("play/grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                        TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                     }
                     TileMapImages[i][j]->followCamera = true;
                     TileMapGroup->AddNewObject(TileMapImages[i][j]);
