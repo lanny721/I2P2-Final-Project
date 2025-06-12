@@ -2,12 +2,20 @@
 #define PLAYER1_HPP
 #include "Engine/Point.hpp"
 #include <allegro5/allegro5.h>
+namespace Engine {
+    class GameEngine;
+}
+class PlayScene;
 
 class Player {
 private:
     float cameraTicks;
     bool leftRight; // left: false, right: true
     // Engine::Point initialPosition; // 初始位置
+    PlayScene* getPlayScene();
+    int frameWidth = 32; // 每幀的寬度
+    int frameHeight = 32; // 每幀的高度
+    float scale = 1.5f; // 放大比例
 
 public:
     Engine::Point position; // 角色座標
