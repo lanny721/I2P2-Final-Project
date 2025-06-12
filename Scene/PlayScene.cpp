@@ -439,10 +439,10 @@ void PlayScene::ReadMap() {
                     mapState[i][j]=TILE_FLOOR;
                     TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }else if(c == '2') {
-                    mapState[i][j]=TILE_FLOOR;
+                    mapState[i][j]=TILE_OBSTACLE;
                     TileMapImages[i][j] = (new Engine::Image("play/rock_grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }else if(c == '3') {
-                    mapState[i][j]=TILE_FLOOR;
+                    mapState[i][j]=TILE_OBSTACLE;
                     TileMapImages[i][j] = (new Engine::Image("play/flowers3.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }
                 TileMapImages[i][j]->followCamera = true;
@@ -506,10 +506,10 @@ void PlayScene::ReadSpecialMap(int mapId) {
                     mapState[i][j]=TILE_FLOOR;
                     TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 } else if(c == '2') {
-                    mapState[i][j]=TILE_FLOOR;
+                    mapState[i][j]=TILE_OBSTACLE;
                     TileMapImages[i][j] = (new Engine::Image("play/rock_grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 } else if(c == '3') {
-                    mapState[i][j]=TILE_FLOOR;
+                    mapState[i][j]=TILE_OBSTACLE;
                     TileMapImages[i][j] = (new Engine::Image("play/flowers3.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }
                 TileMapImages[i][j]->followCamera = true;

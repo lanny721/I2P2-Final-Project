@@ -91,7 +91,8 @@ void Player::Update(float deltaTime) {
                 if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
                     if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR)
                         position.x = newx;
-                    else position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
+                    else
+                        position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
                 } else if (newx < 0) {
                     position.x = 0;
                 } else {
