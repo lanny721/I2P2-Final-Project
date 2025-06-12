@@ -367,6 +367,8 @@ void PlayScene::OnKeyDown(int keyCode) {
         SpeedMult = 25;
     } else if (keyCode == ALLEGRO_KEY_PAD_PLUS) {
         player->speed *= 1.5f;
+    } else if (keyCode == ALLEGRO_KEY_PAD_MINUS) {
+        player->speed /= 1.5f;
     }
     // else if (keyCode == ALLEGRO_KEY_Q) {
     //     // Hotkey for MachineGunTurret.
