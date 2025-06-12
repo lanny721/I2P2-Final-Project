@@ -44,10 +44,10 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)(newy / PlayScene::BlockSize);
                 int targetGridX = (int)(position.x / PlayScene::BlockSize);
                 if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR)
-                        position.y = newy;    
-                    else 
-                        position.y = (targetGridY + 1) * PlayScene::BlockSize;
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR) {
+                        upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
+                        position.y = newy;
+                    } else position.y = (targetGridY + 1) * PlayScene::BlockSize;
                         
                 } else if (newy < 0) {
                     position.y = 0;
@@ -59,10 +59,11 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)( (newy+PlayerHeight) / PlayScene::BlockSize);
                 int targetGridX = (int)(position.x / PlayScene::BlockSize);
                 if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR)
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR) {
+                        upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
                         position.y = newy;
-                    else position.y = targetGridY * PlayScene::BlockSize - PlayerHeight;
-                        
+                    } else position.y = targetGridY * PlayScene::BlockSize - PlayerHeight;
+
                 } else if (newy < 0) {
                     position.y = 0;
                 } else {
@@ -74,10 +75,12 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)(position.y / PlayScene::BlockSize);
                 int targetGridX = (int)(newx / PlayScene::BlockSize);
                 if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR)
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR) {
+                        upDownAngle = 0.f; // Reset upDownAngle when moving left/right
+                        leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
                         position.x = newx;
-                    else position.x = (targetGridX + 1) * PlayScene::BlockSize;
-                        
+                    } else position.x = (targetGridX + 1) * PlayScene::BlockSize;
+
                 } else if (newx < 0) {
                     position.x = 0;
                 } else {
@@ -89,9 +92,11 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)(position.y / PlayScene::BlockSize);
                 int targetGridX = (int)((newx+PlayerWidth) / PlayScene::BlockSize);
                 if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR)
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR) {
+                        upDownAngle = 0.f; // Reset upDownAngle when moving left/right
+                        leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
                         position.x = newx;
-                    else
+                    } else {
                         position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
                 } else if (newx < 0) {
                     position.x = 0;
