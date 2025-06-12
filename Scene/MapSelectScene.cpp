@@ -39,6 +39,8 @@ void MapSelectScene::Initialize() {
 
     // Not safe if release resource while playing, however we only free while change scene, so it's fine.
     bgmInstance = AudioHelper::PlaySample("select.ogg", true, AudioHelper::BGMVolume);
+
+    DrawPreviewMap();
     
 }
 void MapSelectScene::Terminate() {
@@ -56,4 +58,50 @@ void MapSelectScene::PlayOnClick(int id) {
     PlayScene *scene = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetScene("play"));
     scene->MapId = this->MapId ;
     Engine::GameEngine::GetInstance().ChangeScene("play");
+}
+void MapSelectScene::DrawPreviewMap() {
+    const float previewBlockSize = PlayScene::BlockSize*0.45f; 
+    
+    std::string filename = std::string("Resource/map") + std::to_string(MapId) + ".txt";
+    std::ifstream fin(filename);
+    std::vector<std::string> lines;
+    std::string line;
+        
+    while (std::getline(fin, line)) {
+        if (line.empty() || line[0] == '#') continue;
+        lines.push_back(line);
+    }
+    fin.close();
+        
+    if (lines.empty()) return;
+        
+    int mapHeight = lines.size();
+    int mapWidth = lines[0].size();
+        
+    int halfW = Engine::GameEngine::GetInstance().GetScreenSize().x / 2;
+    int halfH = Engine::GameEngine::GetInstance().GetScreenSize().y / 2;
+    int previewX = halfW - (mapWidth * previewBlockSize) / 2;
+    int previewY = halfH - 220;
+        
+    for (int i = 0; i < mapHeight; i++) {
+        for (int j = 0; j < mapWidth; j++) {
+            Engine::Image* tileImage;
+            if (lines[i][j] == '0') {
+                tileImage = new Engine::Image("play/dirt.png", 
+                    previewX + j * previewBlockSize, 
+                    previewY + i * previewBlockSize, 
+                    previewBlockSize, previewBlockSize);
+            } else if (lines[i][j] == '1') {
+                tileImage = new Engine::Image("play/floor.png", 
+                    previewX + j * previewBlockSize, 
+                    previewY + i * previewBlockSize, 
+                    previewBlockSize, previewBlockSize);
+            }
+            AddNewObject(tileImage);
+        }
+    }
+        
+    AddNewObject(new Engine::Label(std::string("Map ") + std::to_string(MapId), 
+        "pirulen.ttf", 48, halfW - (mapWidth * previewBlockSize) / 4, previewY - 100, 255, 255, 255, 255));
+    
 }
