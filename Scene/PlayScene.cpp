@@ -78,7 +78,11 @@ void PlayScene::Initialize() {
     AddNewControlObject(UIGroup = new Group());
     ReadMap();
     // this->BlockSize = 64;
-    camera = Engine::Point( (MapWidth/4)*BlockSize ,0);
+    int screenHeight = Engine::GameEngine::GetInstance().GetScreenSize().y;
+    //printf("Screen Size: %d x %d\n", screenWidth, screenHeight);
+    camera = Engine::Point( (MapWidth*BlockSize-uiBoundaryX)/2 ,(MapHeight*BlockSize-screenHeight)/2 );
+    printf("Camera Position: (%f, %f)\n", camera.x, camera.y);
+    
     ReadEnemyWave();
     mapDistance = CalculateBFSDistance();
     ConstructUI();
