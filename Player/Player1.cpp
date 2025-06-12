@@ -45,7 +45,7 @@ void Player::Update(float deltaTime) {
                 int targetGridX = (int)(position.x / PlayScene::BlockSize);
                 if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
                     if (getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT) {
-                        upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
+                        upDownAngle += (newy - position.y) / (float)(frameHeight / 2);//
                         position.y = newy;
                     } else position.y = (targetGridY + 1) * PlayScene::BlockSize;
                         
