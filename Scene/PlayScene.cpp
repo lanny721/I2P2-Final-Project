@@ -443,7 +443,7 @@ void PlayScene::ReadMap() {
                     TileMapImages[i][j] = (new Engine::Image("play/rock_grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }else if(c == '3') {
                     mapState[i][j]=TILE_FLOOR;
-                    TileMapImages[i][j] = (new Engine::Image("play/flowers.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    TileMapImages[i][j] = (new Engine::Image("play/flowers3.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }
                 TileMapImages[i][j]->followCamera = true;
                 TileMapGroup->AddNewObject(TileMapImages[i][j]);
@@ -510,7 +510,7 @@ void PlayScene::ReadSpecialMap(int mapId) {
                     TileMapImages[i][j] = (new Engine::Image("play/rock_grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 } else if(c == '3') {
                     mapState[i][j]=TILE_FLOOR;
-                    TileMapImages[i][j] = (new Engine::Image("play/flowers.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    TileMapImages[i][j] = (new Engine::Image("play/flowers3.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }
                 TileMapImages[i][j]->followCamera = true;
                 TileMapGroup->AddNewObject(TileMapImages[i][j]);
@@ -654,7 +654,7 @@ void PlayScene::ReadSpecialMap(int mapId) {
                             TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/rock_grass.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
                         } else if (c == '3') {
                             mapState[y + accmulate.y][x + accmulate.x] = TILE_OBSTACLE;
-                            TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/flowers.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
+                            TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/flowers3.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
                         }
                         TileMapImages[y + accmulate.y][x + accmulate.x]->followCamera = true;
                         TileMapGroup->AddNewObject(TileMapImages[y + accmulate.y][x + accmulate.x]);
