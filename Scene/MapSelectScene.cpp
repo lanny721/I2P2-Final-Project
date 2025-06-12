@@ -101,6 +101,16 @@ void MapSelectScene::DrawPreviewMap() {
                     previewX + j * previewBlockSize, 
                     previewY + i * previewBlockSize, 
                     previewBlockSize, previewBlockSize);
+            }else if (lines[i][j] == '2') {
+                tileImage = new Engine::Image("play/rock_grass.png", 
+                    previewX + j * previewBlockSize, 
+                    previewY + i * previewBlockSize, 
+                    previewBlockSize, previewBlockSize);
+            }else if (lines[i][j] == '3') {
+                tileImage = new Engine::Image("play/tree_obstacle.png", 
+                    previewX + j * previewBlockSize, 
+                    previewY + i * previewBlockSize, 
+                    previewBlockSize, previewBlockSize);
             }
             AddNewObject(tileImage);
         }

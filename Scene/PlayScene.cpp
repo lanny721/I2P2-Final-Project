@@ -436,6 +436,12 @@ void PlayScene::ReadMap() {
                 } else if(c == '1') {
                     mapState[i][j]=TILE_FLOOR;
                     TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                }else if(c == '2') {
+                    mapState[i][j]=TILE_FLOOR;
+                    TileMapImages[i][j] = (new Engine::Image("play/rock_grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                }else if(c == '3') {
+                    mapState[i][j]=TILE_FLOOR;
+                    TileMapImages[i][j] = (new Engine::Image("play/tree_obstacle.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }
                 TileMapImages[i][j]->followCamera = true;
                 TileMapGroup->AddNewObject(TileMapImages[i][j]);
@@ -497,6 +503,12 @@ void PlayScene::ReadSpecialMap(int mapId) {
                 } else if(c == '1') {
                     mapState[i][j]=TILE_FLOOR;
                     TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                } else if(c == '2') {
+                    mapState[i][j]=TILE_OBSTACLE;
+                    TileMapImages[i][j] = (new Engine::Image("play/rock_obstacle.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                } else if(c == '3') {
+                    mapState[i][j]=TILE_FLOOR;
+                    TileMapImages[i][j] = (new Engine::Image("play/tree_obstacle.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }
                 TileMapImages[i][j]->followCamera = true;
                 TileMapGroup->AddNewObject(TileMapImages[i][j]);
@@ -635,6 +647,12 @@ void PlayScene::ReadSpecialMap(int mapId) {
                         } else if (c == '1') {
                             mapState[y + accmulate.y][x + accmulate.x] = TILE_FLOOR;
                             TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/rock.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
+                        } else if (c == '2') {
+                            mapState[y + accmulate.y][x + accmulate.x] = TILE_OBSTACLE;
+                            TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/rock_obstacle.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
+                        } else if (c == '3') {
+                            mapState[y + accmulate.y][x + accmulate.x] = TILE_OBSTACLE;
+                            TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/tree_obstacle.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
                         }
                         TileMapImages[y + accmulate.y][x + accmulate.x]->followCamera = true;
                         TileMapGroup->AddNewObject(TileMapImages[y + accmulate.y][x + accmulate.x]);
