@@ -78,11 +78,6 @@ void PlayScene::Initialize() {
     AddNewControlObject(UIGroup = new Group());
     ReadMap();
     // this->BlockSize = 64;
-    int screenHeight = Engine::GameEngine::GetInstance().GetScreenSize().y;
-    //printf("Screen Size: %d x %d\n", screenWidth, screenHeight);
-    camera = Engine::Point( (MapWidth*BlockSize-uiBoundaryX)/2 ,(MapHeight*BlockSize-screenHeight)/2 );
-    printf("Camera Position: (%f, %f)\n", camera.x, camera.y);
-    
     ReadEnemyWave();
     mapDistance = CalculateBFSDistance();
     ConstructUI();
@@ -98,7 +93,8 @@ void PlayScene::Initialize() {
     bgmId = AudioHelper::PlayBGM("play.ogg");
 
     Engine::Point playerInitialPosition = Engine::Point(MapWidth * BlockSize / 4.0f, MapHeight * BlockSize / 2.0f);
-    player = new Player("images/play/Player2.png", playerInitialPosition, 400.0f, 0.1f); // 每 0.1 秒切換幀
+    player = new Player("images/play/Player2.png", playerInitialPosition, 400.0f, 0.1f); // camera setted in Player::Update
+    Engine::LOG(Engine::LogType::DEBUGGING) << "Camera Position: " << camera.x << ", " << camera.y;
 }
 void PlayScene::Terminate() {
     AudioHelper::StopBGM(bgmId);

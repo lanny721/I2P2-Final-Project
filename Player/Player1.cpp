@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <iostream>
 #include "Engine/LOG.hpp"
+#include "Scene/PlayScene.hpp"
 
 Player::Player(const char* spriteSheetPath, Engine::Point initialPosition, float speed, float interval)
     : position(initialPosition), speed(speed), animationTimer(0), animationInterval(interval), currentFrame(0), maxFrames(4), isMoving(false) {
@@ -13,7 +14,7 @@ Player::Player(const char* spriteSheetPath, Engine::Point initialPosition, float
     if (!spriteSheet) {
         Engine::LOG(Engine::LogType::ERROR) << "Failed to load sprite sheet: " << spriteSheetPath;
     }
-    // Update(0); // 初始化時更新一次位置
+    Update(0); // 初始化時更新一次位置
     // Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
     //     Engine::Point(Engine::GameEngine::GetInstance().GetScreenWidth() / 4, Engine::GameEngine::GetInstance().GetScreenHeight() / 2);
 }
@@ -33,7 +34,7 @@ void Player::Update(float deltaTime) {
         currentFrame = (currentFrame + 1) % maxFrames; // 循環切換幀
     }
     Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
-        Engine::Point(Engine::GameEngine::GetInstance().GetScreenWidth() / 4, Engine::GameEngine::GetInstance().GetScreenHeight() / 2);
+        Engine::Point(PlayScene::defW * PlayScene::BlockSize / 4.0f, PlayScene::defH * PlayScene::BlockSize / 2.0f);
 
     if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] ||
@@ -82,7 +83,9 @@ void Player::Draw() const {
 
     al_draw_scaled_bitmap(spriteSheet, 
                           currentFrame * frameWidth, row * frameHeight, frameWidth, frameHeight, // 原始圖片區域
-                          position.x - Engine::GameEngine::GetInstance().GetActiveScene()->camera.x, position.y - Engine::GameEngine::GetInstance().GetActiveScene()->camera.y, 
+                        //   Engine::GameEngine::GetInstance().GetScreenWidth() / 4, Engine::GameEngine::GetInstance().GetScreenHeight() / 2,
+                          position.x - Engine::GameEngine::GetInstance().GetActiveScene()->camera.x, 
+                          position.y - Engine::GameEngine::GetInstance().GetActiveScene()->camera.y, 
                           frameWidth * scale, frameHeight * scale, // 放大後的位置和大小
                           leftRight);
                           
