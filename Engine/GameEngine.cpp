@@ -108,7 +108,7 @@ namespace Engine {
                     keyStates[event.keyboard.keycode] = true;
                     activeScene->OnKeyDown(event.keyboard.keycode);
                     if (event.keyboard.keycode == ALLEGRO_KEY_F8) { // close
-                        LOG(INFO) << "F8 key pressed, exiting game";
+                        Engine::LOG(Engine::LogType::INFO) << "F8 pressed. Exiting game.";
                         done = true;
                     }
                     break;
