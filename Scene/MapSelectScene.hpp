@@ -13,7 +13,9 @@ class MapSelectScene final : public Engine::IScene {
 private:
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> bgmInstance;
     int customizedW=3, customizedH=4;
-    int cusWEntered = 0, cusHEntered = 0;
+    //int cusWEntered = 0, cusHEntered = 0;
+    Engine::Label *WidthLabel = nullptr;
+    Engine::Label *HeightLabel = nullptr;
 protected:
 
 public:
@@ -25,6 +27,11 @@ public:
     void OnKeyDown(int keyCode) override;
     void DrawPreviewMap() ;
     void DrawCustomize() ;
+    //void OnMouseDown(int, int, int) override;
+    void WidthPlusOnClick(int stage);
+    void WidthMinusOnClick(int stage);
+    void HeigthPlusOnClick(int stage);
+    void HeigthMinusOnClick(int stage);
     int MapId;
 };
 #endif   // MAPSELECTSCENE_HPP

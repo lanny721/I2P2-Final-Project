@@ -92,7 +92,7 @@ void PlayScene::Initialize() {
     // Start BGM.
     bgmId = AudioHelper::PlayBGM("play.ogg");
 
-    Engine::Point playerInitialPosition = Engine::Point(MapWidth * BlockSize / 4.0f, MapHeight * BlockSize / 2.0f);
+    Engine::Point playerInitialPosition = Engine::Point(MapWidth * BlockSize / 2.0f, MapHeight * BlockSize / 2.0f);
     player = new Player("images/play/Player2.png", playerInitialPosition, 400.0f, 0.1f); // camera setted in Player::Update
     Engine::LOG(Engine::LogType::DEBUGGING) << "Camera Position: " << camera.x << ", " << camera.y;
 }
@@ -379,6 +379,8 @@ void PlayScene::OnKeyDown(int keyCode) {
         SpeedMult = (keyCode - ALLEGRO_KEY_0);
     } else if (keyCode == ALLEGRO_KEY_PAD_0) {
         SpeedMult = 25;
+    } else if (keyCode == ALLEGRO_KEY_PAD_PLUS) {
+        player->speed *= 1.5f;
     }
 }
 void PlayScene::Hit() {
@@ -662,7 +664,8 @@ void PlayScene::ConstructUI() {
     // Background
     UIGroup->AddNewObject(new Engine::Image("play/sand.png", uiBoundaryX, 0, 320, 832));
     // Text
-    UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
+    if(MapId==4) UIGroup->AddNewObject(new Engine::Label(std::string("Customized"), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
+    else UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
     UIGroup->AddNewObject(UIMoney = new Engine::Label(std::string("$") + std::to_string(money), "pirulen.ttf", 24, uiBoundaryX + 14, 48));
     UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, uiBoundaryX + 14, 88));
 
