@@ -7,7 +7,8 @@ class Player {
 private:
     float cameraTicks;
     bool leftRight; // left: false, right: true
-    
+    Engine::Point initialPosition; // 初始位置
+
 public:
     Engine::Point position; // 角色座標
     float speed = 400.f;            // 移動速度
