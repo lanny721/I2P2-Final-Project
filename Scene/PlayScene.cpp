@@ -441,7 +441,7 @@ void PlayScene::ReadMap() {
                     TileMapImages[i][j] = (new Engine::Image("play/rock_grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }else if(c == '3') {
                     mapState[i][j]=TILE_FLOOR;
-                    TileMapImages[i][j] = (new Engine::Image("play/tree_obstacle.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    TileMapImages[i][j] = (new Engine::Image("play/root_grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }
                 TileMapImages[i][j]->followCamera = true;
                 TileMapGroup->AddNewObject(TileMapImages[i][j]);
