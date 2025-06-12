@@ -430,7 +430,7 @@ void PlayScene::ReadMap() {
         Towers = std::vector<std::vector<Turret*>>(MapHeight, std::vector<Turret*>(MapWidth));
         for (int i = 0; i < MapHeight; i++) {
             for (int j = 0; j < MapWidth; j++) {
-                if (/*i < lines1.size() && j < lines1[i].size()) {
+                if (i < lines1.size() && j < lines1[i].size()) {
                     // Use line1 data.
                     char c = lines1[i][j];
                     if (c == '0') {
@@ -454,7 +454,7 @@ void PlayScene::ReadMap() {
                     }
                     TileMapImages[i][j]->followCamera = true;
                     TileMapGroup->AddNewObject(TileMapImages[i][j]);
-                }/* else if (i >= lines1.size() && j < lines2[i].size()) {
+                } else if (i >= lines1.size() && j < lines2[i].size()) {
                     // Use line2 data.
                     char c = lines2[i][j-lines1[i].size()];
                     if (c == '0') {
