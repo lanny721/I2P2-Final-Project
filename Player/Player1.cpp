@@ -40,20 +40,49 @@ void Player::Update(float deltaTime) {
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
             isMoving = true;
             if        (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP]) {
-                position.y -= speed * deltaTime;
+                float newy = position.y - speed * deltaTime;
+                if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale) {
+                    position.y = newy;
+                } else if (newy < 0) {
+                    position.y = 0;
+                } else {
+                    position.y = PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale;
+                }
+                //position.y -= speed * deltaTime;
                 // Engine::GameEngine::GetInstance().GetActiveScene()->camera.y -= speed * deltaTime;
                 // if (camera.y < 0) camera.y = 0;
             } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
-                position.y += speed * deltaTime;
+                float newy = position.y + speed * deltaTime;
+                if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale) {
+                    position.y = newy;
+                } else if (newy < 0) {
+                    position.y = 0;
+                } else {
+                    position.y = PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale;
+                }
                 // Engine::GameEngine::GetInstance().GetActiveScene()->camera.y += speed * deltaTime;
                 // if (camera.y > MapHeight * BlockSize - GetClientSize().y) camera.y = MapHeight * BlockSize - GetClientSize().y;
             }
             if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT]) {
-                position.x -= speed * deltaTime;
+                float newx = position.x - speed * deltaTime;
+                if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - frameWidth*scale) {
+                    position.x = newx;
+                } else if (newx < 0) {
+                    position.x = 0;
+                } else {
+                    position.x = PlayScene::MapWidth * PlayScene::BlockSize- frameWidth*scale;
+                }
                 // Engine::GameEngine::GetInstance().GetActiveScene()->camera.x -= speed * deltaTime;
                 leftRight = false;
             } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
-                position.x += speed * deltaTime;
+                float newx = position.x + speed * deltaTime;
+                if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - frameWidth*scale) {
+                    position.x = newx;
+                } else if (newx < 0) {
+                    position.x = 0;
+                } else {
+                    position.x = PlayScene::MapWidth * PlayScene::BlockSize - frameWidth*scale;
+                }
                 // Engine::GameEngine::GetInstance().GetActiveScene()->camera.x += speed * deltaTime;
                 leftRight = true;
             }
@@ -76,11 +105,7 @@ void Player::Update(float deltaTime) {
         Engine::Point(PlayScene::defW * PlayScene::BlockSize / 2.0f, PlayScene::defH * PlayScene::BlockSize / 2.0f);
 }
 void Player::Draw() const {
-    int frameWidth = 32; // 每幀的寬度
-    int frameHeight = 32; // 每幀的高度
     int row = isMoving ? 1 : 0; // 第二列為移動動畫，第一列為靜止動畫
-
-   float scale = 1.5f; // 放大比例
 
 //    al_draw_tinted_scaled_rotated_bitmap(spriteSheet, 
 //                                         al_map_rgba(255, 255, 255, 255), // 使用白色調色板
@@ -97,4 +122,7 @@ void Player::Draw() const {
                           frameWidth * scale, frameHeight * scale, // 放大後的位置和大小
                           leftRight);
                           
+}
+PlayScene* Player::getPlayScene() {
+    return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
 }
