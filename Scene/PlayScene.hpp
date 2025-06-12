@@ -25,7 +25,7 @@ private:
     //float cameraSpeed = 400.f;
     Player* player;
     void ReadSpecialMap(int mapId);
-    int uiBoundaryX = 1600; // UI boundary X coordinate, used to determine if the mouse is in the UI area.
+    int uiBoundaryX = 1280; // UI boundary X coordinate, used to determine if the mouse is in the UI area.
 
 protected:
     int lives;
