@@ -39,7 +39,7 @@ void Player::Update(float deltaTime) {
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] ||
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
             isMoving = true;
-            if        (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP]) {
+            if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP]) {
                 float newy = position.y - speed * deltaTime;
                 int targetGridY = (int)(newy / PlayScene::BlockSize);
                 int targetGridX = (int)(position.x / PlayScene::BlockSize);
@@ -59,9 +59,9 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)( (newy+PlayerHeight) / PlayScene::BlockSize);
                 int targetGridX = (int)(position.x / PlayScene::BlockSize);
                 if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR)
                         position.y = newy;
-                    } else position.y = targetGridY * PlayScene::BlockSize - PlayerHeight;
+                    else position.y = targetGridY * PlayScene::BlockSize - PlayerHeight;
                         
                 } else if (newy < 0) {
                     position.y = 0;
@@ -74,9 +74,9 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)(position.y / PlayScene::BlockSize);
                 int targetGridX = (int)(newx / PlayScene::BlockSize);
                 if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR)
                         position.x = newx;
-                    } else position.x = (targetGridX + 1) * PlayScene::BlockSize;
+                    else position.x = (targetGridX + 1) * PlayScene::BlockSize;
                         
                 } else if (newx < 0) {
                     position.x = 0;
@@ -89,9 +89,9 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)(position.y / PlayScene::BlockSize);
                 int targetGridX = (int)((newx+PlayerWidth) / PlayScene::BlockSize);
                 if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR)
                         position.x = newx;
-                    } else position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
+                    else position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
                 } else if (newx < 0) {
                     position.x = 0;
                 } else {
