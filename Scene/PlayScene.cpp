@@ -381,6 +381,9 @@ void PlayScene::OnKeyDown(int keyCode) {
         SpeedMult = 25;
     } else if (keyCode == ALLEGRO_KEY_PAD_PLUS) {
         player->speed *= 1.5f;
+    }else if (keyCode == ALLEGRO_KEY_F8) {
+        std::cout << "F8 pressed. Exiting game." << std::endl;
+        exit(0); // 直接結束程式
     }
 }
 void PlayScene::Hit() {
