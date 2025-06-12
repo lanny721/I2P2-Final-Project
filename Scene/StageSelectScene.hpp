@@ -8,7 +8,7 @@
 class StageSelectScene final : public Engine::IScene {
 private:
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> bgmInstance;
-    int totalStages = 3; // Total number of stages available
+    int totalStages = 4; // Total number of stages available
 
 public:
     explicit StageSelectScene() = default;

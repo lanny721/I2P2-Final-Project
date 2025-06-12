@@ -53,6 +53,8 @@ void MapSelectScene::BackOnClick(int stage) {
 }
 void MapSelectScene::OnKeyDown(int keyCode) {
     IScene::OnKeyDown(keyCode);
+    if      (keyCode == ALLEGRO_KEY_ESCAPE) BackOnClick(0);
+    else if (keyCode == ALLEGRO_KEY_PAD_ENTER || keyCode == ALLEGRO_KEY_ENTER) PlayOnClick(1);
 }
 void MapSelectScene::PlayOnClick(int id) {
     PlayScene *scene = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetScene("play"));
@@ -87,12 +89,12 @@ void MapSelectScene::DrawPreviewMap() {
         for (int j = 0; j < mapWidth; j++) {
             Engine::Image* tileImage;
             if (lines[i][j] == '0') {
-                tileImage = new Engine::Image("play/dirt.png", 
+                tileImage = new Engine::Image("play/grass2.png", 
                     previewX + j * previewBlockSize, 
                     previewY + i * previewBlockSize, 
                     previewBlockSize, previewBlockSize);
             } else if (lines[i][j] == '1') {
-                tileImage = new Engine::Image("play/floor.png", 
+                tileImage = new Engine::Image("play/rock.png", 
                     previewX + j * previewBlockSize, 
                     previewY + i * previewBlockSize, 
                     previewBlockSize, previewBlockSize);

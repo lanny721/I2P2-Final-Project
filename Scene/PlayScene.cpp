@@ -397,52 +397,59 @@ void PlayScene::EarnMoney(int money) {
 }
 void PlayScene::ReadMap() {
     //test in stage3 combine 1 2
-    if(MapId == 3 || MapId == 4) {
-        ReadSpecialMap(MapId);
-        return;
+    if(MapId == 3 || MapId == 4) ReadSpecialMap(MapId);
+    else {
+        std::string filename = std::string("Resource/map") + std::to_string(MapId) + ".txt";
+        // Check if the file exists.
+        std::ifstream fileCheck(filename);
+        if (!fileCheck) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename;
+
+        // Read map file.
+        std::ifstream fin(filename);
+        std::string line;
+        std::vector<std::string> lines;
+        while(std::getline(fin, line)) {
+            if (line.empty() || line[0] == '#') continue;
+            lines.push_back(line);
+        }    
+        fin.close();
+
+        MapHeight=lines.size();
+        MapWidth=lines.empty() ? 0 : lines[0].size();
+        EndGridPoint= Engine::Point(MapWidth /2, MapHeight /2);
+
+        // Validate map data.
+        for (const auto& l : lines) {
+            if (l.size() != MapWidth) Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: inconsistent row length.";
+        }
+
+        // Store map in 2d array.
+        mapState = std::vector<std::vector<TileType>>(MapHeight, std::vector<TileType>(MapWidth));
+        TileMapImages = std::vector<std::vector<Engine::Image*>>(MapHeight, std::vector<Engine::Image*>(MapWidth));
+        Towers = std::vector<std::vector<Turret*>>(MapHeight, std::vector<Turret*>(MapWidth));
+        for (int i = 0; i < MapHeight; i++) {
+            for (int j = 0; j < MapWidth; j++) {
+                char c = lines[i][j];
+                if (c == '0') {
+                    mapState[i][j]=TILE_DIRT;
+                    TileMapImages[i][j] = (new Engine::Image("play/grass2.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                } else if(c == '1') {
+                    mapState[i][j]=TILE_FLOOR;
+                    TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                }
+                TileMapImages[i][j]->followCamera = true;
+                TileMapGroup->AddNewObject(TileMapImages[i][j]);
+            }
+        }
     }
-
-    std::string filename = std::string("Resource/map") + std::to_string(MapId) + ".txt";
-    // Check if the file exists.
-    std::ifstream fileCheck(filename);
-    if (!fileCheck) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename;
-
-    // Read map file.
-    std::ifstream fin(filename);
-    std::string line;
-    std::vector<std::string> lines;
-    while(std::getline(fin, line)) {
-        if (line.empty() || line[0] == '#') continue;
-        lines.push_back(line);
-    }    
-    fin.close();
-
-    MapHeight=lines.size();
-    MapWidth=lines.empty() ? 0 : lines[0].size();
-    EndGridPoint= Engine::Point(MapWidth /2, MapHeight /2);
-
-    // Validate map data.
-    for (const auto& l : lines) {
-        if (l.size() != MapWidth) throw std::ios_base::failure("Map data is corrupted: inconsistent row length.");
-    }
-
-    // Store map in 2d array.
-    mapState = std::vector<std::vector<TileType>>(MapHeight, std::vector<TileType>(MapWidth));
-    TileMapImages = std::vector<std::vector<Engine::Image*>>(MapHeight, std::vector<Engine::Image*>(MapWidth));
-    Towers = std::vector<std::vector<Turret*>>(MapHeight, std::vector<Turret*>(MapWidth));
+    //print mapstate
+    Engine::LOG(Engine::LogType::INFO) << "Map State:";
     for (int i = 0; i < MapHeight; i++) {
         for (int j = 0; j < MapWidth; j++) {
-            char c = lines[i][j];
-            if (c == '0') {
-                mapState[i][j]=TILE_DIRT;
-                TileMapImages[i][j] = (new Engine::Image("play/grass2.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-            } else if(c == '1') {
-                mapState[i][j]=TILE_FLOOR;
-                TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-            }
-            TileMapImages[i][j]->followCamera = true;
-            TileMapGroup->AddNewObject(TileMapImages[i][j]);
+            if (mapState[i][j] == TILE_DIRT) std::cout << "0 ";
+            else std::cout << mapState[i][j] << " ";
         }
+        std::cout << std::endl;
     }
 }
 void PlayScene::ReadSpecialMap(int mapId) {
@@ -779,16 +786,6 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
                 que.push(Engine::Point(nx,ny));
             }
         }
-    }
-
-    //print mapstate
-    Engine::LOG(Engine::LogType::INFO) << "Map State:";
-    for (int i = 0; i < MapHeight; i++) {
-        for (int j = 0; j < MapWidth; j++) {
-            if (mapState[i][j] == TILE_DIRT) std::cout << "0 ";
-            else std::cout << mapState[i][j] << " ";
-        }
-        std::cout << std::endl;
     }
     return map;
 }
