@@ -15,8 +15,6 @@ Player::Player(const char* spriteSheetPath, Engine::Point initialPosition, float
         Engine::LOG(Engine::LogType::ERROR) << "Failed to load sprite sheet: " << spriteSheetPath;
     }
     Update(0); // 初始化時更新一次位置
-    // Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
-    //     Engine::Point(Engine::GameEngine::GetInstance().GetScreenWidth() / 4, Engine::GameEngine::GetInstance().GetScreenHeight() / 2);
 }
 Player::~Player() {
     if (spriteSheet) {
@@ -48,9 +46,6 @@ void Player::Update(float deltaTime) {
                 } else {
                     position.y = PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale;
                 }
-                //position.y -= speed * deltaTime;
-                // Engine::GameEngine::GetInstance().GetActiveScene()->camera.y -= speed * deltaTime;
-                // if (camera.y < 0) camera.y = 0;
             } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
                 float newy = position.y + speed * deltaTime;
                 if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale) {
@@ -60,8 +55,6 @@ void Player::Update(float deltaTime) {
                 } else {
                     position.y = PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale;
                 }
-                // Engine::GameEngine::GetInstance().GetActiveScene()->camera.y += speed * deltaTime;
-                // if (camera.y > MapHeight * BlockSize - GetClientSize().y) camera.y = MapHeight * BlockSize - GetClientSize().y;
             }
             if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT]) {
                 float newx = position.x - speed * deltaTime;
@@ -72,7 +65,6 @@ void Player::Update(float deltaTime) {
                 } else {
                     position.x = PlayScene::MapWidth * PlayScene::BlockSize- frameWidth*scale;
                 }
-                // Engine::GameEngine::GetInstance().GetActiveScene()->camera.x -= speed * deltaTime;
                 leftRight = false;
             } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
                 float newx = position.x + speed * deltaTime;
@@ -83,12 +75,10 @@ void Player::Update(float deltaTime) {
                 } else {
                     position.x = PlayScene::MapWidth * PlayScene::BlockSize - frameWidth*scale;
                 }
-                // Engine::GameEngine::GetInstance().GetActiveScene()->camera.x += speed * deltaTime;
                 leftRight = true;
             }
             if (cameraTicks > 1.f) {
                 cameraTicks = 0.f;
-                // std::cout << "Camera pos: " << Engine::GameEngine::GetInstance().GetActiveScene()->camera << std::endl;
             }
 
             Engine::GameEngine::GetInstance().GetActiveScene()->OnMouseMove(
