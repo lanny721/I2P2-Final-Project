@@ -367,9 +367,6 @@ void PlayScene::OnKeyDown(int keyCode) {
         SpeedMult = 25;
     } else if (keyCode == ALLEGRO_KEY_PAD_PLUS) {
         player->speed *= 1.5f;
-    } else if (keyCode == ALLEGRO_KEY_F8) {
-        Engine::LOG(Engine::LogType::INFO) << "F8 pressed. Exiting game.";
-        exit(0); // 直接結束程式
     }
     // else if (keyCode == ALLEGRO_KEY_Q) {
     //     // Hotkey for MachineGunTurret.
