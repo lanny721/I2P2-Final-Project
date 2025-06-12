@@ -26,6 +26,8 @@ private:
     Player* player;
     void ReadSpecialMap(int mapId);
     int uiBoundaryX = 1280; // UI boundary X coordinate, used to determine if the mouse is in the UI area.
+    Engine::Label *UISfps;
+    float fpsTicks = 0.f; // Ticks for FPS calculation.
 
 protected:
     int lives;

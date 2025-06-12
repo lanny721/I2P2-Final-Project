@@ -103,6 +103,12 @@ void PlayScene::Terminate() {
     IScene::Terminate();
 }
 void PlayScene::Update(float deltaTime) {
+    fpsTicks += deltaTime;
+    if (fpsTicks >= 0.5f) {
+        fpsTicks -= 0.5f;
+        UISfps->Text = "FPS: " + std::to_string(static_cast<int>(1.0f / deltaTime));
+    }
+
     // If we use deltaTime directly, then we might have Bullet-through-paper problem.
     // Reference: Bullet-Through-Paper
     if (SpeedMult == 0) deathCountDown = -1;
@@ -249,13 +255,13 @@ void PlayScene::Draw() const {
         // Draw reverse BFS distance on all reachable blocks.
         for (int i = 0; i < MapHeight; i++) {
             for (int j = 0; j < MapWidth; j++) {
-                if (mapDistance[i][j] != -1) {
+                if (mapDistance[i][j] != -1 || 1) {
                     // Not elegant nor efficient, but it's quite enough for debugging.
                     Engine::Point drawPos((j + 0.5) * BlockSize, (i + 0.5) * BlockSize);
-                    if (drawPos.x < -BlockSize || drawPos.x > GetClientSize().x + BlockSize ||
-                        drawPos.y < -BlockSize || drawPos.y > GetClientSize().y + BlockSize) {
-                        continue; // Skip drawing if out of bounds.
-                    }
+                    // if (drawPos.x < -BlockSize || drawPos.x > Engine::GameEngine::GetInstance().GetScreenWidth() + BlockSize ||
+                    //     drawPos.y < -BlockSize || drawPos.y > Engine::GameEngine::GetInstance().GetScreenHeight() + BlockSize) {
+                    //     continue; // Skip drawing if out of bounds.
+                    // }
                     Engine::Label label(std::to_string(mapDistance[i][j]), "pirulen.ttf", 32, drawPos.x, drawPos.y);
                     label.Anchor = Engine::Point(0.5, 0.5);
                     label.followCamera = true;
@@ -730,6 +736,9 @@ void PlayScene::ConstructUI() {
     dangerIndicator = new Engine::Sprite("play/benjamin.png", w - shift, h - shift);
     dangerIndicator->Tint.a = 0;
     UIGroup->AddNewObject(dangerIndicator);
+
+    UISfps = new Engine::Label("FPS: 0", "pirulen.ttf", 24, uiBoundaryX + 14, h - 48);
+    UIGroup->AddNewObject(UISfps);
 }
 void PlayScene::UIBtnClicked(int id) {
     // if (preview)
