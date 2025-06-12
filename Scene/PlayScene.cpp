@@ -582,7 +582,7 @@ void PlayScene::ReadSpecialMap(int mapId) {
         // fin[0].close();
         // fin[1].close();
 
-        const int mapCombineW = 3, mapCombineH = 4;
+        //const int mapCombineW = 3, mapCombineH = 4;
         std::vector<std::vector<int>> mapCombineTable(mapCombineH, std::vector<int>(mapCombineW));
         std::vector<int> candidates = {1, 2};
 

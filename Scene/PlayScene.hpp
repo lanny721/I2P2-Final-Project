@@ -98,5 +98,6 @@ public:
     std::vector<std::vector<Turret*>> Towers; // [y][x]
 
     Engine::Point GetRandomSpawnPoint() const;
+    int mapCombineW=3, mapCombineH=4;
 };
 #endif   // PLAYSCENE_HPP
