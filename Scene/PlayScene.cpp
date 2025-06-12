@@ -367,6 +367,9 @@ void PlayScene::OnKeyDown(int keyCode) {
         SpeedMult = 25;
     } else if (keyCode == ALLEGRO_KEY_PAD_PLUS) {
         player->speed *= 1.5f;
+    } else if (keyCode == ALLEGRO_KEY_F8) {
+        Engine::LOG(Engine::LogType::INFO) << "F8 pressed. Exiting game.";
+        exit(0); // 直接結束程式
     }
     // else if (keyCode == ALLEGRO_KEY_Q) {
     //     // Hotkey for MachineGunTurret.
@@ -680,7 +683,7 @@ void PlayScene::ReadEnemyWave() {
 }
 void PlayScene::ConstructUI() {
     // Background
-    UIGroup->AddNewObject(new Engine::Image("play/sand.png", uiBoundaryX, 0, 320, 1280));
+    UIGroup->AddNewObject(new Engine::Image("play/sand.png", uiBoundaryX, 0, 320, 832));
     // Text
     if(MapId==4) UIGroup->AddNewObject(new Engine::Label(std::string("Customized"), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
     else UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
