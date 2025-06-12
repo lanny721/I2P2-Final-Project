@@ -37,6 +37,7 @@ public:
         TILE_DIRT,
         TILE_FLOOR,
         TILE_OCCUPIED,
+        TILE_OBSTACLE,
     };
 
     static bool DebugMode;
