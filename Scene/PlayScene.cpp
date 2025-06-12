@@ -434,7 +434,7 @@ void PlayScene::ReadMap() {
         Towers = std::vector<std::vector<Turret*>>(MapHeight, std::vector<Turret*>(MapWidth));
         for (int i = 0; i < MapHeight; i++) {
             for (int j = 0; j < MapWidth; j++) {
-                if (i < lines1.size() && j < lines1[i].size()) {
+                if (/*i < lines1.size() && j < lines1[i].size()) {
                     // Use line1 data.
                     char c = lines1[i][j];
                     if (c == '0') {
@@ -458,7 +458,7 @@ void PlayScene::ReadMap() {
                     }
                     TileMapImages[i][j]->followCamera = true;
                     TileMapGroup->AddNewObject(TileMapImages[i][j]);
-                } else if (i >= lines1.size() && j < lines2[i].size()) {
+                }/* else /*if (i >= lines1.size() && j < lines2[i].size()) {
                     // Use line2 data.
                     char c = lines2[i][j-lines1[i].size()];
                     if (c == '0') {
@@ -509,10 +509,10 @@ void PlayScene::ReadMap() {
             char c = lines[i][j];
             if (c == '0') {
                 mapState[i][j]=TILE_DIRT;
-                TileMapImages[i][j] = (new Engine::Image("play/grass2.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
             } else if(c == '1') {
                 mapState[i][j]=TILE_FLOOR;
-                TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
             }
             TileMapImages[i][j]->followCamera = true;
             TileMapGroup->AddNewObject(TileMapImages[i][j]);
@@ -560,10 +560,10 @@ void PlayScene::ReadSpecialMap(int mapId) {
                 if (c == '\0') Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: empty tile at " << Engine::Point(i, j);
                 else if (c == '0') {
                     mapState[i][j]=TILE_DIRT;
-                    TileMapImages[i][j] = (new Engine::Image("play/grass2.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 } else if(c == '1') {
                     mapState[i][j]=TILE_FLOOR;
-                    TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }
                 TileMapImages[i][j]->followCamera = true;
                 TileMapGroup->AddNewObject(TileMapImages[i][j]);
@@ -697,10 +697,10 @@ void PlayScene::ReadSpecialMap(int mapId) {
                         if (c == '\0') Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: empty tile at " << Engine::Point(j, i);
                         else if (c == '0') {
                             mapState[y + accmulate.y][x + accmulate.x] = TILE_DIRT;
-                            TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/grass2.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
+                            TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/dirt.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
                         } else if (c == '1') {
                             mapState[y + accmulate.y][x + accmulate.x] = TILE_FLOOR;
-                            TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/rock.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
+                            TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/floor.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
                         }
                         TileMapImages[y + accmulate.y][x + accmulate.x]->followCamera = true;
                         TileMapGroup->AddNewObject(TileMapImages[y + accmulate.y][x + accmulate.x]);

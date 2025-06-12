@@ -21,6 +21,7 @@ public:
     void PlayOnClick(int id);
     void BackOnClick(int stage);
     void OnKeyDown(int keyCode) override;
+    void DrawPreviewMap() ;
     int MapId;
 };
 #endif   // MAPSELECTSCENE_HPP
