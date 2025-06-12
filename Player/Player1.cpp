@@ -34,7 +34,7 @@ void Player::Update(float deltaTime) {
         currentFrame = (currentFrame + 1) % maxFrames; // 循環切換幀
     }
     Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
-        Engine::Point(PlayScene::defW * PlayScene::BlockSize / 4.0f, PlayScene::defH * PlayScene::BlockSize / 2.0f);
+        Engine::Point(PlayScene::defW * PlayScene::BlockSize / 2.0f, PlayScene::defH * PlayScene::BlockSize / 2.0f);
 
     if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] ||
