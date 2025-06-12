@@ -96,8 +96,7 @@ void Player::Update(float deltaTime) {
                         upDownAngle = 0.f; // Reset upDownAngle when moving left/right
                         leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
                         position.x = newx;
-                    } else {
-                        position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
+                    } else position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
                 } else if (newx < 0) {
                     position.x = 0;
                 } else {
