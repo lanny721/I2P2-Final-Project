@@ -82,6 +82,13 @@ void Player::Draw() const {
 
    float scale = 1.5f; // 放大比例
 
+//    al_draw_tinted_scaled_rotated_bitmap(spriteSheet, 
+//                                         al_map_rgba(255, 255, 255, 255), // 使用白色調色板
+//                                         frameWidth / 2.0f, frameHeight / 2.0f, // 鏡頭中心點
+//                                         position.x - Engine::GameEngine::GetInstance().GetActiveScene()->camera.x + frameWidth / 2.0f * scale, 
+//                                         position.y - Engine::GameEngine::GetInstance().GetActiveScene()->camera.y + frameHeight / 2.0f * scale, 
+//                                         scale, scale, // 放大後的位置和大小
+//                                         0, leftRight); // 水平翻轉)
     al_draw_scaled_bitmap(spriteSheet, 
                           currentFrame * frameWidth, row * frameHeight, frameWidth, frameHeight, // 原始圖片區域
                         //   Engine::GameEngine::GetInstance().GetScreenWidth() / 4, Engine::GameEngine::GetInstance().GetScreenHeight() / 2,
