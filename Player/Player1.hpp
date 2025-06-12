@@ -16,7 +16,8 @@ private:
     int frameWidth = 32; // 每幀的寬度
     int frameHeight = 32; // 每幀的高度
     float scale = 1.5f; // 放大比例
-
+    int PlayerWidth = frameWidth * scale; // 角色圖片的寬度
+    int PlayerHeight = frameHeight * scale; // 角色圖片的高度
 public:
     Engine::Point position; // 角色座標
     float speed = 400.f;            // 移動速度

@@ -34,7 +34,7 @@ void Player::Update(float deltaTime) {
         currentFrame = (currentFrame + 1) % maxFrames; // 循環切換幀
     }
     Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
-        Engine::Point(PlayScene::defW * PlayScene::BlockSize / 2.0f, PlayScene::defH * PlayScene::BlockSize / 2.0f);
+        Engine::Point(PlayScene::MapWidth * PlayScene::BlockSize / 2.0f, PlayScene::MapHeight * PlayScene::BlockSize / 2.0f);
 
     if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
         Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] ||
@@ -43,47 +43,70 @@ void Player::Update(float deltaTime) {
             isMoving = true;
             if        (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP]) {
                 float newy = position.y - speed * deltaTime;
-                if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale) {
-                    position.y = newy;
+                int targetGridY = (int)(newy / PlayScene::BlockSize);
+                int targetGridX = (int)(position.x / PlayScene::BlockSize);
+                if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
+                        position.y = newy;    
+                    else 
+                        position.y = (targetGridY + 1) * PlayScene::BlockSize;
+                        
                 } else if (newy < 0) {
                     position.y = 0;
                 } else {
-                    position.y = PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale;
+                    position.y = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight;
                 }
                 //position.y -= speed * deltaTime;
                 // Engine::GameEngine::GetInstance().GetActiveScene()->camera.y -= speed * deltaTime;
                 // if (camera.y < 0) camera.y = 0;
             } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
                 float newy = position.y + speed * deltaTime;
-                if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale) {
-                    position.y = newy;
+                int targetGridY = (int)( (newy+PlayerHeight) / PlayScene::BlockSize);
+                int targetGridX = (int)(position.x / PlayScene::BlockSize);
+                if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
+                        position.y = newy;
+                    else
+                        position.y = targetGridY * PlayScene::BlockSize - PlayerHeight;
+                        
                 } else if (newy < 0) {
                     position.y = 0;
                 } else {
-                    position.y = PlayScene::MapHeight * PlayScene::BlockSize - frameHeight*scale;
+                    position.y = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight;
                 }
                 // Engine::GameEngine::GetInstance().GetActiveScene()->camera.y += speed * deltaTime;
                 // if (camera.y > MapHeight * BlockSize - GetClientSize().y) camera.y = MapHeight * BlockSize - GetClientSize().y;
             }
             if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT]) {
                 float newx = position.x - speed * deltaTime;
-                if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - frameWidth*scale) {
-                    position.x = newx;
+                int targetGridY = (int)(position.y / PlayScene::BlockSize);
+                int targetGridX = (int)(newx / PlayScene::BlockSize);
+                if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
+                        position.x = newx;
+                    else 
+                        position.x = (targetGridX + 1) * PlayScene::BlockSize;
+                        
                 } else if (newx < 0) {
                     position.x = 0;
                 } else {
-                    position.x = PlayScene::MapWidth * PlayScene::BlockSize- frameWidth*scale;
+                    position.x = PlayScene::MapWidth * PlayScene::BlockSize- PlayerWidth;
                 }
                 // Engine::GameEngine::GetInstance().GetActiveScene()->camera.x -= speed * deltaTime;
                 leftRight = false;
             } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
                 float newx = position.x + speed * deltaTime;
-                if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - frameWidth*scale) {
-                    position.x = newx;
+                int targetGridY = (int)(position.y / PlayScene::BlockSize);
+                int targetGridX = (int)((newx+PlayerWidth) / PlayScene::BlockSize);
+                if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
+                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
+                        position.x = newx;
+                    else 
+                        position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
                 } else if (newx < 0) {
                     position.x = 0;
                 } else {
-                    position.x = PlayScene::MapWidth * PlayScene::BlockSize - frameWidth*scale;
+                    position.x = PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth;
                 }
                 // Engine::GameEngine::GetInstance().GetActiveScene()->camera.x += speed * deltaTime;
                 leftRight = true;
