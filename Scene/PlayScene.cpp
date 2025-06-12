@@ -84,6 +84,7 @@ void PlayScene::Initialize() {
     ConstructUI();
     imgTarget = new Engine::Image("play/target.png", 0, 0);
     imgTarget->Visible = false;
+    imgTarget->followCamera = true;
     preview = nullptr;
     UIGroup->AddNewObject(imgTarget);
     // Preload Lose Scene
@@ -271,9 +272,9 @@ void PlayScene::OnMouseDown(int button, int mx, int my) {
 }
 void PlayScene::OnMouseMove(int mx, int my) {
     IScene::OnMouseMove(mx, my);
-    const int x = mx / BlockSize;
-    const int y = my / BlockSize;
-    if (!preview || x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) {
+    const int x = (mx + camera.x) / BlockSize;
+    const int y = (my + camera.y) / BlockSize;
+    if (!preview || x < 0 || x >= MapWidth || y < 0 || y >= MapHeight || mx >= uiBoundaryX) {
         imgTarget->Visible = false;
         return;
     }

@@ -58,12 +58,16 @@ void Player::Update(float deltaTime) {
                 // Engine::GameEngine::GetInstance().GetActiveScene()->camera.x += speed * deltaTime;
                 leftRight = true;
             }
-
             if (cameraTicks > 1.f) {
                 cameraTicks = 0.f;
                 // std::cout << "Camera pos: " << Engine::GameEngine::GetInstance().GetActiveScene()->camera << std::endl;
             }
-    } else {
+
+            Engine::GameEngine::GetInstance().GetActiveScene()->OnMouseMove(
+                Engine::GameEngine::GetInstance().GetMousePosition().x, 
+                Engine::GameEngine::GetInstance().GetMousePosition().y
+            );
+        } else {
         isMoving = false;
         maxFrames = isMoving ? 4 : 2;
         currentFrame %= maxFrames;
