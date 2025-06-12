@@ -84,6 +84,7 @@ void PlayScene::Initialize() {
     ConstructUI();
     imgTarget = new Engine::Image("play/target.png", 0, 0);
     imgTarget->Visible = false;
+    imgTarget->followCamera = true;
     preview = nullptr;
     UIGroup->AddNewObject(imgTarget);
     // Preload Lose Scene
@@ -91,7 +92,9 @@ void PlayScene::Initialize() {
     Engine::Resources::GetInstance().GetBitmap("lose/benjamin-happy.png");
     // Start BGM.
     bgmId = AudioHelper::PlayBGM("play.ogg");
-    player = new Player("images/play/Player2.png", MapWidth  * BlockSize / 4.0f, MapHeight * BlockSize / 2.0f , 400.0f, 0.1f); // 每 0.1 秒切換幀
+
+    Engine::Point playerInitialPosition = Engine::Point(MapWidth * BlockSize / 4.0f, MapHeight * BlockSize / 2.0f);
+    player = new Player("images/play/Player2.png", playerInitialPosition, 400.0f, 0.1f); // 每 0.1 秒切換幀
 }
 void PlayScene::Terminate() {
     AudioHelper::StopBGM(bgmId);
@@ -269,9 +272,9 @@ void PlayScene::OnMouseDown(int button, int mx, int my) {
 }
 void PlayScene::OnMouseMove(int mx, int my) {
     IScene::OnMouseMove(mx, my);
-    const int x = mx / BlockSize;
-    const int y = my / BlockSize;
-    if (!preview || x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) {
+    const int x = (mx + camera.x) / BlockSize;
+    const int y = (my + camera.y) / BlockSize;
+    if (!preview || x < 0 || x >= MapWidth || y < 0 || y >= MapHeight || mx >= uiBoundaryX) {
         imgTarget->Visible = false;
         return;
     }
@@ -285,7 +288,7 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
         return;
     const int x = (mx + camera.x) / BlockSize;
     const int y = (my + camera.y) / BlockSize;
-    if (button & 1) {
+    if ((button & 1) && mx < uiBoundaryX) {
         if (mapState[y][x] != TILE_OCCUPIED || preview->isTool) {
             if (!preview)
                 return;
@@ -394,14 +397,16 @@ void PlayScene::EarnMoney(int money) {
 }
 void PlayScene::ReadMap() {
     //test in stage3 combine 1 2
-    if(MapId == 3) {
-        std::string filename1 = std::string("Resource/map1.txt");
+    if(MapId == 3 || MapId == 4) {
+        ReadSpecialMap(MapId);
+        /*std::string filename1 = std::string("Resource/map1.txt");
         std::string filename2 = std::string("Resource/map2.txt");
         std::ifstream fin1(filename1);
         std::ifstream fin2(filename2);
-        if (!fin1.is_open() || !fin2.is_open()) {
-            throw std::ios_base::failure("Failed to open map files for stage 3.");
-        }
+        if (!fin1.is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename1;
+        if (!fin2.is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename2;
+
+        // Read map file.
         std::string line1, line2;
         std::vector<std::string> lines1, lines2;
         while(std::getline(fin1, line1)) {
@@ -414,10 +419,10 @@ void PlayScene::ReadMap() {
         }
         fin1.close();
         fin2.close();
+
         MapWidth=lines1[0].size() + lines2[0].size();
         MapHeight=std::max(lines1.empty() ? 0 : lines1.size(), lines2.empty() ? 0 : lines2.size());
         EndGridPoint = Engine::Point(MapWidth / 2, MapHeight / 2);
-        // printf("MapId: %d, MapWidth: %d, MapHeight: %d\n", MapId, MapWidth, MapHeight);
         Engine::LOG(Engine::LogType::INFO) << "MapId: " << MapId << ", MapWidth: " << MapWidth << ", MapHeight: " << MapHeight;
 
         mapState = std::vector<std::vector<TileType>>(MapHeight, std::vector<TileType>(MapWidth));
@@ -425,7 +430,7 @@ void PlayScene::ReadMap() {
         Towers = std::vector<std::vector<Turret*>>(MapHeight, std::vector<Turret*>(MapWidth));
         for (int i = 0; i < MapHeight; i++) {
             for (int j = 0; j < MapWidth; j++) {
-                if (/*i < lines1.size() &&*/ j < lines1[i].size()) {
+                if (/*i < lines1.size() && j < lines1[i].size()) {
                     // Use line1 data.
                     char c = lines1[i][j];
                     if (c == '0') {
@@ -449,7 +454,7 @@ void PlayScene::ReadMap() {
                     }
                     TileMapImages[i][j]->followCamera = true;
                     TileMapGroup->AddNewObject(TileMapImages[i][j]);
-                } else /*if (i >= lines1.size() && j < lines2[i].size())*/ {
+                }/* else /*if (i >= lines1.size() && j < lines2[i].size()) {
                     // Use line2 data.
                     char c = lines2[i][j-lines1[i].size()];
                     if (c == '0') {
@@ -463,12 +468,15 @@ void PlayScene::ReadMap() {
                     TileMapGroup->AddNewObject(TileMapImages[i][j]);
                 }
             }
-        }
+        }*/
         return;
     }
-    //
 
     std::string filename = std::string("Resource/map") + std::to_string(MapId) + ".txt";
+    // Check if the file exists.
+    std::ifstream fileCheck(filename);
+    if (!fileCheck) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename;
+
     // Read map file.
     std::ifstream fin(filename);
     std::string line;
@@ -507,7 +515,199 @@ void PlayScene::ReadMap() {
         }
     }
 }
+void PlayScene::ReadSpecialMap(int mapId) {
+    if( mapId == 3) {
+        std::string filename1 = std::string("Resource/map1.txt");
+        std::string filename2 = std::string("Resource/map2.txt");
+        std::ifstream fin1(filename1);
+        std::ifstream fin2(filename2);
+        if (!fin1.is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename1;
+        if (!fin2.is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename2;
 
+        // Read map file.
+        std::string line1, line2;
+        std::vector<std::string> lines1, lines2;
+        while(std::getline(fin1, line1)) {
+            if (line1.empty() || line1[0] == '#') continue;
+            lines1.push_back(line1);
+        }
+        while(std::getline(fin2, line2)) {
+            if (line2.empty() || line2[0] == '#') continue;
+            lines2.push_back(line2);
+        }
+        fin1.close();
+        fin2.close();
+
+        MapWidth=lines1[0].size() + lines2[0].size();
+        MapHeight=std::max(lines1.empty() ? 0 : lines1.size(), lines2.empty() ? 0 : lines2.size());
+        EndGridPoint = Engine::Point(MapWidth / 2, MapHeight / 2);
+        Engine::LOG(Engine::LogType::INFO) << "MapId: " << MapId << ", MapWidth: " << MapWidth << ", MapHeight: " << MapHeight;
+
+        mapState = std::vector<std::vector<TileType>>(MapHeight, std::vector<TileType>(MapWidth));
+        TileMapImages = std::vector<std::vector<Engine::Image*>>(MapHeight, std::vector<Engine::Image*>(MapWidth));
+        Towers = std::vector<std::vector<Turret*>>(MapHeight, std::vector<Turret*>(MapWidth));
+        for (int i = 0; i < MapHeight; i++) {
+            for (int j = 0; j < MapWidth; j++) {
+                char c = '\0';
+                if (j < lines1[i].size()) c = lines1[i][j];
+                else if (i < lines2.size() && j >= lines1[i].size()) c = lines2[i][j - lines1[i].size()];
+                else Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: inconsistent row length.";
+
+                if (c == '\0') Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: empty tile at " << Engine::Point(i, j);
+                else if (c == '0') {
+                    mapState[i][j]=TILE_DIRT;
+                    TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                } else if(c == '1') {
+                    mapState[i][j]=TILE_FLOOR;
+                    TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                }
+                TileMapImages[i][j]->followCamera = true;
+                TileMapGroup->AddNewObject(TileMapImages[i][j]);
+
+                // if (/*i < lines1.size() &&*/ j < lines1[i].size()) {
+                //     // Use line1 data.
+                //     char c = lines1[i][j];
+                //     if (c == '0') {
+                //         mapState[i][j]=TILE_DIRT;
+                //         TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                //     } else if(c == '1') {
+                //         mapState[i][j]=TILE_FLOOR;
+                //         TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                //     }
+                //     TileMapImages[i][j]->followCamera = true;
+                //     TileMapGroup->AddNewObject(TileMapImages[i][j]);
+                // } else if (i < lines2.size() && j >= lines1[i].size()) {
+                //     // Use line2 data.
+                //     char c = lines2[i][j-lines1[i].size()];
+                //     if (c == '0') {
+                //         mapState[i][j]=TILE_DIRT;
+                //         TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                //     } else if(c == '1') {
+                //         mapState[i][j]=TILE_FLOOR;
+                //         TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                //     }
+                //     TileMapImages[i][j]->followCamera = true;
+                //     TileMapGroup->AddNewObject(TileMapImages[i][j]);
+                // }
+                // else /*if (i >= lines1.size() && j < lines2[i].size()*/) {
+                //     // Use line2 data.
+                //     char c = lines2[i][j-lines1[i].size()];
+                //     if (c == '0') {
+                //         mapState[i][j]=TILE_DIRT;
+                //         TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                //     } else if(c == '1') {
+                //         mapState[i][j]=TILE_FLOOR;
+                //         TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                //     }
+                //     TileMapImages[i][j]->followCamera = true;
+                //     TileMapGroup->AddNewObject(TileMapImages[i][j]);
+                // }
+            }
+        }
+    }
+    else if (mapId == 4) { // map height should equal
+        const int mapNumber = 2;
+
+        std::vector<std::vector<std::string>> lines(mapNumber + 1);
+        // std::vector<std::string> lines1, lines2;
+        for (int i = 1; i <= mapNumber; i++) {
+            std::string filename= std::string("Resource/map") + std::to_string(i) + ".txt";
+            std::ifstream fin;
+            fin.open(filename);
+            if (!fin.is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename;
+            
+            std::string line;
+            while (std::getline(fin, line)) {
+                if (line.empty() || line[0] == '#') continue;
+                lines[i].push_back(line);
+                // if (i==1) lines1.push_back(line);
+                // else if (i==2) lines2.push_back(line);
+            }
+            Engine::LOG(Engine::LogType::INFO) << "MapId: " << MapId << ", Read map file: " << filename;
+            fin.close();
+        }
+        // for (const auto& f : filename) {
+        //     fin.emplace_back(f);
+        //     if (!fin.back().is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << f;
+        // }
+        // Read map file.
+        //std::vector<std::string> line;
+        // std::string line1, line2;
+        // std::vector<std::string> lines1, lines2;
+        // while(std::getline(fin[0], line1)) {
+        //     if (line1.empty() || line1[0] == '#') continue;
+        //     lines1.push_back(line1);
+        // }
+        // while(std::getline(fin[1], line2)) {
+        //     if (line2.empty() || line2[0] == '#') continue;
+        //     lines2.push_back(line2);
+        // }
+        // fin[0].close();
+        // fin[1].close();
+
+        const int mapCombineW = 3, mapCombineH = 4;
+        std::vector<std::vector<int>> mapCombineTable(mapCombineH, std::vector<int>(mapCombineW));
+        std::vector<int> candidates = {1, 2};
+
+        MapHeight = lines[mapCombineTable[0][0]].size() * mapCombineH;
+        MapWidth = 0;
+        int tmpWidth;
+        for (int i = 0; i < mapCombineH; i++) {
+            tmpWidth = 0;
+            for (int j = 0; j < mapCombineW; j++) {
+                std::random_device rd;
+                std::mt19937 rng(rd());
+                std::uniform_int_distribution<> distIdx(0, candidates.size() - 1);
+                mapCombineTable[i][j] = candidates[distIdx(rng)];
+                // tmpWidth += (mapCombineTable[i][j] == 1 ? lines1[0].size() : lines2[0].size());
+                tmpWidth += lines[mapCombineTable[i][j]][0].size();
+            }
+            MapWidth = std::max(MapWidth, tmpWidth);
+        }
+        EndGridPoint = Engine::Point(MapWidth / 2, MapHeight / 2);
+        Engine::LOG(Engine::LogType::INFO) << "MapId: " << MapId << ", MapWidth: " << MapWidth << ", MapHeight: " << MapHeight;
+
+        mapState = std::vector<std::vector<TileType>>(MapHeight, std::vector<TileType>(MapWidth));
+        TileMapImages = std::vector<std::vector<Engine::Image*>>(MapHeight, std::vector<Engine::Image*>(MapWidth));
+        Towers = std::vector<std::vector<Turret*>>(MapHeight, std::vector<Turret*>(MapWidth));
+
+        // 4 for loop to read map data.
+        Engine::Point accmulate(0, 0);
+        for (int i = 0; i < mapCombineH; i++) {
+            accmulate.x = 0;
+            for (int j = 0; j < mapCombineW; j++) {
+                if (mapCombineTable[i][j] < 1 || mapCombineTable[i][j] > mapNumber) {
+                    Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: invalid map combine table.";
+                    continue;
+                }
+                std::vector<std::string> useLines = lines[mapCombineTable[i][j]];
+                // if (mapCombineTable[i][j] == 1) useLines = lines1;
+                // else if (mapCombineTable[i][j] == 2) useLines = lines2;
+                // else {
+                //     Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: invalid map combine table.";
+                //     continue;
+                // }
+                for (int y = 0; y < useLines.size(); y++) {
+                    for (int x = 0; x < useLines[y].size(); x++) {
+                        char c = useLines[y][x];
+                        if (c == '\0') Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: empty tile at " << Engine::Point(j, i);
+                        else if (c == '0') {
+                            mapState[y + accmulate.y][x + accmulate.x] = TILE_DIRT;
+                            TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/dirt.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
+                        } else if (c == '1') {
+                            mapState[y + accmulate.y][x + accmulate.x] = TILE_FLOOR;
+                            TileMapImages[y + accmulate.y][x + accmulate.x] = (new Engine::Image("play/floor.png", (x + accmulate.x) * BlockSize, (y + accmulate.y) * BlockSize, BlockSize, BlockSize));
+                        }
+                        TileMapImages[y + accmulate.y][x + accmulate.x]->followCamera = true;
+                        TileMapGroup->AddNewObject(TileMapImages[y + accmulate.y][x + accmulate.x]);
+                    }
+                }
+                accmulate.x += useLines[j].size();
+            }
+            accmulate.y += lines[mapCombineTable[i][0]].size();
+        }
+    }
+}
 void PlayScene::ReadEnemyWave() {
     std::string filename = std::string("Resource/enemy") + std::to_string(MapId) + ".txt";
     // Read enemy file.
@@ -522,38 +722,38 @@ void PlayScene::ReadEnemyWave() {
 }
 void PlayScene::ConstructUI() {
     // Background
-    UIGroup->AddNewObject(new Engine::Image("play/sand.png", 1280, 0, 320, 832));
+    UIGroup->AddNewObject(new Engine::Image("play/sand.png", uiBoundaryX, 0, 320, 832));
     // Text
-    UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, 1294, 0));
-    UIGroup->AddNewObject(UIMoney = new Engine::Label(std::string("$") + std::to_string(money), "pirulen.ttf", 24, 1294, 48));
-    UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, 1294, 88));
+    UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
+    UIGroup->AddNewObject(UIMoney = new Engine::Label(std::string("$") + std::to_string(money), "pirulen.ttf", 24, uiBoundaryX + 14, 48));
+    UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, uiBoundaryX + 14, 88));
 
     TurretButton *btn;
     const int bs=76;// Button size
     // Button 1
     btn = new TurretButton("play/floor.png", "play/dirt.png",
-                           Engine::Sprite("play/tower-base.png", 1294, 136, 0, 0, 0, 0),
-                           Engine::Sprite("play/turret-1.png", 1294, 136 - 8, 0, 0, 0, 0), 1294, 136, MachineGunTurret::Price);
+                           Engine::Sprite("play/tower-base.png", uiBoundaryX + 14, 136, 0, 0, 0, 0),
+                           Engine::Sprite("play/turret-1.png", uiBoundaryX + 14, 136 - 8, 0, 0, 0, 0), uiBoundaryX + 14, 136, MachineGunTurret::Price);
     // Reference: Class Member Function Pointer and std::bind.
     btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 0));
     UIGroup->AddNewControlObject(btn);
     // Button 2
     btn = new TurretButton("play/floor.png", "play/dirt.png",
-                           Engine::Sprite("play/tower-base.png", 1294 + bs, 136, 0, 0, 0, 0),
-                           Engine::Sprite("play/turret-2.png", 1294 + bs, 136 - 8, 0, 0, 0, 0), 1294 + bs, 136, LaserTurret::Price);
+                           Engine::Sprite("play/tower-base.png", uiBoundaryX + 14 + bs, 136, 0, 0, 0, 0),
+                           Engine::Sprite("play/turret-2.png", uiBoundaryX + 14 + bs, 136 - 8, 0, 0, 0, 0), uiBoundaryX + 14 + bs, 136, LaserTurret::Price);
     btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 1));
     UIGroup->AddNewControlObject(btn);
 
     //Button 3
     btn = new TurretButton("play/floor.png", "play/dirt.png",
-                           Engine::Sprite("play/tower-base.png", 1294 + bs * 2, 136, 0, 0, 0, 0),
-                           Engine::Sprite("play/turret-7.png", 1294 + bs * 2, 136 - 8, 0, 0, 0, 0), 1294 + bs * 2, 136, SniperTurret::Price);
+                           Engine::Sprite("play/tower-base.png", uiBoundaryX + 14 + bs * 2, 136, 0, 0, 0, 0),
+                           Engine::Sprite("play/turret-7.png", uiBoundaryX + 14 + bs * 2, 136 - 8, 0, 0, 0, 0), uiBoundaryX + 14 + bs * 2, 136, SniperTurret::Price);
     btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 2));
     UIGroup->AddNewControlObject(btn);
     //Button 4
     btn = new TurretButton("play/floor.png", "play/dirt.png",
-                           Engine::Sprite("play/shovel-base.png", 1294 + bs * 3, 136, 0, 0, 0, 0),
-                           Engine::Sprite("play/shovel.png", 1294 + bs * 3, 136 - 8, 0, 0, 0, 0), 1294 + bs * 3, 136, ShovelTool::Price);
+                           Engine::Sprite("play/shovel-base.png", uiBoundaryX + 14 + bs * 3, 136, 0, 0, 0, 0),
+                           Engine::Sprite("play/shovel.png", uiBoundaryX + 14 + bs * 3, 136 - 8, 0, 0, 0, 0), uiBoundaryX + 14 + bs * 3, 136, ShovelTool::Price);
     btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 3));
     btn->Base.Visible = false;
     UIGroup->AddNewControlObject(btn);

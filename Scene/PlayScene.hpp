@@ -22,8 +22,10 @@ class PlayScene final : public Engine::IScene {
 private:
     ALLEGRO_SAMPLE_ID bgmId;
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> deathBGMInstance;
-    float cameraSpeed = 400.f;
+    //float cameraSpeed = 400.f;
     Player* player;
+    void ReadSpecialMap(int mapId);
+    int uiBoundaryX = 1280; // UI boundary X coordinate, used to determine if the mouse is in the UI area.
 
 protected:
     int lives;
@@ -91,8 +93,8 @@ public:
     std::vector<std::vector<int>> CalculateBFSDistance();
     // void ModifyReadMapTiles();
 
-    std::vector<std::vector<Engine::Image*>> TileMapImages;
-    std::vector<std::vector<Turret*>> Towers;
+    std::vector<std::vector<Engine::Image*>> TileMapImages; // [y][x]
+    std::vector<std::vector<Turret*>> Towers; // [y][x]
 
     Engine::Point GetRandomSpawnPoint() const;
 };

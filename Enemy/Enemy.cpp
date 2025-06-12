@@ -44,8 +44,8 @@ Enemy::Enemy(std::string img, float x, float y, float radius, float speed, float
 void Enemy::Hit(float damage) {
     int destX = PlayScene::MapWidth/2 * PlayScene::BlockSize + PlayScene::BlockSize/2;
     int destY = PlayScene::MapHeight/2 * PlayScene::BlockSize + PlayScene::BlockSize/2;
-    std::cout << "Hit Enemy position: (" << Position.x << "," << Position.y << ") Target: (" 
-          << destX << "," << destY << ")" << std::endl;
+    Engine::LOG(Engine::INFO) << "Hit Enemy position: (" << Position.x << "," << Position.y << ") Target: (" 
+          << destX << "," << destY << ")";
     hp -= damage;
     feature();
     if (hp <= 0) {

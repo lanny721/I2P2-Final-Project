@@ -7,7 +7,8 @@ class Player {
 private:
     float cameraTicks;
     bool leftRight; // left: false, right: true
-    
+    // Engine::Point initialPosition; // 初始位置
+
 public:
     Engine::Point position; // 角色座標
     float speed = 400.f;            // 移動速度
@@ -19,7 +20,7 @@ public:
     float animationInterval; // 每幀切換的間隔
     bool isMoving; // 是否正在移動
 
-    Player(const char* spriteSheetPath, float x, float y, float speed, float interval);
+    Player(const char* spriteSheetPath, Engine::Point initialPosition, float speed, float interval);
     ~Player();
 
     void Update(float deltaTime); // 更新角色位置

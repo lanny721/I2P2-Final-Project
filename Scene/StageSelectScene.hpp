@@ -8,6 +8,7 @@
 class StageSelectScene final : public Engine::IScene {
 private:
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> bgmInstance;
+    int totalStages = 3; // Total number of stages available
 
 public:
     explicit StageSelectScene() = default;
@@ -17,9 +18,6 @@ public:
     void ScoreboardOnClick();
     void BackOnClick(int stage);
     void OnKeyDown(int keyCode) override;
-
-    // void BGMSlideOnValueChanged(float value);
-    // void SFXSlideOnValueChanged(float value);
 };
 
 #endif   // STAGESELECTSCENE_HPP
