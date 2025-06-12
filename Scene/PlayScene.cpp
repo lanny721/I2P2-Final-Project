@@ -680,7 +680,7 @@ void PlayScene::ReadEnemyWave() {
 }
 void PlayScene::ConstructUI() {
     // Background
-    UIGroup->AddNewObject(new Engine::Image("play/sand.png", uiBoundaryX, 0, 320, 832));
+    UIGroup->AddNewObject(new Engine::Image("play/sand.png", uiBoundaryX, 0, 320, 1280));
     // Text
     if(MapId==4) UIGroup->AddNewObject(new Engine::Label(std::string("Customized"), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
     else UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
