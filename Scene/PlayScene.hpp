@@ -42,6 +42,7 @@ public:
     static bool DebugMode;
     static const std::vector<Engine::Point> directions;
     static int MapWidth, MapHeight;
+    static const int defW = 20, defH = 13; // Default map width and height.
     static int BlockSize;
     static const float DangerTime;
     static const Engine::Point SpawnGridPoint;
