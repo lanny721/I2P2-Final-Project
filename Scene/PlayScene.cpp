@@ -608,46 +608,48 @@ void PlayScene::ReadSpecialMap(int mapId) {
     else if (mapId == 4) { // map height should equal
         const int mapNumber = 2;
 
-        std::vector<std::ifstream> fin;
         std::vector<std::vector<std::string>> lines(mapNumber + 1);
-        // for(int i =1 ; i <= mapNumber; i++) {
-        //     std::string filename = std::string("Resource/map") + std::to_string(i) + ".txt";
-        //     fin.emplace_back(filename);
-        //     if (!fin.back().is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename;
+        // std::vector<std::string> lines1, lines2;
+        for (int i = 1; i <= mapNumber; i++) {
+            std::string filename= std::string("Resource/map") + std::to_string(i) + ".txt";
+            std::ifstream fin;
+            fin.open(filename);
+            if (!fin.is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename;
             
-        //     std::vector<std::string> line;
-        //     while (std::getline(fin.back(), line)) {
-        //         if (line.empty() || line[0] == '#') continue;
-        //         lines[i].push_back(line);
-        //     }
-        // }
-        // std::vector<std::string> filename;
-        // for (int i = 1; i <= mapNumber; i++) filename.push_back(std::string("Resource/map") + std::to_string(i) + ".txt");
+            std::string line;
+            while (std::getline(fin, line)) {
+                if (line.empty() || line[0] == '#') continue;
+                lines[i].push_back(line);
+                // if (i==1) lines1.push_back(line);
+                // else if (i==2) lines2.push_back(line);
+            }
+            Engine::LOG(Engine::LogType::INFO) << "MapId: " << MapId << ", Read map file: " << filename;
+            fin.close();
+        }
         // for (const auto& f : filename) {
         //     fin.emplace_back(f);
         //     if (!fin.back().is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << f;
         // }
-
         // Read map file.
-        std::vector<std::string> line;
-        std::string line1, line2;
-        std::vector<std::string> lines1, lines2;
-        while(std::getline(fin[0], line1)) {
-            if (line1.empty() || line1[0] == '#') continue;
-            lines1.push_back(line1);
-        }
-        while(std::getline(fin[1], line2)) {
-            if (line2.empty() || line2[0] == '#') continue;
-            lines2.push_back(line2);
-        }
-        fin[0].close();
-        fin[1].close();
+        //std::vector<std::string> line;
+        // std::string line1, line2;
+        // std::vector<std::string> lines1, lines2;
+        // while(std::getline(fin[0], line1)) {
+        //     if (line1.empty() || line1[0] == '#') continue;
+        //     lines1.push_back(line1);
+        // }
+        // while(std::getline(fin[1], line2)) {
+        //     if (line2.empty() || line2[0] == '#') continue;
+        //     lines2.push_back(line2);
+        // }
+        // fin[0].close();
+        // fin[1].close();
 
         const int mapCombineW = 3, mapCombineH = 4;
         std::vector<std::vector<int>> mapCombineTable(mapCombineH, std::vector<int>(mapCombineW));
         std::vector<int> candidates = {1, 2};
 
-        MapHeight = lines1.size() * mapCombineH;
+        MapHeight = lines[mapCombineTable[0][0]].size() * mapCombineH;
         MapWidth = 0;
         int tmpWidth;
         for (int i = 0; i < mapCombineH; i++) {
@@ -657,7 +659,8 @@ void PlayScene::ReadSpecialMap(int mapId) {
                 std::mt19937 rng(rd());
                 std::uniform_int_distribution<> distIdx(0, candidates.size() - 1);
                 mapCombineTable[i][j] = candidates[distIdx(rng)];
-                tmpWidth += (mapCombineTable[i][j] == 1 ? lines1[0].size() : lines2[0].size());
+                // tmpWidth += (mapCombineTable[i][j] == 1 ? lines1[0].size() : lines2[0].size());
+                tmpWidth += lines[mapCombineTable[i][j]][0].size();
             }
             MapWidth = std::max(MapWidth, tmpWidth);
         }
@@ -673,13 +676,17 @@ void PlayScene::ReadSpecialMap(int mapId) {
         for (int i = 0; i < mapCombineH; i++) {
             accmulate.x = 0;
             for (int j = 0; j < mapCombineW; j++) {
-                std::vector<std::string> useLines;
-                if (mapCombineTable[i][j] == 1) useLines = lines1;
-                else if (mapCombineTable[i][j] == 2) useLines = lines2;
-                else {
+                if (mapCombineTable[i][j] < 1 || mapCombineTable[i][j] > mapNumber) {
                     Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: invalid map combine table.";
                     continue;
                 }
+                std::vector<std::string> useLines = lines[mapCombineTable[i][j]];
+                // if (mapCombineTable[i][j] == 1) useLines = lines1;
+                // else if (mapCombineTable[i][j] == 2) useLines = lines2;
+                // else {
+                //     Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: invalid map combine table.";
+                //     continue;
+                // }
                 for (int y = 0; y < useLines.size(); y++) {
                     for (int x = 0; x < useLines[y].size(); x++) {
                         char c = useLines[y][x];
@@ -697,7 +704,7 @@ void PlayScene::ReadSpecialMap(int mapId) {
                 }
                 accmulate.x += useLines[j].size();
             }
-            accmulate.y += lines1.size();
+            accmulate.y += lines[mapCombineTable[i][0]].size();
         }
     }
 }

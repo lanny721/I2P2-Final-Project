@@ -15,6 +15,7 @@ ExplosionEffect::ExplosionEffect(float x, float y) : Sprite("play/explosion-1.pn
     for (int i = 1; i <= 5; i++) {
         bmps.push_back(Engine::Resources::GetInstance().GetBitmap("play/explosion-" + std::to_string(i) + ".png"));
     }
+    followCamera = true;  // Follow camera by default.
 }
 void ExplosionEffect::Update(float deltaTime) {
     timeTicks += deltaTime;
