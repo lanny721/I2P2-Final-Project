@@ -107,7 +107,7 @@ void MapSelectScene::DrawPreviewMap() {
                     previewY + i * previewBlockSize, 
                     previewBlockSize, previewBlockSize);
             }else if (lines[i][j] == '3') {
-                tileImage = new Engine::Image("play/root_grass.png", 
+                tileImage = new Engine::Image("play/flowers.png", 
                     previewX + j * previewBlockSize, 
                     previewY + i * previewBlockSize, 
                     previewBlockSize, previewBlockSize);
