@@ -509,10 +509,10 @@ void PlayScene::ReadMap() {
             char c = lines[i][j];
             if (c == '0') {
                 mapState[i][j]=TILE_DIRT;
-                TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                TileMapImages[i][j] = (new Engine::Image("play/grass2.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
             } else if(c == '1') {
                 mapState[i][j]=TILE_FLOOR;
-                TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
             }
             TileMapImages[i][j]->followCamera = true;
             TileMapGroup->AddNewObject(TileMapImages[i][j]);
@@ -560,10 +560,10 @@ void PlayScene::ReadSpecialMap(int mapId) {
                 if (c == '\0') Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: empty tile at " << Engine::Point(i, j);
                 else if (c == '0') {
                     mapState[i][j]=TILE_DIRT;
-                    TileMapImages[i][j] = (new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    TileMapImages[i][j] = (new Engine::Image("play/grass2.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 } else if(c == '1') {
                     mapState[i][j]=TILE_FLOOR;
-                    TileMapImages[i][j] = (new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+                    TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
                 }
                 TileMapImages[i][j]->followCamera = true;
                 TileMapGroup->AddNewObject(TileMapImages[i][j]);
