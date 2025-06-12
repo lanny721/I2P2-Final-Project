@@ -454,7 +454,7 @@ void PlayScene::ReadMap() {
                     }
                     TileMapImages[i][j]->followCamera = true;
                     TileMapGroup->AddNewObject(TileMapImages[i][j]);
-                }/* else /*if (i >= lines1.size() && j < lines2[i].size()) {
+                }/* else if (i >= lines1.size() && j < lines2[i].size()) {
                     // Use line2 data.
                     char c = lines2[i][j-lines1[i].size()];
                     if (c == '0') {
