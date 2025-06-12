@@ -40,7 +40,8 @@ void MapSelectScene::Initialize() {
     // Not safe if release resource while playing, however we only free while change scene, so it's fine.
     bgmInstance = AudioHelper::PlaySample("select.ogg", true, AudioHelper::BGMVolume);
 
-    DrawPreviewMap();
+    if(MapId==4) DrawCustomize();
+    else DrawPreviewMap();
     
 }
 void MapSelectScene::Terminate() {
@@ -59,6 +60,8 @@ void MapSelectScene::OnKeyDown(int keyCode) {
 void MapSelectScene::PlayOnClick(int id) {
     PlayScene *scene = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetScene("play"));
     scene->MapId = this->MapId ;
+    scene->mapCombineW=3;
+    scene->mapCombineH=4; // Set the map combine size, can be changed later.
     Engine::GameEngine::GetInstance().ChangeScene("play");
 }
 void MapSelectScene::DrawPreviewMap() {
@@ -106,4 +109,16 @@ void MapSelectScene::DrawPreviewMap() {
     AddNewObject(new Engine::Label(std::string("Map ") + std::to_string(MapId), 
         "pirulen.ttf", 48, halfW - (mapWidth * previewBlockSize) / 4, previewY - 100, 255, 255, 255, 255));
     
+}
+void MapSelectScene::DrawCustomize() {
+    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
+    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
+    int halfW = w / 2;
+    int halfH = h / 2;
+
+    AddNewObject(new Engine::Label("Customize", "pirulen.ttf", 60, halfW, halfH - 350, 255, 255, 255, 255, 0.5, 0.5));
+    AddNewObject(new Engine::Label("Width :", "pirulen.ttf", 48, halfW-300, halfH - 150, 255, 255, 255, 255, 1, 0.5));
+    AddNewObject(new Engine::Label("maps", "pirulen.ttf", 48, halfW+400, halfH - 150, 255, 255, 255, 255, 0.5, 0.5));
+    AddNewObject(new Engine::Label("Height :", "pirulen.ttf", 48, halfW-300, halfH , 255, 255, 255, 255, 1, 0.5));
+    AddNewObject(new Engine::Label("maps", "pirulen.ttf", 48, halfW+400, halfH , 255, 255, 255, 255, 0.5, 0.5));
 }
