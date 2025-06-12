@@ -360,7 +360,14 @@ void PlayScene::OnKeyDown(int keyCode) {
 
     if( keyCode == ALLEGRO_KEY_ESCAPE) {
         Engine::GameEngine::GetInstance().ChangeScene("stage-select");
-    } 
+    } else if (keyCode >= ALLEGRO_KEY_0 && keyCode <= ALLEGRO_KEY_9) {
+        // Hotkey for Speed up.
+        SpeedMult = (keyCode - ALLEGRO_KEY_0);
+    } else if (keyCode == ALLEGRO_KEY_PAD_0) {
+        SpeedMult = 25;
+    } else if (keyCode == ALLEGRO_KEY_PAD_PLUS) {
+        player->speed *= 1.5f;
+    }
     // else if (keyCode == ALLEGRO_KEY_Q) {
     //     // Hotkey for MachineGunTurret.
     //     UIBtnClicked(0);
@@ -374,17 +381,7 @@ void PlayScene::OnKeyDown(int keyCode) {
     //     // Hotkey for ShovelTool.
     //     UIBtnClicked(3);
     // } 
-    else if (keyCode >= ALLEGRO_KEY_0 && keyCode <= ALLEGRO_KEY_9) {
-        // Hotkey for Speed up.
-        SpeedMult = (keyCode - ALLEGRO_KEY_0);
-    } else if (keyCode == ALLEGRO_KEY_PAD_0) {
-        SpeedMult = 25;
-    } else if (keyCode == ALLEGRO_KEY_PAD_PLUS) {
-        player->speed *= 1.5f;
-    }else if (keyCode == ALLEGRO_KEY_F8) {
-        std::cout << "F8 pressed. Exiting game." << std::endl;
-        exit(0); // 直接結束程式
-    }
+    player->OnKeyDown(keyCode);
 }
 void PlayScene::Hit() {
     lives--;

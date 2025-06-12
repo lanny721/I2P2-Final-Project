@@ -40,13 +40,13 @@ namespace Engine {
         if (!al_install_mouse()) throw Allegro5Exception("failed to install mouse");
 
         // Setup game display.
-        ALLEGRO_DISPLAY_MODE disp_data;
-        if (!al_get_display_mode(0, &disp_data)) {
-            throw Allegro5Exception("failed to get display mode");
-        }
-        screenW = disp_data.width;
-        screenH = disp_data.height;
-        al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+        // ALLEGRO_DISPLAY_MODE disp_data;
+        // if (!al_get_display_mode(0, &disp_data)) {
+        //     throw Allegro5Exception("failed to get display mode");
+        // }
+        // screenW = disp_data.width;
+        // screenH = disp_data.height;
+        // al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
         display = al_create_display(screenW, screenH);
         if (!display) throw Allegro5Exception("failed to create display");
         
