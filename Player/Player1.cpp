@@ -7,6 +7,7 @@
 #include <iostream>
 #include "Engine/LOG.hpp"
 #include "Scene/PlayScene.hpp"
+#include <cmath>
 
 Player::Player(const char* spriteSheetPath, Engine::Point initialPosition, float speed, float interval)
     : position(initialPosition), speed(speed), animationTimer(0), animationInterval(interval), currentFrame(0), maxFrames(4), isMoving(false) {
@@ -21,7 +22,6 @@ Player::~Player() {
         al_destroy_bitmap(spriteSheet);
     }
 }
-
 void Player::Update(float deltaTime) {
     cameraTicks += deltaTime;
     animationTimer += deltaTime;
@@ -44,10 +44,10 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)(newy / PlayScene::BlockSize);
                 int targetGridX = (int)(position.x / PlayScene::BlockSize);
                 if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
-                        position.y = newy;    
-                    else 
-                        position.y = (targetGridY + 1) * PlayScene::BlockSize;
+                    if (getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT) {
+                        upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
+                        position.y = newy;
+                    } else position.y = (targetGridY + 1) * PlayScene::BlockSize;
                         
                 } else if (newy < 0) {
                     position.y = 0;
@@ -59,10 +59,10 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)( (newy+PlayerHeight) / PlayScene::BlockSize);
                 int targetGridX = (int)(position.x / PlayScene::BlockSize);
                 if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
+                    if (getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT) {
+                        upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
                         position.y = newy;
-                    else
-                        position.y = targetGridY * PlayScene::BlockSize - PlayerHeight;
+                    } else position.y = targetGridY * PlayScene::BlockSize - PlayerHeight;
                         
                 } else if (newy < 0) {
                     position.y = 0;
@@ -75,10 +75,11 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)(position.y / PlayScene::BlockSize);
                 int targetGridX = (int)(newx / PlayScene::BlockSize);
                 if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
+                    if (getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT) {
+                        upDownAngle = 0.f; // Reset upDownAngle when moving left/right
+                        leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
                         position.x = newx;
-                    else 
-                        position.x = (targetGridX + 1) * PlayScene::BlockSize;
+                    } else position.x = (targetGridX + 1) * PlayScene::BlockSize;
                         
                 } else if (newx < 0) {
                     position.x = 0;
@@ -91,10 +92,11 @@ void Player::Update(float deltaTime) {
                 int targetGridY = (int)(position.y / PlayScene::BlockSize);
                 int targetGridX = (int)((newx+PlayerWidth) / PlayScene::BlockSize);
                 if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT)
+                    if( getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT) {
+                        upDownAngle = 0.f; // Reset upDownAngle when moving left/right
+                        leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
                         position.x = newx;
-                    else 
-                        position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
+                    } else position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
                 } else if (newx < 0) {
                     position.x = 0;
                 } else {
@@ -110,7 +112,7 @@ void Player::Update(float deltaTime) {
                 Engine::GameEngine::GetInstance().GetMousePosition().x, 
                 Engine::GameEngine::GetInstance().GetMousePosition().y
             );
-        } else {
+    } else {
         isMoving = false;
         maxFrames = isMoving ? 4 : 2;
         currentFrame %= maxFrames;
@@ -121,23 +123,27 @@ void Player::Update(float deltaTime) {
 }
 void Player::Draw() const {
     int row = isMoving ? 1 : 0; // 第二列為移動動畫，第一列為靜止動畫
+    // press space to rotate!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    al_draw_tinted_scaled_rotated_bitmap_region(spriteSheet,
+                                                currentFrame * frameWidth, row * frameHeight, frameWidth, frameHeight, // 原始圖片區域
+                                                al_map_rgba(255, 255, 255, 255), // 使用白色作為顏色調整
+                                                frameWidth / 2.0f, frameHeight / 2.0f, // 旋轉中心點
+                                                position.x - Engine::GameEngine::GetInstance().GetActiveScene()->camera.x, 
+                                                position.y - Engine::GameEngine::GetInstance().GetActiveScene()->camera.y, 
+                                                scale, scale * (rotate ? cos(upDownAngle) : 1), // 放大後的位置和大小
+                                                rotate * leftRightAngle, leftRight);
 
-//    al_draw_tinted_scaled_rotated_bitmap(spriteSheet, 
-//                                         al_map_rgba(255, 255, 255, 255), // 使用白色調色板
-//                                         frameWidth / 2.0f, frameHeight / 2.0f, // 鏡頭中心點
-//                                         position.x - Engine::GameEngine::GetInstance().GetActiveScene()->camera.x + frameWidth / 2.0f * scale, 
-//                                         position.y - Engine::GameEngine::GetInstance().GetActiveScene()->camera.y + frameHeight / 2.0f * scale, 
-//                                         scale, scale, // 放大後的位置和大小
-//                                         0, leftRight); // 水平翻轉)
-    al_draw_scaled_bitmap(spriteSheet, 
-                          currentFrame * frameWidth, row * frameHeight, frameWidth, frameHeight, // 原始圖片區域
-                        //   Engine::GameEngine::GetInstance().GetScreenWidth() / 4, Engine::GameEngine::GetInstance().GetScreenHeight() / 2,
-                          position.x - Engine::GameEngine::GetInstance().GetActiveScene()->camera.x, 
-                          position.y - Engine::GameEngine::GetInstance().GetActiveScene()->camera.y, 
-                          frameWidth * scale, frameHeight * scale, // 放大後的位置和大小
-                          leftRight);
+    // al_draw_scaled_bitmap(spriteSheet, 
+    //                       currentFrame * frameWidth, row * frameHeight, frameWidth, frameHeight, // 原始圖片區域
+    //                       position.x - Engine::GameEngine::GetInstance().GetActiveScene()->camera.x, 
+    //                       position.y - Engine::GameEngine::GetInstance().GetActiveScene()->camera.y, 
+    //                       frameWidth * scale, frameHeight * scale, // 放大後的位置和大小
+    //                       leftRight);
                           
 }
+void Player::OnKeyDown(int keyCode) {
+    if (keyCode == ALLEGRO_KEY_SPACE) rotate = !rotate; // 按空格鍵切換旋轉狀態
+}
 PlayScene* Player::getPlayScene() {
-    return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
+    return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetScene("play"));
 }
