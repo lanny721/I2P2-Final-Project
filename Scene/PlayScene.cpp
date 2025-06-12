@@ -287,7 +287,7 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
         return;
     const int x = (mx + camera.x) / BlockSize;
     const int y = (my + camera.y) / BlockSize;
-    if (button & 1) {
+    if ((button & 1) && mx < uiBoundaryX) {
         if (mapState[y][x] != TILE_OCCUPIED || preview->isTool) {
             if (!preview)
                 return;
@@ -605,26 +605,42 @@ void PlayScene::ReadSpecialMap(int mapId) {
         }
     }
     else if (mapId == 4) { // map height should equal
-        std::string filename1 = std::string("Resource/map1.txt");
-        std::string filename2 = std::string("Resource/map2.txt");
-        std::ifstream fin1(filename1);
-        std::ifstream fin2(filename2);
-        if (!fin1.is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename1;
-        if (!fin2.is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename2;
+        const int mapNumber = 2;
+
+        std::vector<std::ifstream> fin;
+        std::vector<std::vector<std::string>> lines(mapNumber + 1);
+        // for(int i =1 ; i <= mapNumber; i++) {
+        //     std::string filename = std::string("Resource/map") + std::to_string(i) + ".txt";
+        //     fin.emplace_back(filename);
+        //     if (!fin.back().is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename;
+            
+        //     std::vector<std::string> line;
+        //     while (std::getline(fin.back(), line)) {
+        //         if (line.empty() || line[0] == '#') continue;
+        //         lines[i].push_back(line);
+        //     }
+        // }
+        // std::vector<std::string> filename;
+        // for (int i = 1; i <= mapNumber; i++) filename.push_back(std::string("Resource/map") + std::to_string(i) + ".txt");
+        // for (const auto& f : filename) {
+        //     fin.emplace_back(f);
+        //     if (!fin.back().is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << f;
+        // }
 
         // Read map file.
+        std::vector<std::string> line;
         std::string line1, line2;
         std::vector<std::string> lines1, lines2;
-        while(std::getline(fin1, line1)) {
+        while(std::getline(fin[0], line1)) {
             if (line1.empty() || line1[0] == '#') continue;
             lines1.push_back(line1);
         }
-        while(std::getline(fin2, line2)) {
+        while(std::getline(fin[1], line2)) {
             if (line2.empty() || line2[0] == '#') continue;
             lines2.push_back(line2);
         }
-        fin1.close();
-        fin2.close();
+        fin[0].close();
+        fin[1].close();
 
         const int mapCombineW = 3, mapCombineH = 4;
         std::vector<std::vector<int>> mapCombineTable(mapCombineH, std::vector<int>(mapCombineW));
@@ -698,38 +714,38 @@ void PlayScene::ReadEnemyWave() {
 }
 void PlayScene::ConstructUI() {
     // Background
-    UIGroup->AddNewObject(new Engine::Image("play/sand.png", 1280, 0, 320, 832));
+    UIGroup->AddNewObject(new Engine::Image("play/sand.png", uiBoundaryX, 0, 320, 832));
     // Text
-    UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, 1294, 0));
-    UIGroup->AddNewObject(UIMoney = new Engine::Label(std::string("$") + std::to_string(money), "pirulen.ttf", 24, 1294, 48));
-    UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, 1294, 88));
+    UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
+    UIGroup->AddNewObject(UIMoney = new Engine::Label(std::string("$") + std::to_string(money), "pirulen.ttf", 24, uiBoundaryX + 14, 48));
+    UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, uiBoundaryX + 14, 88));
 
     TurretButton *btn;
     const int bs=76;// Button size
     // Button 1
     btn = new TurretButton("play/floor.png", "play/dirt.png",
-                           Engine::Sprite("play/tower-base.png", 1294, 136, 0, 0, 0, 0),
-                           Engine::Sprite("play/turret-1.png", 1294, 136 - 8, 0, 0, 0, 0), 1294, 136, MachineGunTurret::Price);
+                           Engine::Sprite("play/tower-base.png", uiBoundaryX + 14, 136, 0, 0, 0, 0),
+                           Engine::Sprite("play/turret-1.png", uiBoundaryX + 14, 136 - 8, 0, 0, 0, 0), uiBoundaryX + 14, 136, MachineGunTurret::Price);
     // Reference: Class Member Function Pointer and std::bind.
     btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 0));
     UIGroup->AddNewControlObject(btn);
     // Button 2
     btn = new TurretButton("play/floor.png", "play/dirt.png",
-                           Engine::Sprite("play/tower-base.png", 1294 + bs, 136, 0, 0, 0, 0),
-                           Engine::Sprite("play/turret-2.png", 1294 + bs, 136 - 8, 0, 0, 0, 0), 1294 + bs, 136, LaserTurret::Price);
+                           Engine::Sprite("play/tower-base.png", uiBoundaryX + 14 + bs, 136, 0, 0, 0, 0),
+                           Engine::Sprite("play/turret-2.png", uiBoundaryX + 14 + bs, 136 - 8, 0, 0, 0, 0), uiBoundaryX + 14 + bs, 136, LaserTurret::Price);
     btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 1));
     UIGroup->AddNewControlObject(btn);
 
     //Button 3
     btn = new TurretButton("play/floor.png", "play/dirt.png",
-                           Engine::Sprite("play/tower-base.png", 1294 + bs * 2, 136, 0, 0, 0, 0),
-                           Engine::Sprite("play/turret-7.png", 1294 + bs * 2, 136 - 8, 0, 0, 0, 0), 1294 + bs * 2, 136, SniperTurret::Price);
+                           Engine::Sprite("play/tower-base.png", uiBoundaryX + 14 + bs * 2, 136, 0, 0, 0, 0),
+                           Engine::Sprite("play/turret-7.png", uiBoundaryX + 14 + bs * 2, 136 - 8, 0, 0, 0, 0), uiBoundaryX + 14 + bs * 2, 136, SniperTurret::Price);
     btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 2));
     UIGroup->AddNewControlObject(btn);
     //Button 4
     btn = new TurretButton("play/floor.png", "play/dirt.png",
-                           Engine::Sprite("play/shovel-base.png", 1294 + bs * 3, 136, 0, 0, 0, 0),
-                           Engine::Sprite("play/shovel.png", 1294 + bs * 3, 136 - 8, 0, 0, 0, 0), 1294 + bs * 3, 136, ShovelTool::Price);
+                           Engine::Sprite("play/shovel-base.png", uiBoundaryX + 14 + bs * 3, 136, 0, 0, 0, 0),
+                           Engine::Sprite("play/shovel.png", uiBoundaryX + 14 + bs * 3, 136 - 8, 0, 0, 0, 0), uiBoundaryX + 14 + bs * 3, 136, ShovelTool::Price);
     btn->SetOnClickCallback(std::bind(&PlayScene::UIBtnClicked, this, 3));
     btn->Base.Visible = false;
     UIGroup->AddNewControlObject(btn);

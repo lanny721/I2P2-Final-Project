@@ -13,7 +13,7 @@ Player::Player(const char* spriteSheetPath, Engine::Point initialPosition, float
     if (!spriteSheet) {
         Engine::LOG(Engine::LogType::ERROR) << "Failed to load sprite sheet: " << spriteSheetPath;
     }
-    //Update(0); // 初始化時更新一次位置
+    // Update(0); // 初始化時更新一次位置
     // Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
     //     Engine::Point(Engine::GameEngine::GetInstance().GetScreenWidth() / 4, Engine::GameEngine::GetInstance().GetScreenHeight() / 2);
 }
