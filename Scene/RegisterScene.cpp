@@ -32,11 +32,11 @@ void RegisterScene::Initialize() {
     AddNewObject(new Engine::Label("press enter to submit", "pirulen.ttf", 40, halfW, halfH / 2, 255, 255, 255, 255, 0.5, 0.5));
 
     // 帳號顯示
-    UIUsername = new Engine::Label("Username: " + username, "pirulen.ttf", 32, halfW, halfH -150, 255, 255, 100, 255, 0.5, 0.5);
+    UIUsername = new Engine::Label("account: " + username, "pirulen.ttf", 32, halfW, halfH -100, 255, 255, 100, 255, 0.5, 0.5);
     AddNewObject(UIUsername);
 
     // 密碼顯示（初始為空）
-    UIPassword = new Engine::Label("Password: ", "pirulen.ttf", 32, halfW, halfH -50, 255, 255, 100, 255, 0.5, 0.5);
+    UIPassword = new Engine::Label("Password: ", "pirulen.ttf", 32, halfW, halfH , 255, 255, 100, 255, 0.5, 0.5);
     AddNewObject(UIPassword);
 
     // 返回按鈕
@@ -57,15 +57,15 @@ void RegisterScene::Terminate() {
 
 void RegisterScene::SubmitOnClick() {
     if (!usernameEntered || !passwordEntered) {
-        std::cout << "Please enter both username and password!\n";
-        AddNewObject(new Engine::Label("Complete Input", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 400, 255, 0, 0, 255, 0.5, 0.5));
+        std::cout << "Please enter both account and password!\n";
+        AddNewObject(new Engine::Label("Complete Input", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
         return;
     }
 
     // 檢查輸入是否為空
     if (username.empty() || password.empty()) {
-        std::cout << "Username or password cannot be empty!\n";
-        AddNewObject(new Engine::Label("Empty Input", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 400, 255, 0, 0, 255, 0.5, 0.5));
+        std::cout << "account or password cannot be empty!\n";
+        AddNewObject(new Engine::Label("Empty Input", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
         return;
     }
 
@@ -86,8 +86,8 @@ void RegisterScene::SubmitOnClick() {
     file.close();
 
     if (usernameTaken) {
-        std::cout << "Username already exists!\n";
-        AddNewObject(new Engine::Label("Username Exists", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 400, 255, 0, 0, 255, 0.5, 0.5));
+        std::cout << "account already exists!\n";
+        AddNewObject(new Engine::Label("account Exists", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
         return;
     }
 
@@ -95,7 +95,7 @@ void RegisterScene::SubmitOnClick() {
     std::ofstream outFile("../Resource/users.txt", std::ios::app);
     if (!outFile.is_open()) {
         std::cout << "Cannot open users.txt for writing!\n";
-        AddNewObject(new Engine::Label("File Error", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 400, 255, 0, 0, 255, 0.5, 0.5));
+        AddNewObject(new Engine::Label("File Error", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
         return;
     }
     outFile << username << ":" << password << "\n";
@@ -104,7 +104,7 @@ void RegisterScene::SubmitOnClick() {
     std::cout << "Registration successful!\n";
     UIUsername->Color = al_map_rgba(255, 255, 255, 255);
     UIPassword->Color = al_map_rgba(255, 255, 255, 255);
-    Engine::GameEngine::GetInstance().ChangeScene("stage-select");
+    Engine::GameEngine::GetInstance().ChangeScene("start");
 }
 
 void RegisterScene::BackOnClick(int stage) {
@@ -123,17 +123,17 @@ void RegisterScene::OnKeyDown(int keyCode) {
     if (keyCode == ALLEGRO_KEY_ENTER) {
         if (!usernameEntered) {
             if (username.empty()) {
-                std::cout << "Username cannot be empty!\n";
-                AddNewObject(new Engine::Label("Empty Username", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 400, 255, 0, 0, 255, 0.5, 0.5));
+                std::cout << "account cannot be empty!\n";
+                AddNewObject(new Engine::Label("Empty account", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
                 return;
             }
             usernameEntered = true;
             UIUsername->Color = al_map_rgba(255, 255, 255, 255); // 確認帳號後變白色
-            std::cout << "Username entered: " << username << ". Now enter password.\n";
+            std::cout << "account entered: " << username << ". Now enter password.\n";
         } else {
             if (password.empty()) {
                 std::cout << "Password cannot be empty!\n";
-                AddNewObject(new Engine::Label("Empty Password", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 400, 255, 0, 0, 255, 0.5, 0.5));
+                AddNewObject(new Engine::Label("Empty Password", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
                 return;
             }
             passwordEntered = true;
@@ -148,16 +148,16 @@ void RegisterScene::OnKeyDown(int keyCode) {
             std::string key = al_keycode_to_name(keyCode);
             if (key.length() == 1 && ((key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= 'a' && key[0] <= 'z'))) {
                 username += key;
-                UIUsername->Text = "Username: " + username;
-                std::cout << "Current username: " << username << std::endl;
+                UIUsername->Text = "account: " + username;
+                std::cout << "Current account: " << username << std::endl;
             } else {
-                std::cout << "Only letters (a-z, A-Z) allowed for username!\n";
+                std::cout << "Only letters (a-z, A-Z) allowed for account!\n";
             }
         }
         if (keyCode == ALLEGRO_KEY_BACKSPACE && !username.empty()) {
             username.pop_back();
-            UIUsername->Text = "Username: " + username;
-            std::cout << "Current username: " << username << std::endl;
+            UIUsername->Text = "account: " + username;
+            std::cout << "Current account: " << username << std::endl;
         }
     } else {
         // 輸入密碼
