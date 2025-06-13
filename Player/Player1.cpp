@@ -34,21 +34,26 @@ void Player::Update(float deltaTime) {
 
     if (isKeyMoving()) {
         isMoving = true;
+        int upBound = PlayerHeight / 2;
+        int downBound = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight / 2;
+        int leftBound = PlayerWidth / 2;
+        int rightBound = PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth / 2;
+
         if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || 
             Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
                 float newy = position.y + speed * deltaTime *
                     (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN] ? 1 : -1);
                 int targetGridY = (int)(newy / PlayScene::BlockSize);
                 int targetGridX = (int)(position.x / PlayScene::BlockSize);
-                if (newy >= PlayerHeight / 2 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight / 2) { // since draw in center
+                if (newy >= upBound && newy <= downBound) { // since draw in center
                     if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
                         upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
                         position.y = newy;
                     } //else position.y = (targetGridY + 1) * PlayScene::BlockSize;
-                } else if (newy < PlayerHeight / 2) {
-                    position.y = PlayerHeight / 2;
+                } else if (newy < upBound) {
+                    position.y = upBound;
                 } else {
-                    position.y = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight / 2;
+                    position.y = downBound;
                 }
         } 
         // else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
@@ -72,16 +77,16 @@ void Player::Update(float deltaTime) {
                 float newx = position.x + speed * deltaTime * (leftRight ? 1 : -1); // 根據左右移動決定x座標增量
                 int targetGridY = (int)(position.y / PlayScene::BlockSize);
                 int targetGridX = (int)(newx / PlayScene::BlockSize);
-                if (newx >= PlayerWidth / 2 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth / 2) {
+                if (newx >= leftBound && newx <= rightBound) {
                     if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
                         upDownAngle = 0.f; // Reset upDownAngle when moving left/right
                         leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
                         position.x = newx;
                     } //else position.x = (targetGridX + 1) * PlayScene::BlockSize;
-                } else if (newx < PlayerWidth / 2) {
-                    position.x = PlayerWidth / 2; // 確保不會超出左邊界
+                } else if (newx < leftBound) {
+                    position.x = leftBound; // 確保不會超出左邊界
                 } else {
-                    position.x = PlayScene::MapWidth * PlayScene::BlockSize- PlayerWidth / 2;
+                    position.x = rightBound;
                 }
         } 
         // else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
