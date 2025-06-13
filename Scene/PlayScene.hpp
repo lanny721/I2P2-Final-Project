@@ -40,6 +40,7 @@ public:
         TILE_FLOOR,
         TILE_OCCUPIED,
         TILE_OBSTACLE,
+        TILE_GOLD
     };
 
     static bool DebugMode;
@@ -70,7 +71,8 @@ public:
     Group *EnemyGroup;
     Group *EffectGroup;
     Group *UIGroup;
-    Engine::Label *UIMoney;
+    Engine::Image *UIMoneyImage;
+    Engine::Label *UIMoneyLabel;
     Engine::Label *UILives;
     Engine::Label *UISfps;
     Engine::Image *imgTarget;

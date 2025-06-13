@@ -487,7 +487,7 @@ int PlayScene::GetMoney() const {
 }
 void PlayScene::EarnMoney(int money) {
     this->money += money;
-    UIMoney->Text = std::string("$") + std::to_string(this->money);
+    UIMoneyLabel->Text = std::to_string(this->money);
 }
 void PlayScene::ReadMap() {
     //test in stage3 combine 1 2
@@ -775,6 +775,9 @@ void PlayScene::readMapTiles(int y, int x, char c) {
     } else if (c == '3') {
         mapState[y][x] = TILE_OBSTACLE;
         TileMapImages[y][x] = (new Engine::Image("play/flowers3.png", x * BlockSize, y * BlockSize, BlockSize, BlockSize));
+    } else if (c == '5') {
+        mapState[y][x] = TILE_GOLD;
+        TileMapImages[y][x] = (new Engine::Image("play/gold.png", x * BlockSize, y * BlockSize, BlockSize, BlockSize));
     }
 }
 void PlayScene::ReadEnemyWave() {
@@ -795,7 +798,8 @@ void PlayScene::ConstructUI() {
     // Text
     if(MapId==4) UIGroup->AddNewObject(new Engine::Label(std::string("Customized"), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
     else UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
-    UIGroup->AddNewObject(UIMoney = new Engine::Label(std::string("$") + std::to_string(money), "pirulen.ttf", 24, uiBoundaryX + 14, 48));
+    UIGroup->AddNewObject(UIMoneyImage = new Engine::Image("play/money.png", uiBoundaryX + 14 , 48, 36, 36));
+    UIGroup->AddNewObject(UIMoneyLabel = new Engine::Label(std::to_string(money), "pirulen.ttf", 24, uiBoundaryX + 60 , 48));
     UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, uiBoundaryX + 14, 88));
 
     TurretButton *btn;
