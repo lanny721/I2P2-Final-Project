@@ -586,19 +586,6 @@ void PlayScene::ReadMap() {
             for (int j = 0; j < MapWidth; j++) {
                 char c = lines[i][j];
                 readMapTiles(i, j, c);
-                // if (c == '0') {
-                //     mapState[i][j]=TILE_DIRT;
-                //     TileMapImages[i][j] = (new Engine::Image("play/grass2.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-                // } else if(c == '1') {
-                //     mapState[i][j]=TILE_FLOOR;
-                //     TileMapImages[i][j] = (new Engine::Image("play/rock.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-                // }else if(c == '2') {
-                //     mapState[i][j]=TILE_OBSTACLE;
-                //     TileMapImages[i][j] = (new Engine::Image("play/rock_grass.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-                // }else if(c == '3') {
-                //     mapState[i][j]=TILE_OBSTACLE;
-                //     TileMapImages[i][j] = (new Engine::Image("play/flowers3.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-                // }
                 TileMapImages[i][j]->followCamera = true;
                 TileMapGroup->AddNewObject(TileMapImages[i][j]);
             }

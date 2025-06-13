@@ -4,9 +4,12 @@
 #include "UI/Component/Image.hpp"
 #include "Scene/PlayScene.hpp"
 #include <vector>
+class PlayScene;
 
 class SandBoxScene final : public Engine::IScene {
 private:
+    int MapWidth = PlayScene::defW;
+    int MapHeight = PlayScene::defH;
     Group *TileMapGroup;
     Group *UIGroup;
     Engine::Image *preview;
