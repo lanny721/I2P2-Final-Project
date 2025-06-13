@@ -40,15 +40,15 @@ void Player::Update(float deltaTime) {
                     (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN] ? 1 : -1);
                 int targetGridY = (int)(newy / PlayScene::BlockSize);
                 int targetGridX = (int)(position.x / PlayScene::BlockSize);
-                if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
+                if (newy >= PlayerHeight / 2 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight / 2) { // since draw in center
                     if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
                         upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
                         position.y = newy;
-                    } else position.y = (targetGridY + 1) * PlayScene::BlockSize;
-                } else if (newy < 0) {
-                    position.y = 0;
+                    } //else position.y = (targetGridY + 1) * PlayScene::BlockSize;
+                } else if (newy < PlayerHeight / 2) {
+                    position.y = PlayerHeight / 2;
                 } else {
-                    position.y = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight;
+                    position.y = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight / 2;
                 }
         } 
         // else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
@@ -72,16 +72,16 @@ void Player::Update(float deltaTime) {
                 float newx = position.x + speed * deltaTime * (leftRight ? 1 : -1); // 根據左右移動決定x座標增量
                 int targetGridY = (int)(position.y / PlayScene::BlockSize);
                 int targetGridX = (int)(newx / PlayScene::BlockSize);
-                if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
+                if (newx >= PlayerWidth / 2 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth / 2) {
                     if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
                         upDownAngle = 0.f; // Reset upDownAngle when moving left/right
                         leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
                         position.x = newx;
-                    } else position.x = (targetGridX + 1) * PlayScene::BlockSize;
-                } else if (newx < 0) {
-                    position.x = 0;
+                    } //else position.x = (targetGridX + 1) * PlayScene::BlockSize;
+                } else if (newx < PlayerWidth / 2) {
+                    position.x = PlayerWidth / 2; // 確保不會超出左邊界
                 } else {
-                    position.x = PlayScene::MapWidth * PlayScene::BlockSize- PlayerWidth;
+                    position.x = PlayScene::MapWidth * PlayScene::BlockSize- PlayerWidth / 2;
                 }
         } 
         // else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {

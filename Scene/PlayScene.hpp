@@ -26,6 +26,7 @@ private:
     int uiBoundaryX = 1280; // UI boundary X coordinate, used to determine if the mouse is in the UI area.
     float fpsTicks = 0.f; // Ticks for FPS calculation.
     void ReadSpecialMap(int mapId);
+    void readMapTiles(int y, int x, char c);
 
 protected:
     int lives;
