@@ -99,7 +99,8 @@ void LoginScene::SubmitOnClick() {
         std::cout << "Login successful!\n";
         UIUsername->Color = al_map_rgba(255, 255, 255, 255);
         UIPassword->Color = al_map_rgba(255, 255, 255, 255);
-        Engine::GameEngine::GetInstance().ChangeScene("stage-select");
+        Engine::GameEngine::GetInstance().SetCurrentUsername(username);
+        Engine::GameEngine::GetInstance().ChangeScene("win");
     } else if (!accountExists) {
         std::cout << "Account doesn't exist!\n";
         AddNewObject(new Engine::Label("Account doesn't exist", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
@@ -110,7 +111,7 @@ void LoginScene::SubmitOnClick() {
 }
 
 void LoginScene::BackOnClick(int stage) {
-    Engine::GameEngine::GetInstance().ChangeScene("start");
+    Engine::GameEngine::GetInstance().ChangeScene("win");
 }
 
 void LoginScene::OnKeyDown(int keyCode) {

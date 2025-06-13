@@ -282,3 +282,11 @@ namespace Engine {
         return instance;
     }
 }
+void Engine::GameEngine::SetCurrentUsername(const std::string& username) {
+        currentUsername = username;
+        std::cout << "Current username set to: " << currentUsername << std::endl;
+    }
+
+std::string Engine::GameEngine::GetCurrentUsername() const {
+    return currentUsername;
+}
