@@ -99,7 +99,10 @@ void PlayScene::Initialize() {
     effectcastle->followCamera = true;
     TowerGroup->AddNewObject(effectcastle);
 
-    arrow = new Engine::Image("play/bullet-4.png", (uiBoundaryX + screenSize.x) /2, screenSize.y / 2, 80, 80, 0.5, 0.5);
+    
+    AddNewObject(new Engine::Label("Way back", "pirulen.ttf", 36, (uiBoundaryX + screenSize.x) /2,  screenSize.y /2 - 150, 255, 255, 255, 255, 0.5, 0.5));
+    AddNewObject(new Engine::Label("home", "pirulen.ttf", 36, (uiBoundaryX + screenSize.x) /2, screenSize.y /2 - 100, 255, 255, 255, 255, 0.5, 0.5));
+    arrow = new Engine::Image("play/bullet-4.png", (uiBoundaryX + screenSize.x) /2 + 50, screenSize.y /2 + 50, 100, 100, 0.5, 0.5);
     arrow->isArrow = true;
     UIGroup->AddNewObject(arrow);
     // Preload Lose Scene
@@ -122,12 +125,11 @@ void PlayScene::Update(float deltaTime) {
     Engine::Point distance = player->position - EndGridPoint*BlockSize;
     if(distance.Magnitude() < 400) showHealthBar = true;
     else showHealthBar = false;
-    arrow->Visible=!showHealthBar;
     if(arrow){
-        float dx =EndGridPoint.x*BlockSize - player->position.x;
-        float dy =EndGridPoint.y*BlockSize - player->position.y;
+        float dx =EndGridPoint.x*BlockSize - arrow->Position.x - camera.x;
+        float dy =EndGridPoint.y*BlockSize - arrow->Position.y - camera.y;
         float angle = atan2(dy, dx) + ALLEGRO_PI / 2;
-        arrow->angle = angle; // 更新箭頭的角度
+        arrow->angle = angle;
     }
 
     fpsTicks += deltaTime;
@@ -892,7 +894,7 @@ void PlayScene::ConstructUI() {
     int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
     int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
     int shift = 135 + 25;
-    dangerIndicator = new Engine::Sprite("play/benjamin.png", w - shift, h - shift);
+    dangerIndicator = new Engine::Sprite("play/benjamin.png", w - shift, h - shift , 270, 270);
     dangerIndicator->Tint.a = 0;
     UIGroup->AddNewObject(dangerIndicator);
 
