@@ -40,6 +40,9 @@ namespace Engine {
         /// <returns>Height of the original or scaled bitmap.</returns>
         int GetBitmapHeight() const;
         ALLEGRO_COLOR color = al_map_rgba(255, 255, 255, 255);
+
+        bool isArrow = false;
+        float angle = -(ALLEGRO_PI / 2); // The angle of arrow image.
     };
 }
 #endif   // IMAGE_HPP

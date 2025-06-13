@@ -80,6 +80,7 @@ public:
     Engine::Label *UIGoldLabel;
     Engine::Image *UIMoneyImage;
     Engine::Image *imgTarget;
+    Engine::Image *arrow;
     Engine::Image *healthBar= nullptr;
     Engine::Sprite *dangerIndicator;
     Engine::Sprite *effectcastle;

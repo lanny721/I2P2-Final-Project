@@ -98,6 +98,10 @@ void PlayScene::Initialize() {
     effectcastle = new Engine::Sprite("play/castle.png", MapWidth * BlockSize / 2, (MapHeight - 2) * BlockSize / 2, BlockSize * 6, BlockSize * 6);
     effectcastle->followCamera = true;
     TowerGroup->AddNewObject(effectcastle);
+
+    arrow = new Engine::Image("play/bullet-4.png", (uiBoundaryX + screenSize.x) /2, screenSize.y / 2, 80, 80, 0.5, 0.5);
+    arrow->isArrow = true;
+    UIGroup->AddNewObject(arrow);
     // Preload Lose Scene
     deathBGMInstance = Engine::Resources::GetInstance().GetSampleInstance("astronomia.ogg");
     Engine::Resources::GetInstance().GetBitmap("lose/benjamin-happy.png");
@@ -118,6 +122,13 @@ void PlayScene::Update(float deltaTime) {
     Engine::Point distance = player->position - EndGridPoint*BlockSize;
     if(distance.Magnitude() < 400) showHealthBar = true;
     else showHealthBar = false;
+    arrow->Visible=!showHealthBar;
+    if(arrow){
+        float dx =EndGridPoint.x*BlockSize - arrow->Position.x;
+        float dy =EndGridPoint.y*BlockSize - arrow->Position.y;
+        float angle = atan2(dy, dx) - ALLEGRO_PI / 2;
+        arrow->angle = angle; // 更新箭頭的角度
+    }
 
     fpsTicks += deltaTime;
     if (fpsTicks >= 0.5f) {
