@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
 #include <cmath>
 #include <fstream>
 #include <functional>
@@ -108,6 +109,10 @@ void PlayScene::Terminate() {
     IScene::Terminate();
 }
 void PlayScene::Update(float deltaTime) {
+    Engine::Point distance = player->position - EndGridPoint*BlockSize;
+    if(distance.Magnitude() < 400) isHealthBar = 1;
+    else isHealthBar = 0;
+
     fpsTicks += deltaTime;
     if (fpsTicks >= 0.5f) {
         fpsTicks -= 0.5f;
@@ -296,6 +301,7 @@ void PlayScene::Draw() const {
         }
     }
     player->Draw(); // Draw the player character.
+    if(isHealthBar) DrawHealthBar();
 }
 void PlayScene::OnMouseDown(int button, int mx, int my) {
     if ((button & 1) && !imgTarget->Visible && preview) {
@@ -799,9 +805,9 @@ void PlayScene::ReadEnemyWave() {
 }
 void PlayScene::ConstructUI() {
     // Background
-    Engine::Image* background=new Engine::Image("play/sand.png", uiBoundaryX, 0, 320, 832);
-    background->color = al_map_rgba(255, 255, 255, 150);
-    UIGroup->AddNewObject(background);
+    Engine::Image* boundary=new Engine::Image("play/floor.png", uiBoundaryX, 0, 320, 832);
+    boundary->color = al_map_rgba(255, 255, 255, 200);
+    UIGroup->AddNewObject(boundary);
     // Text
     if(MapId==4) UIGroup->AddNewObject(new Engine::Label(std::string("Customized"), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
     else UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
@@ -944,4 +950,31 @@ bool PlayScene::canWalk(Engine::Point pos) const {
     if (pos.x < 0 || pos.x >= MapWidth || pos.y < 0 || pos.y >= MapHeight) return false;
     return mapState[pos.y][pos.x] == TILE_DIRT || mapState[pos.y][pos.x] == TILE_FLOOR || 
         mapState[pos.y][pos.x] == TILE_OCCUPIED || mapState[pos.y][pos.x] == TILE_WATER;
+}
+void PlayScene::DrawHealthBar() const {
+    const int barWidth = 170;
+    const int barHeight = 24;
+    const float healthRatio = static_cast<float>(lives) / 100.0f;
+
+    int barX = EndGridPoint.x * BlockSize - barWidth / 2 - camera.x ;
+    int barY = EndGridPoint.y * BlockSize - barHeight / 2 - 35 - camera.y; 
+
+    //血量
+    al_draw_filled_rectangle(
+        barX,
+        barY,
+        barX + barWidth * healthRatio,
+        barY + barHeight,
+        al_map_rgb(255, 0, 0)
+    );
+
+    //邊框
+    al_draw_rectangle(
+        barX,
+        barY,
+        barX + barWidth,
+        barY + barHeight,
+        al_map_rgb(0, 0, 0),
+        2.0f
+    );
 }
