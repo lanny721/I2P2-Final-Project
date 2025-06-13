@@ -39,6 +39,7 @@ namespace Engine {
         /// </summary>
         /// <returns>Height of the original or scaled bitmap.</returns>
         int GetBitmapHeight() const;
+        ALLEGRO_COLOR color = al_map_rgba(255, 255, 255, 255);
     };
 }
 #endif   // IMAGE_HPP
