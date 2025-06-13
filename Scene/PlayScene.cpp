@@ -755,6 +755,20 @@ void PlayScene::readMapTiles(int y, int x, char c) {
     }
 }
 void PlayScene::ReadEnemyWave() {
+    if(MapId==4){
+        enemyWaveData.clear();
+        while(enemyWaveNum--){
+            float type = static_cast<float>(rand()) / RAND_MAX * 5; // Random type from 0 to 6
+            float wait;
+            if( type == 0 ) wait = 0.5f + static_cast<float>(rand()) / RAND_MAX * 6.0f;
+            else wait = 0.5f + static_cast<float>(rand()) / RAND_MAX * 2.0f; // Random wait from 0.5 to 2.5
+            float repeat = 1 + static_cast<float>(rand()) / RAND_MAX * 10; // Random repeat from 1 to 3
+            for(int i = 0; i < repeat; i++) {
+                enemyWaveData.emplace_back(type, wait);
+            }
+        }
+        return;
+    }
     std::string filename = std::string("Resource/enemy") + std::to_string(MapId) + ".txt";
     // Read enemy file.
     float type, wait, repeat;

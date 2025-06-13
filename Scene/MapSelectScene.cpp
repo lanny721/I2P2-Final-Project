@@ -64,7 +64,8 @@ void MapSelectScene::PlayOnClick(int id) {
     PlayScene *scene = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetScene("play"));
     scene->MapId = this->MapId ;
     scene->mapCombineW=customizedW;
-    scene->mapCombineH=customizedH; // Set the map combine size, can be changed later.
+    scene->mapCombineH=customizedH;
+    scene->enemyWaveNum = customizedEnemy;
     Engine::GameEngine::GetInstance().ChangeScene("play");
 }
 void MapSelectScene::DrawPreviewMap() {
