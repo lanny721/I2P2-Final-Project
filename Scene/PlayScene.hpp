@@ -22,12 +22,10 @@ class PlayScene final : public Engine::IScene {
 private:
     ALLEGRO_SAMPLE_ID bgmId;
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> deathBGMInstance;
-    //float cameraSpeed = 400.f;
     Player* player;
-    void ReadSpecialMap(int mapId);
     int uiBoundaryX = 1280; // UI boundary X coordinate, used to determine if the mouse is in the UI area.
-    Engine::Label *UISfps;
     float fpsTicks = 0.f; // Ticks for FPS calculation.
+    void ReadSpecialMap(int mapId);
 
 protected:
     int lives;
@@ -55,6 +53,7 @@ public:
     static const std::vector<int> losecode;
 
     int MapId;
+    int mapCombineW, mapCombineH;
     float ticks;
     float deathCountDown;
     // Map tiles.
@@ -68,11 +67,14 @@ public:
     Group *UIGroup;
     Engine::Label *UIMoney;
     Engine::Label *UILives;
+    Engine::Label *UISfps;
     Engine::Image *imgTarget;
     Engine::Sprite *dangerIndicator;
     Turret *preview;
     std::vector<std::vector<TileType>> mapState; // [y][x] important!!!!!!!!!!!!!! 
     std::vector<std::vector<int>> mapDistance;
+    std::vector<std::vector<Engine::Image*>> TileMapImages; // [y][x]
+    std::vector<std::vector<Turret*>> Towers; // [y][x]
     std::list<std::pair<int, float>> enemyWaveData;
     std::list<int> keyStrokes;
     static Engine::Point GetClientSize();
@@ -93,11 +95,8 @@ public:
     void ConstructUI();
     void UIBtnClicked(int id);
     bool CheckSpaceValid(int x, int y);
-    std::vector<std::vector<int>> CalculateBFSDistance();
-    std::vector<std::vector<Engine::Image*>> TileMapImages; // [y][x]
-    std::vector<std::vector<Turret*>> Towers; // [y][x]
-    Engine::Point GetRandomSpawnPoint() const;
-    int mapCombineW, mapCombineH;
     bool canWalk(int y, int x) const;
+    Engine::Point GetRandomSpawnPoint() const;
+    std::vector<std::vector<int>> CalculateBFSDistance();
 };
 #endif   // PLAYSCENE_HPP

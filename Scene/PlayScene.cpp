@@ -767,30 +767,29 @@ void PlayScene::UIBtnClicked(int id) {
     OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
 }
 bool PlayScene::CheckSpaceValid(int x, int y) {
-    if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight)
-        return false;
-    auto map00 = mapState[y][x];
-    mapState[y][x] = TILE_OCCUPIED;
-    std::vector<std::vector<int>> map = CalculateBFSDistance();
-    mapState[y][x] = map00;
-    if (map[0][0] == -1) return false;
-
-    for (auto &it : EnemyGroup->GetObjects()) {
-        Engine::Point pnt;
-        pnt.x = floor(it->Position.x / BlockSize);
-        pnt.y = floor(it->Position.y / BlockSize);
-        if (pnt.x < 0) pnt.x = 0;
-        if (pnt.x >= MapWidth) pnt.x = MapWidth - 1;
-        if (pnt.y < 0) pnt.y = 0;
-        if (pnt.y >= MapHeight) pnt.y = MapHeight - 1;
-        if (map[pnt.y][pnt.x] == -1)
-            return false;
-    }
-    // ^All enemy have path to exit.
+    if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight || mapState[y][x] != TILE_FLOOR) return false;
+    // auto map00 = mapState[y][x];
     // mapState[y][x] = TILE_OCCUPIED;
-    mapDistance = map;
-    for (auto &it : EnemyGroup->GetObjects())
-        dynamic_cast<Enemy *>(it)->UpdatePath(mapDistance);
+    // std::vector<std::vector<int>> map = CalculateBFSDistance();
+    // mapState[y][x] = map00;
+    // if (map[0][0] == -1) return false;
+
+    // for (auto &it : EnemyGroup->GetObjects()) {
+    //     Engine::Point pnt;
+    //     pnt.x = floor(it->Position.x / BlockSize);
+    //     pnt.y = floor(it->Position.y / BlockSize);
+    //     if (pnt.x < 0) pnt.x = 0;
+    //     if (pnt.x >= MapWidth) pnt.x = MapWidth - 1;
+    //     if (pnt.y < 0) pnt.y = 0;
+    //     if (pnt.y >= MapHeight) pnt.y = MapHeight - 1;
+    //     if (map[pnt.y][pnt.x] == -1)
+    //         return false;
+    // }
+    // // ^All enemy have path to exit.
+    // //// mapState[y][x] = TILE_OCCUPIED;
+    // mapDistance = map;
+    // for (auto &it : EnemyGroup->GetObjects())
+    //     dynamic_cast<Enemy *>(it)->UpdatePath(mapDistance);
     return true;
 }
 std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
@@ -828,5 +827,5 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
 }
 bool PlayScene::canWalk(int y, int x) const {
     if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) return false;
-    return mapState[y][x] == TILE_DIRT || mapState[y][x] == TILE_FLOOR;
+    return mapState[y][x] == TILE_DIRT || mapState[y][x] == TILE_FLOOR || mapState[y][x] == TILE_OCCUPIED;
 }
