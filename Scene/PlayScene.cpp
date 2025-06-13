@@ -692,7 +692,7 @@ void PlayScene::ReadSpecialMap(int mapId) {
         //const int mapCombineW = 3, mapCombineH = 4;
         std::vector<std::vector<int>> mapCombineTable(mapCombineH, std::vector<int>(mapCombineW));
         std::vector<int> candidates(mapNumber);
-        for(int i = 0; i < mapNumber; i++) candidates[i] = i + 1;
+        for(int i = 0; i < candidates.size(); i++) candidates[i] = i + 1;
 
         MapWidth = 0;
         int tmpWidth;
