@@ -114,7 +114,17 @@ void MapSelectScene::DrawPreviewMap() {
                     previewX + j * previewBlockSize, 
                     previewY + i * previewBlockSize, 
                     previewBlockSize, previewBlockSize);
-            }else continue;
+            }else if(lines[i][j] == '4') {
+                tileImage = new Engine::Image("play/water.png", 
+                    previewX + j * previewBlockSize, 
+                    previewY + i * previewBlockSize, 
+                    previewBlockSize, previewBlockSize);
+            }else if(lines[i][j] == '5') {
+                tileImage = new Engine::Image("play/gold.png", 
+                    previewX + j * previewBlockSize, 
+                    previewY + i * previewBlockSize, 
+                    previewBlockSize, previewBlockSize);
+            } else continue;
             AddNewObject(tileImage);
         }
     }
