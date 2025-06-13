@@ -114,7 +114,7 @@ void MapSelectScene::DrawPreviewMap() {
                     previewX + j * previewBlockSize, 
                     previewY + i * previewBlockSize, 
                     previewBlockSize, previewBlockSize);
-            }
+            }else continue;
             AddNewObject(tileImage);
         }
     }
