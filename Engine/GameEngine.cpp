@@ -121,11 +121,13 @@ namespace Engine {
                 case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
                     // Event for mouse key down.
                     LOG(VERBOSE) << "Mouse button " << event.mouse.button << " down at (" << event.mouse.x << ", " << event.mouse.y << ")";
+                    isMouseDown = true;
                     activeScene->OnMouseDown(event.mouse.button, event.mouse.x, event.mouse.y);
                     break;
                 case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
                     // Event for mouse key up.
                     LOG(VERBOSE) << "Mouse button " << event.mouse.button << " down at (" << event.mouse.x << ", " << event.mouse.y << ")";
+                    isMouseDown = false;
                     activeScene->OnMouseUp(event.mouse.button, event.mouse.x, event.mouse.y);
                     break;
                 case ALLEGRO_EVENT_MOUSE_AXES:

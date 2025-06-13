@@ -9,7 +9,6 @@ class PlayScene;
 
 class Player {
 private:
-    float cameraTicks;
     float leftRightAngle = 0.f; // 左右移動時的角度
     float upDownAngle = 0.f; // 上下移動時的角度
     float scale = 1.5f; // 放大比例

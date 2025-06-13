@@ -6,7 +6,7 @@
 #include "Engine/Point.hpp"
 #include "ShovelTool.hpp"
 #include "Scene/PlayScene.hpp"
-
+#include "Engine/LOG.hpp"
 #include "Engine/GameEngine.hpp"
 #include <iostream>
 #include "Enemy/Enemy.hpp"
@@ -19,7 +19,7 @@ ShovelTool::ShovelTool(float x, float y): Turret("play/shovel-base.png", "play/s
 void ShovelTool::Use() {
     int x = floor(Position.x / PlayScene::BlockSize);
     int y = floor(Position.y / PlayScene::BlockSize);
-    if (getPlayScene()->mapState[y][x] != PlayScene::TILE_DIRT) { // dig to dirt
+    if (getPlayScene()->mapState[y][x] == PlayScene::TILE_FLOOR) { // dig to dirt
 
         getPlayScene()->mapState[y][x] = PlayScene::TILE_DIRT;
         getPlayScene()->TileMapGroup->RemoveObject(getPlayScene()->TileMapImages[y][x]->GetObjectIterator());
@@ -38,4 +38,5 @@ void ShovelTool::Use() {
         getPlayScene()->EarnMoney(getPlayScene()->Towers[y][x]->GetPrice());
         getPlayScene()->Towers[y][x] = nullptr;
     }
+    // std::cout << getPlayScene()->mapState[y][x] << std::endl;
 }

@@ -156,6 +156,7 @@ namespace Engine {
         /// <returns>The Singleton instance of GameEngine.</returns>
         static GameEngine &GetInstance();
         bool keyStates[256]{};
+        bool isMouseDown;
     };
 }
 #endif   // GAMEENGINE_HPP

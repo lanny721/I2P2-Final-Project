@@ -108,9 +108,7 @@ void PlayScene::Update(float deltaTime) {
         fpsTicks -= 0.5f;
         UISfps->Text = "FPS: " + std::to_string(static_cast<int>(1.0f / deltaTime));
     }
-
-    // If we use deltaTime directly, then we might have Bullet-through-paper problem.
-    // Reference: Bullet-Through-Paper
+    // If we use deltaTime directly, then we might have Bullet-through-paper problem. Reference: Bullet-Through-Paper
     if (SpeedMult == 0) deathCountDown = -1;
     else if (deathCountDown != -1) SpeedMult = 1;
     // Calculate danger zone.
@@ -206,6 +204,11 @@ void PlayScene::Update(float deltaTime) {
     }
 
     player->Update(deltaTime); // Update the player character.
+    if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_R] && Engine::GameEngine::GetInstance().isMouseDown) {
+        UIBtnClicked(3);
+        putThings(1, Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
+    }
+    // if (Engine::GameEngine::GetInstance().isMouseDown) putThings(1, Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
     // if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
     //     Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D]) {
     //         if        (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W]) {
@@ -295,12 +298,59 @@ void PlayScene::OnMouseMove(int mx, int my) {
 }
 void PlayScene::OnMouseUp(int button, int mx, int my) {
     IScene::OnMouseUp(button, mx, my);
+    putThings(button, mx, my);
+    // if (!imgTarget->Visible)
+    //     return;
+    // const int x = (mx + camera.x) / BlockSize;
+    // const int y = (my + camera.y) / BlockSize;
+    // if ((button & 1) && mx < uiBoundaryX) {
+    //     if (mapState[y][x] != TILE_OCCUPIED || preview->isTool) {
+    //         if (!preview)
+    //             return;
+    //         // Check if valid.
+    //         if (!CheckSpaceValid(x, y)) {
+    //             Engine::Sprite *sprite;
+    //             sprite = new DirtyEffect("play/target-invalid.png", 1, x * BlockSize + BlockSize / 2, y * BlockSize + BlockSize / 2);
+    //             sprite->followCamera = true;
+    //             GroundEffectGroup->AddNewObject(sprite);
+    //             sprite->Rotation = 0;
+    //             return;
+    //         }
+    //         // Purchase.
+    //         EarnMoney(-preview->GetPrice());
+    //         //Turret* newpreview = preview;
+    //         // Remove Preview.
+    //         preview->GetObjectIterator()->first = false;
+    //         UIGroup->RemoveObject(preview->GetObjectIterator());
+    //         // Construct real turret.
+    //         preview->Position.x = x * BlockSize + BlockSize / 2;
+    //         preview->Position.y = y * BlockSize + BlockSize / 2;
+    //         preview->Enabled = true;
+    //         preview->Preview = false;
+    //         preview->Tint = al_map_rgba(255, 255, 255, 255);
+    //         preview->followCamera = preview->imgBase.followCamera = true;
+    //         if (!preview->isTool) {
+    //             TowerGroup->AddNewObject(preview);
+    //             Towers[y][x] = preview;
+    //         } else {
+    //             preview->Use();
+    //         }
+    //         // To keep responding when paused.
+    //         preview->Update(0);
+    //         if (!preview->isTool) mapState[y][x] = TILE_OCCUPIED;
+    //         // Remove Preview.
+    //         preview = nullptr;
+    //         OnMouseMove(mx, my);
+    //     }
+    // }
+}
+void PlayScene::putThings(int button, int mx, int my) {
     if (!imgTarget->Visible)
         return;
     const int x = (mx + camera.x) / BlockSize;
     const int y = (my + camera.y) / BlockSize;
     if ((button & 1) && mx < uiBoundaryX) {
-        if (mapState[y][x] != TILE_OCCUPIED || preview->isTool) {
+        if (mapState[y][x] == TILE_FLOOR || preview->isTool || 1) { // deal in CheckSpaceValid
             if (!preview)
                 return;
             // Check if valid.
@@ -759,8 +809,6 @@ void PlayScene::ConstructUI() {
     UIGroup->AddNewObject(UISfps);
 }
 void PlayScene::UIBtnClicked(int id) {
-    // if (preview)
-    //     UIGroup->RemoveObject(preview->GetObjectIterator());
     Turret* new_preview = nullptr;
 
     if (id == 0 && money >= MachineGunTurret::Price)
@@ -785,13 +833,18 @@ void PlayScene::UIBtnClicked(int id) {
     OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
 }
 bool PlayScene::CheckSpaceValid(int x, int y) {
-    if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight || mapState[y][x] != TILE_FLOOR) return false;
+    if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) return false;
+    if (!preview->isTool) {
+        return mapState[y][x] == TILE_FLOOR;
+    } 
+    else if(preview->isTool) {
+        return (mapState[y][x] == TILE_FLOOR || mapState[y][x] == TILE_OCCUPIED);
+    }
     // auto map00 = mapState[y][x];
     // mapState[y][x] = TILE_OCCUPIED;
     // std::vector<std::vector<int>> map = CalculateBFSDistance();
     // mapState[y][x] = map00;
     // if (map[0][0] == -1) return false;
-
     // for (auto &it : EnemyGroup->GetObjects()) {
     //     Engine::Point pnt;
     //     pnt.x = floor(it->Position.x / BlockSize);
@@ -807,8 +860,8 @@ bool PlayScene::CheckSpaceValid(int x, int y) {
     // //// mapState[y][x] = TILE_OCCUPIED;
     // mapDistance = map;
     // for (auto &it : EnemyGroup->GetObjects())
-    //     dynamic_cast<Enemy *>(it)->UpdatePath(mapDistance);
-    return true;
+    // //     dynamic_cast<Enemy *>(it)->UpdatePath(mapDistance);
+    // return true;
 }
 std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
     // Reverse BFS to find path.

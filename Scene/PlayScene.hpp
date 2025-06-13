@@ -27,6 +27,7 @@ private:
     float fpsTicks = 0.f; // Ticks for FPS calculation.
     void ReadSpecialMap(int mapId);
     void readMapTiles(int y, int x, char c);
+    void putThings(int button, int mx, int my);
 
 protected:
     int lives;

@@ -23,7 +23,6 @@ Player::~Player() {
     }
 }
 void Player::Update(float deltaTime) {
-    cameraTicks += deltaTime;
     animationTimer += deltaTime;
     maxFrames = isMoving ? 4 : 2; // 如果正在移動，則有4幀動畫，否則只有2幀靜止動畫
     animationInterval = isMoving ? 0.1f : 0.5f; // 移動時每幀0.1秒，靜止時每幀0.5秒
@@ -49,29 +48,11 @@ void Player::Update(float deltaTime) {
                     if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
                         upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
                         position.y = newy;
-                    } //else position.y = (targetGridY + 1) * PlayScene::BlockSize;
-                } else if (newy < upBound) {
-                    position.y = upBound;
-                } else {
-                    position.y = downBound;
-                }
+                    } 
+                } else if (newy < upBound) position.y = upBound;
+                  else position.y = downBound;
         } 
-        // else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
-        //     float newy = position.y + speed * deltaTime;
-        //     int targetGridY = (int)( (newy+PlayerHeight) / PlayScene::BlockSize);
-        //     int targetGridX = (int)(position.x / PlayScene::BlockSize);
-        //     if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
-        //         if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
-        //             upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
-        //             position.y = newy;
-        //         } else position.y = targetGridY * PlayScene::BlockSize - PlayerHeight;
-        //     } else if (newy < 0) {
-        //         position.y = 0;
-        //     } else {
-        //         position.y = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight;
-        //     }
-        // }
-        if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] || 
+        else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] || 
             Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
                 leftRight = Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]; // 判斷左右移動
                 float newx = position.x + speed * deltaTime * (leftRight ? 1 : -1); // 根據左右移動決定x座標增量
@@ -82,35 +63,14 @@ void Player::Update(float deltaTime) {
                         upDownAngle = 0.f; // Reset upDownAngle when moving left/right
                         leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
                         position.x = newx;
-                    } //else position.x = (targetGridX + 1) * PlayScene::BlockSize;
-                } else if (newx < leftBound) {
-                    position.x = leftBound; // 確保不會超出左邊界
-                } else {
-                    position.x = rightBound;
-                }
+                    } 
+                } else if (newx < leftBound) position.x = leftBound;
+                  else position.x = rightBound;
         } 
-        // else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
-        //     leftRight = true;
-        //     float newx = position.x + speed * deltaTime;
-        //     int targetGridY = (int)(position.y / PlayScene::BlockSize);
-        //     int targetGridX = (int)((newx+PlayerWidth) / PlayScene::BlockSize);
-        //     if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
-        //         if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
-        //             upDownAngle = 0.f; // Reset upDownAngle when moving left/right
-        //             leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
-        //             position.x = newx;
-        //         } else position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
-        //     } else if (newx < 0) {
-        //         position.x = 0;
-        //     } else {
-        //         position.x = PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth;
-        //     }
-        // }
 
         Engine::GameEngine::GetInstance().GetActiveScene()->OnMouseMove(
             Engine::GameEngine::GetInstance().GetMousePosition().x, 
-            Engine::GameEngine::GetInstance().GetMousePosition().y
-        );
+            Engine::GameEngine::GetInstance().GetMousePosition().y);
     } else {
         isMoving = false;
         maxFrames = isMoving ? 4 : 2;
@@ -144,7 +104,7 @@ void Player::OnKeyDown(int keyCode) {
     if (keyCode == ALLEGRO_KEY_SPACE) rotate = !rotate; // 按空格鍵切換旋轉狀態
 }
 PlayScene* Player::getPlayScene() {
-    return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetScene("play"));
+    return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
 }
 bool Player::isKeyMoving() const {
     return Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
