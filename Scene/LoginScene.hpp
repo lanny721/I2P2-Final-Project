@@ -12,6 +12,7 @@ private:
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> bgmInstance;
     bool usernameEntered; // 是否已輸入帳號
     bool passwordEntered; // 是否已輸入密碼
+    bool accountExists=false; // 帳號是否存在
     std::string username; // 當前輸入的帳號
     std::string password; // 當前輸入的密碼
     Engine::Label* UIUsername; // 顯示帳號的標籤

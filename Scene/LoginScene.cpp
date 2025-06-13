@@ -83,10 +83,13 @@ void LoginScene::SubmitOnClick() {
         size_t pos = line.find(':');
         if (pos != std::string::npos) {
             std::string stored_username = line.substr(0, pos);
-            std::string stored_password = line.substr(pos + 1);
-            if (stored_username == username && stored_password == password) {
-                loginSuccess = true;
-                break;
+            if (stored_username == username) {
+                accountExists = true;
+                std::string stored_password = line.substr(pos + 1);
+                if (stored_password == password) {
+                    loginSuccess = true;
+                    break;
+                }
             }
         }
     }
@@ -97,7 +100,10 @@ void LoginScene::SubmitOnClick() {
         UIUsername->Color = al_map_rgba(255, 255, 255, 255);
         UIPassword->Color = al_map_rgba(255, 255, 255, 255);
         Engine::GameEngine::GetInstance().ChangeScene("stage-select");
-    } else {
+    } else if (!accountExists) {
+        std::cout << "Account doesn't exist!\n";
+        AddNewObject(new Engine::Label("Account doesn't exist", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
+    }else {
         std::cout << "Login failed!\n";
         AddNewObject(new Engine::Label("Login Failed", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
     }
