@@ -24,7 +24,7 @@ void WinScene::Initialize() {
     nameEntered = false;
     name.clear();
 
-    AddNewObject(new Engine::Image("win/benjamin-sad.png", halfW, halfH, 0, 0, 0.5, 0.5));
+    AddNewObject(new Engine::Image("win/benjamin-sad.png", halfW, halfH - 50, 415, 415, 0.5, 0.5));
     AddNewObject(new Engine::Label("You Win!", "pirulen.ttf", 48, halfW, halfH / 4 - 10, 255, 255, 255, 255, 0.5, 0.5));
     Engine::ImageButton *btn;
     btn = new Engine::ImageButton("win/dirt.png", "win/floor.png", halfW - 200, halfH * 7 / 4 - 50, 400, 100);

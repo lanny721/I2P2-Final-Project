@@ -78,7 +78,7 @@ void Player::Update(float deltaTime) {
     } 
     movingSpeed = movingSpeed * powf(getPlayScene()->isRaining || 
         getPlayScene()->mapState[position.y/PlayScene::BlockSize][position.x/PlayScene::BlockSize] == PlayScene::TILE_WATER ? 
-        0.02f : 0.001f, deltaTime);
+        0.05f : 0.001f, deltaTime);
     if (abs(movingSpeed.x) < 30.f) movingSpeed.x = 0.f;
     if (abs(movingSpeed.y) < 30.f) movingSpeed.y = 0.f;
     if (getPlayScene()->mapState[position.y/PlayScene::BlockSize][position.x/PlayScene::BlockSize] == PlayScene::TILE_DOOR) position = PlayScene::EndGridPoint * PlayScene::BlockSize;
