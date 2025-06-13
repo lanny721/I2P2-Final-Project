@@ -25,24 +25,29 @@ Player::~Player() {
 }
 void Player::Update(float deltaTime) {
     animationTimer += deltaTime;
-    maxFrames = isMoving ? 4 : 2; // 如果正在移動，則有4幀動畫，否則只有2幀靜止動畫
-    animationInterval = isMoving ? 0.1f : 0.5f; // 移動時每幀0.1秒，靜止時每幀0.5秒
     if (animationTimer >= animationInterval) {
         animationTimer = 0;
         currentFrame = (currentFrame + 1) % maxFrames; // 循環切換幀
     }
     if (isKeyMoving()) {
         isMoving = true;
+        if      (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP]   ) movingSpeed.y = -speed;
+        else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN] ) movingSpeed.y =  speed;
+        if      (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] ) movingSpeed.x = -speed;
+        else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) movingSpeed.x =  speed;
+    } else isMoving = false;
+    if (movingSpeed.Magnitude() != 0.f) {
         int upBound = PlayerHeight / 2;
         int downBound = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight / 2;
         int leftBound = PlayerWidth / 2;
         int rightBound = PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth / 2;
 
         Engine::Point newPos = position;
-        if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || 
-            Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
-                newPos.y = position.y + speed * deltaTime *
-                    (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN] ? 1 : -1);
+        // if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || 
+        //     Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
+        if (movingSpeed.y != 0.f) {
+                newPos.y = position.y + movingSpeed.y * deltaTime *
+                    (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN] ? 1 : 1);
                 if (newPos.y >= upBound && newPos.y <= downBound) { // since draw in center
                     if(getPlayScene()->canWalk(newPos / PlayScene::BlockSize)) {
                         upDownAngle += (newPos.y - position.y) / (float)(frameHeight / 2);
@@ -52,10 +57,11 @@ void Player::Update(float deltaTime) {
                   else position.y = downBound;
         } 
         newPos = position;
-        if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] || 
-            Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
+        // if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] || 
+        //     Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
+        if (movingSpeed.x != 0.f) {
                 leftRight = Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]; // 判斷左右移動
-                newPos.x = position.x + speed * deltaTime * (leftRight ? 1 : -1);
+                newPos.x = position.x + movingSpeed.x * deltaTime * (leftRight ? 1 : 1);
                 if (newPos.x >= leftBound && newPos.x <= rightBound) {
                     if(getPlayScene()->canWalk(newPos / PlayScene::BlockSize)) {
                         upDownAngle = 0.f; // Reset upDownAngle when moving left/right
@@ -69,11 +75,15 @@ void Player::Update(float deltaTime) {
         Engine::GameEngine::GetInstance().GetActiveScene()->OnMouseMove(
             Engine::GameEngine::GetInstance().GetMousePosition().x, 
             Engine::GameEngine::GetInstance().GetMousePosition().y);
-    } else {
-        isMoving = false;
-        maxFrames = isMoving ? 4 : 2;
-        currentFrame %= maxFrames;
-    }
+    } 
+    movingSpeed = movingSpeed * pow(0.01, deltaTime);
+    if (abs(movingSpeed.x) < 30.f) movingSpeed.x = 0.f;
+    if (abs(movingSpeed.y) < 30.f) movingSpeed.y = 0.f;
+    std::cout << movingSpeed << std::endl;
+
+    maxFrames = isMoving ? 4 : 2; // 如果正在移動，則有4幀動畫，否則只有2幀靜止動畫
+    animationInterval = isMoving ? 0.1f : 0.5f; // 移動時每幀0.1秒，靜止時每幀0.5秒
+    currentFrame %= maxFrames;
     
     Engine::Point Displacement = position - 
         Engine::Point(PlayScene::defW * PlayScene::BlockSize / 2.0f, 

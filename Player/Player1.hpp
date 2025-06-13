@@ -19,11 +19,12 @@ private:
     bool leftRight; // left: false, right: true
     bool rotate = true; // 是否旋轉
     bool isKeyMoving() const ;
+    Engine::Point movingSpeed;
     PlayScene* getPlayScene();
 
 public:
     Engine::Point position; // 角色座標
-    float speed = 400.f;            // 移動速度
+    float speed = 400.f; // 移動速度
     ALLEGRO_BITMAP *image;  // 角色圖片
     ALLEGRO_BITMAP* spriteSheet;
     int currentFrame; // 當前動畫幀
