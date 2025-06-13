@@ -844,7 +844,7 @@ void PlayScene::ConstructUI() {
     // Text
     if(MapId==4) UIGroup->AddNewObject(new Engine::Label(std::string("Customized"), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
     else UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
-    UIGroup->AddNewObject(UIMoneyImage = new Engine::Image("play/money.png", uiBoundaryX + 14 , 48, 36, 36));
+    UIGroup->AddNewObject(UIMoneyImage = new Engine::Image("play/coin_icon.png", uiBoundaryX + 12 , 40, 48, 48));
     UIGroup->AddNewObject(UIMoneyLabel = new Engine::Label(std::to_string(money), "pirulen.ttf", 24, uiBoundaryX + 60 , 48));
     UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, uiBoundaryX + 14, 88));
 
@@ -988,6 +988,15 @@ bool PlayScene::canWalk(Engine::Point pos) const {
 bool PlayScene::canInteract(int x, int y) const {
     return mapState[y][x] == TILE_GOLD;
 }
+bool PlayScene::canInteract(int x, int y) const {
+    return mapState[y][x] == TILE_GOLD;
+}
+bool PlayScene::canInteract(int x, int y) const {
+    return mapState[y][x] == TILE_GOLD;
+}
+bool PlayScene::canInteract(int x, int y) const {
+    return mapState[y][x] == TILE_GOLD;
+}
 void PlayScene::DrawHealthBar() const {
     const int barWidth = 170;
     const int barHeight = 24;
@@ -995,6 +1004,8 @@ void PlayScene::DrawHealthBar() const {
 
     int barX = EndGridPoint.x * BlockSize - barWidth / 2 - camera.x ;
     int barY = EndGridPoint.y * BlockSize - barHeight / 2 - 35 - camera.y; 
+
+    //UIGroup->AddNewObject(healthBar= new Engine::Image("play/healthbar.png", barX, barY, barWidth, barHeight);
 
     //血量
     al_draw_filled_rectangle(
@@ -1006,12 +1017,12 @@ void PlayScene::DrawHealthBar() const {
     );
 
     //邊框
-    al_draw_rectangle(
-        barX,
-        barY,
-        barX + barWidth,
-        barY + barHeight,
-        al_map_rgb(0, 0, 0),
-        2.0f
-    );
+    // al_draw_rectangle(
+    //     barX,
+    //     barY,
+    //     barX + barWidth,
+    //     barY + barHeight,
+    //     al_map_rgb(0, 0, 0),
+    //     2.0f
+    // );
 }
