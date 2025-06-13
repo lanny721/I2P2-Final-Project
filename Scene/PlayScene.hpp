@@ -78,6 +78,7 @@ public:
     Engine::Label *UILives;
     Engine::Label *UISfps;
     Engine::Image *imgTarget;
+    Engine::Image *healthBar= nullptr;
     Engine::Sprite *dangerIndicator;
     Engine::Sprite *UIcastle;
     Turret *preview;
