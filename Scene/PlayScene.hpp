@@ -59,7 +59,7 @@ public:
     int mapCombineW, mapCombineH;
     float ticks;
     float deathCountDown;
-    bool isRaining=false ;
+    bool isRaining = false;
     
     // Map tiles.
     Group *TileMapGroup;
