@@ -775,6 +775,9 @@ void PlayScene::readMapTiles(int y, int x, char c) {
     } else if (c == '3') {
         mapState[y][x] = TILE_OBSTACLE;
         TileMapImages[y][x] = (new Engine::Image("play/flowers3.png", x * BlockSize, y * BlockSize, BlockSize, BlockSize));
+    } else if (c == '4') {
+        mapState[y][x] = TILE_WATER;
+        TileMapImages[y][x] = (new Engine::Image("play/water.png", x * BlockSize, y * BlockSize, BlockSize, BlockSize));
     }
 }
 void PlayScene::ReadEnemyWave() {
@@ -931,5 +934,6 @@ bool PlayScene::canWalk(Engine::Point pos) const {
     pos.x = static_cast<int>(pos.x);
     pos.y = static_cast<int>(pos.y);
     if (pos.x < 0 || pos.x >= MapWidth || pos.y < 0 || pos.y >= MapHeight) return false;
-    return mapState[pos.y][pos.x] == TILE_DIRT || mapState[pos.y][pos.x] == TILE_FLOOR || mapState[pos.y][pos.x] == TILE_OCCUPIED;
+    return mapState[pos.y][pos.x] == TILE_DIRT || mapState[pos.y][pos.x] == TILE_FLOOR || 
+        mapState[pos.y][pos.x] == TILE_OCCUPIED || mapState[pos.y][pos.x] == TILE_WATER;
 }
