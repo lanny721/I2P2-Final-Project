@@ -711,7 +711,7 @@ void PlayScene::ReadSpecialMap(int mapId) {
         }
     }
     else if (mapId == 4) { // map height should equal
-        const int mapNumber = 3;
+        const int mapNumber = 4;
 
         std::vector<std::vector<std::string>> lines(mapNumber + 1);
         // std::vector<std::string> lines1, lines2;
