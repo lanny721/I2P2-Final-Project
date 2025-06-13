@@ -203,14 +203,13 @@ void PlayScene::Update(float deltaTime) {
         rainTimer += deltaTime;
         
         if (isRaining) {
-            std::cout << "success" << std::endl;
             rainTimer += deltaTime; // 累積時間
-            while (rainTimer >= 0.05f) { // 確保不會遺漏任何生成
-                rainTimer -= 0.05f; // 減去間隔
+            while (rainTimer >= 0.035f) { // 確保不會遺漏任何生成
+                rainTimer -= 0.025f; // 減去間隔
                 float x = static_cast<float>(rand()) / RAND_MAX * uiBoundaryX;
                 float y = 0;
                 float speedY = 300.0f + static_cast<float>(rand()) / RAND_MAX * 100.0f;
-                float lifetime = 0.5f + static_cast<float>(rand()) / RAND_MAX * 2.0f;
+                float lifetime = 0.05f + static_cast<float>(rand()) / RAND_MAX * 0.50f;
                 EffectGroup->AddNewObject(new RainEffect(x, y, speedY, lifetime));
             }
         }
