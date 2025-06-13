@@ -25,7 +25,7 @@ namespace Engine {
     }
     void Image::Draw() const {
         if (!Visible || !bmp) return; // Check if the image is visible and loaded
-        al_draw_scaled_bitmap(bmp.get(), 0, 0, GetBitmapWidth(), GetBitmapHeight(),
+        al_draw_tinted_scaled_bitmap(bmp.get(), color, 0, 0, GetBitmapWidth(), GetBitmapHeight(),
                               Position.x - Anchor.x * GetBitmapWidth() - followCamera * GameEngine::GetInstance().GetActiveScene()->camera.x,
                               Position.y - Anchor.y * GetBitmapHeight() - followCamera * GameEngine::GetInstance().GetActiveScene()->camera.y,
                               Size.x, Size.y, 0);
