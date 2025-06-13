@@ -24,6 +24,7 @@
 #include "UI/Animation/DirtyEffect.hpp"
 #include "UI/Animation/Plane.hpp"
 #include "UI/Component/Label.hpp"
+#include "UI/Animation/RainEffect.hpp"
 
 #include "Enemy/PlaneEnemy.hpp"
 #include <algorithm>
@@ -55,6 +56,7 @@ const std::vector<int> PlayScene::cheatcode = {
 };
 const std::vector<int> PlayScene::wincode = { ALLEGRO_KEY_W, ALLEGRO_KEY_I, ALLEGRO_KEY_N };
 const std::vector<int> PlayScene::losecode = { ALLEGRO_KEY_L, ALLEGRO_KEY_O, ALLEGRO_KEY_S, ALLEGRO_KEY_E };
+const std::vector<int> PlayScene::raincode = { ALLEGRO_KEY_R, ALLEGRO_KEY_A, ALLEGRO_KEY_I,ALLEGRO_KEY_N };
 Engine::Point PlayScene::GetClientSize() {
     return Engine::Point(MapWidth * BlockSize, MapHeight * BlockSize);
 }
@@ -196,6 +198,22 @@ void PlayScene::Update(float deltaTime) {
         enemy->UpdatePath(mapDistance);
         // Compensate the time lost.
         enemy->Update(ticks);
+        
+        static float rainTimer;
+        rainTimer += deltaTime;
+        
+        if (isRaining) {
+            std::cout << "success" << std::endl;
+            rainTimer += deltaTime; // 累積時間
+            while (rainTimer >= 0.05f) { // 確保不會遺漏任何生成
+                rainTimer -= 0.05f; // 減去間隔
+                float x = static_cast<float>(rand()) / RAND_MAX * uiBoundaryX;
+                float y = 0;
+                float speedY = 300.0f + static_cast<float>(rand()) / RAND_MAX * 100.0f;
+                float lifetime = 0.5f + static_cast<float>(rand()) / RAND_MAX * 2.0f;
+                EffectGroup->AddNewObject(new RainEffect(x, y, speedY, lifetime));
+            }
+        }
     }
     if (preview) {
         preview->Position = Engine::GameEngine::GetInstance().GetMousePosition();
@@ -416,6 +434,16 @@ void PlayScene::OnKeyDown(int keyCode) {
             std::equal(std::prev(keyStrokes.end(), losecode.size()), keyStrokes.end(), losecode.begin())) {
                 std::cout << "Lose code entered!" << std::endl;
                 Engine::GameEngine::GetInstance().ChangeScene("lose");
+        }
+        if (keyStrokes.size() >= raincode.size() && 
+            std::equal(std::prev(keyStrokes.end(),raincode.size()), keyStrokes.end(), raincode.begin())) {
+            std::cout << "rain code entered!" << std::endl;
+            
+            if (!isRaining) {
+                isRaining = true; // 防止重複啟動。
+                std::cout << "Rain effect activated!" << std::endl;
+            }
+                
         }
     }
 
