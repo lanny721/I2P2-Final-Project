@@ -1000,8 +1000,6 @@ void PlayScene::DrawHealthBar() const {
     int barX = EndGridPoint.x * BlockSize - barWidth / 2 - camera.x ;
     int barY = EndGridPoint.y * BlockSize - barHeight / 2 - 35 - camera.y; 
 
-    //UIGroup->AddNewObject(healthBar= new Engine::Image("play/healthbar.png", barX, barY, barWidth, barHeight);
-
     //血量
     al_draw_filled_rectangle(
         barX,
@@ -1012,12 +1010,12 @@ void PlayScene::DrawHealthBar() const {
     );
 
     //邊框
-    // al_draw_rectangle(
-    //     barX,
-    //     barY,
-    //     barX + barWidth,
-    //     barY + barHeight,
-    //     al_map_rgb(0, 0, 0),
-    //     2.0f
-    // );
+    al_draw_rectangle(
+        barX,
+        barY,
+        barX + barWidth,
+        barY + barHeight,
+        al_map_rgb(0, 0, 0),
+        4.0f
+    );
 }
