@@ -116,8 +116,8 @@ void PlayScene::Terminate() {
 }
 void PlayScene::Update(float deltaTime) {
     Engine::Point distance = player->position - EndGridPoint*BlockSize;
-    if(distance.Magnitude() < 400) isHealthBar = 1;
-    else isHealthBar = 0;
+    if(distance.Magnitude() < 400) showHealthBar = true;
+    else showHealthBar = false;
 
     fpsTicks += deltaTime;
     if (fpsTicks >= 0.5f) {
@@ -307,7 +307,7 @@ void PlayScene::Draw() const {
         }
     }
     player->Draw(); // Draw the player character.
-    if(isHealthBar) DrawHealthBar();
+    if(showHealthBar) DrawHealthBar();
 }
 void PlayScene::OnMouseDown(int button, int mx, int my) {
     if ((button & 1) && !imgTarget->Visible && preview) {
@@ -353,9 +353,6 @@ void PlayScene::OnMouseMove(int mx, int my) {
         // std::cout << x * BlockSize - camera.x << std::endl;
         TileMapImages[y][x]->color = al_map_rgb(200, 200, 255);
     }
-}
-bool PlayScene::canReachInteract(int x, int y, float mx, float my) const {
-    return canInteract(x, y) && (Engine::Point(mx, my) + camera - player->position).Magnitude() <= 5 * BlockSize;
 }
 void PlayScene::OnMouseUp(int button, int mx, int my) {
     IScene::OnMouseUp(button, mx, my);
@@ -845,9 +842,11 @@ void PlayScene::ConstructUI() {
     // Text
     if(MapId==4) UIGroup->AddNewObject(new Engine::Label(std::string("Customized"), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
     else UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, uiBoundaryX + 14, 0));
-    UIGroup->AddNewObject(UIMoneyImage = new Engine::Image("play/coin_icon.png", uiBoundaryX + 12 , 40, 48, 48));
+    UIGroup->AddNewObject(UIMoneyImage = new Engine::Image("play/coin_icon.png", uiBoundaryX + 12, 40, 48, 48));
     UIGroup->AddNewObject(UIMoneyLabel = new Engine::Label(std::to_string(money), "pirulen.ttf", 24, uiBoundaryX + 60 , 48));
     UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, uiBoundaryX + 14, 88));
+    UIGroup->AddNewObject(new Engine::Image("play/gold_ingot.png", uiBoundaryX + 160, 40, 48, 48));
+    UIGroup->AddNewObject(UIGoldLabel = new Engine::Label(std::to_string(golds), "pirulen.ttf", 24, uiBoundaryX + 220 , 48));
 
     TurretButton *btn;
     const int bs=76;// Button size
@@ -985,6 +984,10 @@ bool PlayScene::canWalk(Engine::Point pos) const {
     return mapState[pos.y][pos.x] == TILE_DIRT || mapState[pos.y][pos.x] == TILE_FLOOR || 
         mapState[pos.y][pos.x] == TILE_OCCUPIED || mapState[pos.y][pos.x] == TILE_WATER ||
         mapState[pos.y][pos.x] == TILE_GOLD;
+}
+bool PlayScene::canReachInteract(int x, int y, float mx, float my) const {
+    if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) return false;
+    return canInteract(x, y) && (Engine::Point(mx, my) + camera - player->position).Magnitude() <= 5 * BlockSize;
 }
 bool PlayScene::canInteract(int x, int y) const {
     return mapState[y][x] == TILE_GOLD;

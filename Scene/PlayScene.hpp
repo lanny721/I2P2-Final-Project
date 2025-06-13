@@ -28,7 +28,7 @@ private:
     void ReadSpecialMap(int mapId);
     void readMapTiles(int y, int x, char c);
     void putThings(int button, int mx, int my);
-    int isHealthBar = 0;
+    bool showHealthBar = false;
     Engine::Image* skyBackground; // 背景圖片。
 protected:
     int lives;
@@ -77,10 +77,10 @@ public:
     Engine::Label *UIMoneyLabel;
     Engine::Label *UILives;
     Engine::Label *UISfps;
+    Engine::Label *UIGoldLabel;
     Engine::Image *UIMoneyImage;
     Engine::Image *imgTarget;
     Engine::Image *healthBar= nullptr;
-    Engine::Image *UIGoldImage;
     Engine::Sprite *dangerIndicator;
     Engine::Sprite *effectcastle;
     Turret *preview;
