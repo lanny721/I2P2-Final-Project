@@ -46,8 +46,7 @@ void Player::Update(float deltaTime) {
         // if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || 
         //     Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
         if (movingSpeed.y != 0.f) {
-                newPos.y = position.y + movingSpeed.y * deltaTime *
-                    (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN] ? 1 : 1);
+                newPos.y = position.y + movingSpeed.y * deltaTime;
                 if (newPos.y >= upBound && newPos.y <= downBound) { // since draw in center
                     if(getPlayScene()->canWalk(newPos / PlayScene::BlockSize)) {
                         upDownAngle += (newPos.y - position.y) / (float)(frameHeight / 2);
@@ -60,7 +59,7 @@ void Player::Update(float deltaTime) {
         // if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] || 
         //     Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
         if (movingSpeed.x != 0.f) {
-                leftRight = Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]; // 判斷左右移動
+                leftRight = movingSpeed.x > 0.f; // 判斷左右移動
                 newPos.x = position.x + movingSpeed.x * deltaTime * (leftRight ? 1 : 1);
                 if (newPos.x >= leftBound && newPos.x <= rightBound) {
                     if(getPlayScene()->canWalk(newPos / PlayScene::BlockSize)) {
@@ -76,7 +75,7 @@ void Player::Update(float deltaTime) {
             Engine::GameEngine::GetInstance().GetMousePosition().x, 
             Engine::GameEngine::GetInstance().GetMousePosition().y);
     } 
-    movingSpeed = movingSpeed * pow(0.01, deltaTime);
+    movingSpeed = movingSpeed * powf(0.01f, deltaTime);
     if (abs(movingSpeed.x) < 30.f) movingSpeed.x = 0.f;
     if (abs(movingSpeed.y) < 30.f) movingSpeed.y = 0.f;
     std::cout << movingSpeed << std::endl;
