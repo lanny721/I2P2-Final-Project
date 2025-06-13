@@ -210,7 +210,7 @@ void PlayScene::Update(float deltaTime) {
                 float x = static_cast<float>(rand()) / RAND_MAX * uiBoundaryX;
                 float y = 0;
                 float speedY = 300.0f + static_cast<float>(rand()) / RAND_MAX * 100.0f;
-                float lifetime = 3.0f + static_cast<float>(rand()) / RAND_MAX * 2.0f;
+                float lifetime = 0.5f + static_cast<float>(rand()) / RAND_MAX * 2.0f;
                 EffectGroup->AddNewObject(new RainEffect(x, y, speedY, lifetime));
             }
         }

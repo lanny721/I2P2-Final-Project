@@ -10,7 +10,5 @@ void RainEffect::Update(float deltaTime) {
         // 如果雨滴超出屏幕或存活時間結束，刪除雨滴。
         GetObjectIterator()->first = false;
     }
-    w=Engine::GameEngine::GetInstance().GetScreenHeight();
-    h=Engine::GameEngine::GetInstance().GetScreenHeight();
-    std::cout<<w<<" "<<h<<std::endl;
+    
 }
