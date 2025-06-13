@@ -26,6 +26,12 @@ void StartScene::Initialize() {
     int halfH = h / 2;
     Engine::ImageButton *btn;
 
+    Engine::Image* background = new Engine::Image("play/start_background.png", // 使用你提供的天空圖或類似圖片
+                                                 0, 0,
+                                                 w, h);
+    background->followCamera = false; // 背景固定在螢幕上
+    AddNewObject(background); // 將背景加入場景，最底層渲染
+
     AddNewObject(new Engine::Label("Tower Defense", "pirulen.ttf", 120, halfW, halfH / 3 + 50, 10, 255, 255, 255, 0.5, 0.5));
 
     btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW - 200, halfH / 2 + 200, 400, 100);
