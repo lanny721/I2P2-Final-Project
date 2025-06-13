@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 #include <random>
-
+#include <iostream>
 #include "Engine/AudioHelper.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Point.hpp"
@@ -61,11 +61,13 @@ void MapSelectScene::OnKeyDown(int keyCode) {
     else if (keyCode == ALLEGRO_KEY_PAD_ENTER || keyCode == ALLEGRO_KEY_ENTER) PlayOnClick(1);
 }
 void MapSelectScene::PlayOnClick(int id) {
-    PlayScene *scene = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetScene("play"));
-    scene->MapId = this->MapId ;
-    scene->mapCombineW=customizedW;
-    scene->mapCombineH=customizedH; // Set the map combine size, can be changed later.
-    Engine::GameEngine::GetInstance().ChangeScene("play");
+    if(MapId != 3) {
+        PlayScene *scene = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetScene("play"));
+        scene->MapId = this->MapId ;
+        scene->mapCombineW=customizedW;
+        scene->mapCombineH=customizedH; // Set the map combine size, can be changed later.
+        Engine::GameEngine::GetInstance().ChangeScene("play");
+    } else Engine::GameEngine::GetInstance().ChangeScene("sand-box");
 }
 void MapSelectScene::DrawPreviewMap() {
     const float previewBlockSize = PlayScene::BlockSize*0.45f; 

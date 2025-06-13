@@ -10,6 +10,7 @@ class SandBoxScene final : public Engine::IScene {
 private:
     int MapWidth = PlayScene::defW;
     int MapHeight = PlayScene::defH;
+    int uiBoundaryX = 1280;
     Group *TileMapGroup;
     Group *UIGroup;
     Engine::Image *preview;
