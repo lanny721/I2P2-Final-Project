@@ -68,6 +68,7 @@ void PlayScene::Initialize() {
     lives = 100;
     money = 150;
     SpeedMult = 1;
+    golds = 0;
     // Add groups from bottom to top.
     AddNewObject(TileMapGroup = new Group());
     AddNewObject(GroundEffectGroup = new Group());
@@ -983,7 +984,6 @@ bool PlayScene::canWalk(Engine::Point pos) const {
     if (pos.x < 0 || pos.x >= MapWidth || pos.y < 0 || pos.y >= MapHeight) return false;
     return mapState[pos.y][pos.x] == TILE_DIRT || mapState[pos.y][pos.x] == TILE_FLOOR || 
         mapState[pos.y][pos.x] == TILE_OCCUPIED || mapState[pos.y][pos.x] == TILE_WATER ||
-        mapState[pos.y][pos.x] == TILE_GOLD ||
         mapState[pos.y][pos.x] == TILE_GOLD;
 }
 bool PlayScene::canInteract(int x, int y) const {

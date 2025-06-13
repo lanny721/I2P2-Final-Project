@@ -34,6 +34,7 @@ protected:
     int lives;
     int money;
     int SpeedMult;
+    int golds;
 
 public:
     enum TileType {
@@ -73,12 +74,13 @@ public:
     Group *EnemyGroup;
     Group *EffectGroup;
     Group *UIGroup;
-    Engine::Image *UIMoneyImage;
     Engine::Label *UIMoneyLabel;
     Engine::Label *UILives;
     Engine::Label *UISfps;
+    Engine::Image *UIMoneyImage;
     Engine::Image *imgTarget;
     Engine::Image *healthBar= nullptr;
+    Engine::Image *UIGoldImage;
     Engine::Sprite *dangerIndicator;
     Engine::Sprite *effectcastle;
     Turret *preview;
