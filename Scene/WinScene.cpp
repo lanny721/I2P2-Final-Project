@@ -31,7 +31,7 @@ void WinScene::Initialize() {
     btn->SetOnClickCallback(std::bind(&WinScene::BackOnClick, this, 2));
     AddNewControlObject(btn);
     AddNewObject(new Engine::Label("Next", "pirulen.ttf", 48, halfW, halfH * 7 / 4, 0, 0, 0, 255, 0.5, 0.5));
-    bgmId = AudioHelper::PlayAudio("win.wav");
+    bgmId = AudioHelper::PlayAudio("chunyao.ogg");
 
     UIname = new Engine::Label("name: " + name, "pirulen.ttf", 32, halfW, halfH + 235, 255, 255, 100, 255, 0.5, 0.5);
     AddNewObject(UIname);
