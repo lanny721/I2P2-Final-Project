@@ -75,12 +75,17 @@ void Player::Update(float deltaTime) {
         currentFrame %= maxFrames;
     }
     
-    Engine::Point Displacement = position - Engine::Point(PlayScene::defW * PlayScene::BlockSize / 2.0f, PlayScene::defH * PlayScene::BlockSize / 2.0f) - 
+    Engine::Point Displacement = position - 
+        Engine::Point(PlayScene::defW * PlayScene::BlockSize / 2.0f, 
+                      PlayScene::defH * PlayScene::BlockSize / 2.0f) - 
         Engine::GameEngine::GetInstance().GetActiveScene()->camera; // 位移 (end - start)
-    Engine::GameEngine::GetInstance().GetActiveScene()->camera = Engine::GameEngine::GetInstance().GetActiveScene()->camera + 
+    Engine::GameEngine::GetInstance().GetActiveScene()->camera = 
+        Engine::GameEngine::GetInstance().GetActiveScene()->camera + 
         Displacement * (1.f - powf(1.0005f, -Displacement.Magnitude()));
+
     // Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
-    //     Engine::Point(PlayScene::defW * PlayScene::BlockSize / 2.0f, PlayScene::defH * PlayScene::BlockSize / 2.0f);
+    //     Engine::Point(PlayScene::defW * PlayScene::BlockSize / 2.0f, 
+    //                   PlayScene::defH * PlayScene::BlockSize / 2.0f);
 }
 void Player::Draw() const {
     int row = isMoving ? 1 : 0; // 第二列為移動動畫，第一列為靜止動畫
