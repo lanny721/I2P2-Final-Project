@@ -50,6 +50,16 @@ void StartScene::Initialize() {
     AddNewObject(new Engine::Label("Scoreboard", "pirulen.ttf", 36, halfW, halfH / 2 + 500, 0, 0, 0, 255, 0.5, 0.5));
 
     // bgmInstance = AudioHelper::PlaySample("select.ogg", true, AudioHelper::BGMVolume);
+    //login button
+    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW/2- 190, halfH / 2 +200, 380, 100);
+    btn->SetOnClickCallback(std::bind(&StartScene::LoginOnClick, this, 4));
+    AddNewControlObject(btn);
+    AddNewObject(new Engine::Label("Login", "pirulen.ttf", 48, halfW/2, halfH / 2 + 250, 0, 0, 0, 255, 0.5, 0.5));
+    //register button
+    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW/2*3 - 190, halfH / 2 + 200, 390, 100);
+    btn->SetOnClickCallback(std::bind(&StartScene::RegisterOnClick, this, 5));
+    AddNewControlObject(btn);
+    AddNewObject(new Engine::Label("Register", "pirulen.ttf", 48, halfW/2*3, halfH / 2 +250, 0, 0, 0, 255, 0.5, 0.5));
 }
 void StartScene::Terminate() {
     // AudioHelper::StopSample(bgmInstance);
@@ -64,10 +74,19 @@ void StartScene::OnKeyDown(int keyCode) {
     if (keyCode == ALLEGRO_KEY_ENTER) PlayOnClick(1);
     else if (keyCode == ALLEGRO_KEY_S) SettingsOnClick(2);
     else if (keyCode == ALLEGRO_KEY_L) ScoreboardOnClick(3);
+    else if (keyCode == ALLEGRO_KEY_I) LoginOnClick(4); // 新增快捷鍵 I 給 Login
+    else if (keyCode == ALLEGRO_KEY_R) RegisterOnClick(5); // 新增快捷鍵 R 給 Register
 }
 void StartScene::SettingsOnClick(int stage) {
     Engine::GameEngine::GetInstance().ChangeScene("settings");
 }
 void StartScene::ScoreboardOnClick(int stage) {
     Engine::GameEngine::GetInstance().ChangeScene("scoreboard");
+}
+void StartScene::LoginOnClick(int stage) {
+    Engine::GameEngine::GetInstance().ChangeScene("login");
+}
+
+void StartScene::RegisterOnClick(int stage) {
+    Engine::GameEngine::GetInstance().ChangeScene("register");
 }

@@ -20,6 +20,8 @@ public:
     void PlayOnClick(int stage);
     void OnKeyDown(int keyCode) override;
     void SettingsOnClick(int stage);
+    void LoginOnClick(int stage); // 新增
+    void RegisterOnClick(int stage); // 新增
     void ScoreboardOnClick(int stage);
 };
 #endif   // INC_2025_I2P2_TOWERDEFENSE_WITH_ANSWER_STARTSCENE_H
