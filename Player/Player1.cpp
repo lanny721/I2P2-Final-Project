@@ -75,7 +75,9 @@ void Player::Update(float deltaTime) {
             Engine::GameEngine::GetInstance().GetMousePosition().x, 
             Engine::GameEngine::GetInstance().GetMousePosition().y);
     } 
-    movingSpeed = movingSpeed * powf(getPlayScene()->isRaining ? 0.02f : 0.002f, deltaTime);
+    movingSpeed = movingSpeed * powf(getPlayScene()->isRaining || 
+        getPlayScene()->mapState[position.y/PlayScene::BlockSize][position.x/PlayScene::BlockSize] == PlayScene::TILE_WATER ? 
+        0.02f : 0.002f, deltaTime);
     if (abs(movingSpeed.x) < 30.f) movingSpeed.x = 0.f;
     if (abs(movingSpeed.y) < 30.f) movingSpeed.y = 0.f;
     // std::cout << movingSpeed << std::endl;
