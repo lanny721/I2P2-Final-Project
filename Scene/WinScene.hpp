@@ -8,9 +8,6 @@ class WinScene final : public Engine::IScene {
 private:
     float ticks;
     ALLEGRO_SAMPLE_ID bgmId;
-    std::string name;
-    Engine::Label *UIname = nullptr;
-    bool nameEntered = false;
     void SaveScore();
 
 public:
@@ -19,6 +16,8 @@ public:
     void Terminate() override;
     void Update(float deltaTime) override;
     void BackOnClick(int stage);
+    void LoginOnClick(int stage); // 新增
+    void RegisterOnClick(int stage); // 新增
     void OnKeyDown(int keyCode) override;
 };
 

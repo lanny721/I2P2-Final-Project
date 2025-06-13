@@ -104,11 +104,12 @@ void RegisterScene::SubmitOnClick() {
     std::cout << "Registration successful!\n";
     UIUsername->Color = al_map_rgba(255, 255, 255, 255);
     UIPassword->Color = al_map_rgba(255, 255, 255, 255);
-    Engine::GameEngine::GetInstance().ChangeScene("start");
+    Engine::GameEngine::GetInstance().SetCurrentUsername(username);
+    Engine::GameEngine::GetInstance().ChangeScene("win");
 }
 
 void RegisterScene::BackOnClick(int stage) {
-    Engine::GameEngine::GetInstance().ChangeScene("start");
+    Engine::GameEngine::GetInstance().ChangeScene("win");
 }
 
 void RegisterScene::OnKeyDown(int keyCode) {

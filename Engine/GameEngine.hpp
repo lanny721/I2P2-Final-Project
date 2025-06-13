@@ -75,7 +75,7 @@ namespace Engine {
         /// </summary>
         /// <param name="name">The name of the scene you want to change to.</param>
         void changeScene(const std::string &name);
-
+        std::string currentUsername; // 當前登入帳號
     public:
         // Note: We'll ignore C++11's move constructor, move assignment operator in this project for simplicity.
         /// <summary>
@@ -157,6 +157,8 @@ namespace Engine {
         static GameEngine &GetInstance();
         bool keyStates[256]{};
         bool isMouseDown;
+        void SetCurrentUsername(const std::string& username);
+        std::string GetCurrentUsername() const;
     };
 }
 #endif   // GAMEENGINE_HPP
