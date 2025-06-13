@@ -7,6 +7,7 @@
 #include <vector>
 #include "Engine/IScene.hpp"
 #include "Engine/Point.hpp"
+#include "UI/Component/ImageButton.hpp"
    // namespace Engine
 
 class MapSelectScene final : public Engine::IScene {
@@ -17,6 +18,10 @@ private:
     Engine::Label *WidthLabel = nullptr;
     Engine::Label *HeightLabel = nullptr;
     Engine::Label *EnemyLabel = nullptr;
+    Engine::ImageButton *EnemyPlusButton, *WidthPlusButton, *HeightPlusButton;
+    Engine::ImageButton *EnemyMinusButton, *WidthMinusButton, *HeightMinusButton;
+    float buttonCoolDown = 0.15f;
+    //bool wasMouseDown = false;
 protected:
 
 public:
@@ -35,6 +40,7 @@ public:
     void HeigthMinusOnClick(int stage);
     void EnemyPlusOnClick(int stage);
     void EnemyMinusOnClick(int stage);
+    void Update(float deltaTime) override ;
     int MapId;
 };
 #endif   // MAPSELECTSCENE_HPP
