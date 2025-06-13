@@ -10,17 +10,17 @@ class PlayScene;
 class Player {
 private:
     float cameraTicks;
-    bool leftRight; // left: false, right: true
-    // Engine::Point initialPosition; // 初始位置
-    PlayScene* getPlayScene();
-    int frameWidth = 32; // 每幀的寬度
-    int frameHeight = 32; // 每幀的高度
-    float scale = 1.5f; // 放大比例
-    int PlayerWidth = frameWidth * scale; // 角色圖片的寬度
-    int PlayerHeight = frameHeight * scale; // 角色圖片的高度
     float leftRightAngle = 0.f; // 左右移動時的角度
     float upDownAngle = 0.f; // 上下移動時的角度
+    float scale = 1.5f; // 放大比例
+    int frameWidth = 32; // 每幀的寬度
+    int frameHeight = 32; // 每幀的高度
+    int PlayerWidth = frameWidth * scale; // 角色圖片的寬度
+    int PlayerHeight = frameHeight * scale; // 角色圖片的高度
+    bool leftRight; // left: false, right: true
     bool rotate = true; // 是否旋轉
+    bool isKeyMoving() const ;
+    PlayScene* getPlayScene();
 
 public:
     Engine::Point position; // 角色座標

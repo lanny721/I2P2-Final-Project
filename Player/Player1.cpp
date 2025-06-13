@@ -31,87 +31,81 @@ void Player::Update(float deltaTime) {
         animationTimer = 0;
         currentFrame = (currentFrame + 1) % maxFrames; // 循環切換幀
     }
-    Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
-        Engine::Point(PlayScene::MapWidth * PlayScene::BlockSize / 2.0f, PlayScene::MapHeight * PlayScene::BlockSize / 2.0f);
 
-    if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
-        Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] ||
-        Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] ||
-        Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
-            isMoving = true;
-            if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP]) {
-                float newy = position.y - speed * deltaTime;
+    if (isKeyMoving()) {
+        isMoving = true;
+        if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || 
+            Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
+                float newy = position.y + speed * deltaTime *
+                    (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN] ? 1 : -1);
                 int targetGridY = (int)(newy / PlayScene::BlockSize);
                 int targetGridX = (int)(position.x / PlayScene::BlockSize);
                 if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR) {
+                    if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
                         upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
                         position.y = newy;
                     } else position.y = (targetGridY + 1) * PlayScene::BlockSize;
-                        
                 } else if (newy < 0) {
                     position.y = 0;
                 } else {
                     position.y = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight;
                 }
-            } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
-                float newy = position.y + speed * deltaTime;
-                int targetGridY = (int)( (newy+PlayerHeight) / PlayScene::BlockSize);
-                int targetGridX = (int)(position.x / PlayScene::BlockSize);
-                if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR) {
-                        upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
-                        position.y = newy;
-                    } else position.y = targetGridY * PlayScene::BlockSize - PlayerHeight;
-
-                } else if (newy < 0) {
-                    position.y = 0;
-                } else {
-                    position.y = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight;
-                }
-            }
-            if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT]) {
-                float newx = position.x - speed * deltaTime;
+        } 
+        // else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
+        //     float newy = position.y + speed * deltaTime;
+        //     int targetGridY = (int)( (newy+PlayerHeight) / PlayScene::BlockSize);
+        //     int targetGridX = (int)(position.x / PlayScene::BlockSize);
+        //     if (newy >= 0 && newy <= PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight) {
+        //         if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
+        //             upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
+        //             position.y = newy;
+        //         } else position.y = targetGridY * PlayScene::BlockSize - PlayerHeight;
+        //     } else if (newy < 0) {
+        //         position.y = 0;
+        //     } else {
+        //         position.y = PlayScene::MapHeight * PlayScene::BlockSize - PlayerHeight;
+        //     }
+        // }
+        if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] || 
+            Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
+                leftRight = Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]; // 判斷左右移動
+                float newx = position.x + speed * deltaTime * (leftRight ? 1 : -1); // 根據左右移動決定x座標增量
                 int targetGridY = (int)(position.y / PlayScene::BlockSize);
                 int targetGridX = (int)(newx / PlayScene::BlockSize);
                 if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR) {
+                    if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
                         upDownAngle = 0.f; // Reset upDownAngle when moving left/right
                         leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
                         position.x = newx;
                     } else position.x = (targetGridX + 1) * PlayScene::BlockSize;
-
                 } else if (newx < 0) {
                     position.x = 0;
                 } else {
                     position.x = PlayScene::MapWidth * PlayScene::BlockSize- PlayerWidth;
                 }
-                leftRight = false;
-            } else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
-                float newx = position.x + speed * deltaTime;
-                int targetGridY = (int)(position.y / PlayScene::BlockSize);
-                int targetGridX = (int)((newx+PlayerWidth) / PlayScene::BlockSize);
-                if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
-                    if(getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_DIRT || getPlayScene()->mapState[targetGridY][targetGridX] == PlayScene::TILE_FLOOR) {
-                        upDownAngle = 0.f; // Reset upDownAngle when moving left/right
-                        leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
-                        position.x = newx;
-                    } else position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
-                } else if (newx < 0) {
-                    position.x = 0;
-                } else {
-                    position.x = PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth;
-                }
-                leftRight = true;
-            }
-            if (cameraTicks > 1.f) {
-                cameraTicks = 0.f;
-            }
+        } 
+        // else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
+        //     leftRight = true;
+        //     float newx = position.x + speed * deltaTime;
+        //     int targetGridY = (int)(position.y / PlayScene::BlockSize);
+        //     int targetGridX = (int)((newx+PlayerWidth) / PlayScene::BlockSize);
+        //     if (newx >= 0 && newx <= PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth) {
+        //         if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
+        //             upDownAngle = 0.f; // Reset upDownAngle when moving left/right
+        //             leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
+        //             position.x = newx;
+        //         } else position.x = targetGridX  * PlayScene::BlockSize - PlayerWidth;
+        //     } else if (newx < 0) {
+        //         position.x = 0;
+        //     } else {
+        //         position.x = PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth;
+        //     }
+        // }
 
-            Engine::GameEngine::GetInstance().GetActiveScene()->OnMouseMove(
-                Engine::GameEngine::GetInstance().GetMousePosition().x, 
-                Engine::GameEngine::GetInstance().GetMousePosition().y
-            );
+        Engine::GameEngine::GetInstance().GetActiveScene()->OnMouseMove(
+            Engine::GameEngine::GetInstance().GetMousePosition().x, 
+            Engine::GameEngine::GetInstance().GetMousePosition().y
+        );
     } else {
         isMoving = false;
         maxFrames = isMoving ? 4 : 2;
@@ -146,4 +140,10 @@ void Player::OnKeyDown(int keyCode) {
 }
 PlayScene* Player::getPlayScene() {
     return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetScene("play"));
+}
+bool Player::isKeyMoving() const {
+    return Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] ||
+           Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] ||
+           Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] ||
+           Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN];
 }
