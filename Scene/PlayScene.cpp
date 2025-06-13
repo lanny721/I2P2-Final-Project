@@ -1013,6 +1013,6 @@ void PlayScene::DrawHealthBar() const {
         barX + barWidth,
         barY + barHeight,
         al_map_rgb(0, 0, 0),
-        2.0f
+        4.0f
     );
 }
