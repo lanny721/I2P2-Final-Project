@@ -7,15 +7,21 @@
 #include <vector>
 #include "Engine/IScene.hpp"
 #include "Engine/Point.hpp"
+#include "UI/Component/ImageButton.hpp"
    // namespace Engine
 
 class MapSelectScene final : public Engine::IScene {
 private:
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> bgmInstance;
-    int customizedW=3, customizedH=4;
+    int customizedW=3, customizedH=4, customizedEnemy=10;
     //int cusWEntered = 0, cusHEntered = 0;
     Engine::Label *WidthLabel = nullptr;
     Engine::Label *HeightLabel = nullptr;
+    Engine::Label *EnemyLabel = nullptr;
+    Engine::ImageButton *EnemyPlusButton, *WidthPlusButton, *HeightPlusButton;
+    Engine::ImageButton *EnemyMinusButton, *WidthMinusButton, *HeightMinusButton;
+    float buttonCoolDown = 0.15f;
+    //bool wasMouseDown = false;
 protected:
 
 public:
@@ -32,6 +38,9 @@ public:
     void WidthMinusOnClick(int stage);
     void HeigthPlusOnClick(int stage);
     void HeigthMinusOnClick(int stage);
+    void EnemyPlusOnClick(int stage);
+    void EnemyMinusOnClick(int stage);
+    void Update(float deltaTime) override ;
     int MapId;
 };
 #endif   // MAPSELECTSCENE_HPP

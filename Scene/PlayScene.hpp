@@ -63,7 +63,7 @@ public:
     static const std::vector<int> raincode;
 
     int MapId;
-    int mapCombineW, mapCombineH;
+    int mapCombineW, mapCombineH, enemyWaveNum;
     float ticks;
     float deathCountDown;
     bool isRaining = false;
