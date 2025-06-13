@@ -124,6 +124,11 @@ void MapSelectScene::DrawPreviewMap() {
                     previewX + j * previewBlockSize, 
                     previewY + i * previewBlockSize, 
                     previewBlockSize, previewBlockSize);
+            } else if (lines[i][j] == '6') {
+                tileImage = new Engine::Image("play/door.png", 
+                    previewX + j * previewBlockSize, 
+                    previewY + i * previewBlockSize, 
+                    previewBlockSize, previewBlockSize);
             } else continue;
             AddNewObject(tileImage);
         }
