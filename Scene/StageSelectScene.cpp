@@ -31,10 +31,11 @@ void StageSelectScene::Initialize() {
     AddNewControlObject(btn);
     AddNewObject(new Engine::Label("Stage 2", "pirulen.ttf", 48, halfW, halfH / 2 + 150, 0, 0, 0, 255, 0.5, 0.5));
 
-    // btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW , halfH / 2 + 150, 400, 100);
-    // btn->SetOnClickCallback(std::bind(&StageSelectScene::PlayOnClick, this, 3));
-    // AddNewControlObject(btn);
-    // AddNewObject(new Engine::Label("stage 3", "pirulen.ttf", 48, halfW, halfH / 2 + 100, 0, 0, 0, 255, 0.5, 0.5));
+    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png",  w - 120 , halfH / 2 -60, 125, 125);
+    btn->SetOnClickCallback(std::bind(&StageSelectScene::PlayOnClick, this, 3));
+    AddNewControlObject(btn);
+    AddNewObject(new Engine::Image("stage-select/pickaxe.png", w, halfH / 2 -50, 100, 100, 1, 0));
+    //AddNewObject(new Engine::Label("sand box", "pirulen.ttf", 45, w -50, halfH / 2 + 100, 0, 0, 0, 255, 1, 0.5));
 
     btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW - 200, halfH / 2 + 250, 400, 100);
     btn->SetOnClickCallback(std::bind(&StageSelectScene::PlayOnClick, this, 4));
