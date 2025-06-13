@@ -79,6 +79,12 @@ void PlayScene::Initialize() {
     AddNewObject(EffectGroup = new Group());
     // Should support buttons.
     AddNewControlObject(UIGroup = new Group());
+    Engine::Point screenSize = Engine::GameEngine::GetInstance().GetScreenSize();
+    Engine::Image* background = new Engine::Image("play/sky.png", // 使用現有地圖樣式作為背景
+                                                  0, 0,
+                                                  screenSize.x, screenSize.y);
+    background->followCamera = false; // 背景不跟隨攝影機，固定在螢幕上
+    TileMapGroup->AddNewObject(background);
     ReadMap();
     // this->BlockSize = 64;
     ReadEnemyWave();

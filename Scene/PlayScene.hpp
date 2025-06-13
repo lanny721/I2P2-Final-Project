@@ -29,7 +29,7 @@ private:
     void readMapTiles(int y, int x, char c);
     void putThings(int button, int mx, int my);
     int isHealthBar = 0;
-
+    Engine::Image* skyBackground; // 背景圖片。
 protected:
     int lives;
     int money;
