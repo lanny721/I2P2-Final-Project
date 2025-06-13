@@ -94,7 +94,7 @@ void Player::Update(float deltaTime) {
     Engine::GameEngine::GetInstance().GetActiveScene()->camera = 
         Engine::GameEngine::GetInstance().GetActiveScene()->camera + 
         Displacement * //0.15f;
-        0.3 * (1.f - powf(1.01f, -Displacement.Magnitude()));
+        0.2f * (1.f - powf(1.01f, -Displacement.Magnitude()));
     if (Engine::GameEngine::GetInstance().GetActiveScene()->camera.x < -200) Engine::GameEngine::GetInstance().GetActiveScene()->camera.x = -200;
     if (Engine::GameEngine::GetInstance().GetActiveScene()->camera.x > (PlayScene::MapWidth - PlayScene::defW) * PlayScene::BlockSize + 200) 
         Engine::GameEngine::GetInstance().GetActiveScene()->camera.x = (PlayScene::MapWidth - PlayScene::defW) * PlayScene::BlockSize + 200;
