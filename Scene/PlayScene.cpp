@@ -692,7 +692,7 @@ void PlayScene::ReadSpecialMap(int mapId) {
         //const int mapCombineW = 3, mapCombineH = 4;
         std::vector<std::vector<int>> mapCombineTable(mapCombineH, std::vector<int>(mapCombineW));
         std::vector<int> candidates(mapNumber);
-        for(int i = 0; i < mapNumber; i++) candidates[i] = i + 1;
+        for(int i = 0; i < candidates.size(); i++) candidates[i] = i + 1;
 
         MapWidth = 0;
         int tmpWidth;
@@ -775,6 +775,9 @@ void PlayScene::readMapTiles(int y, int x, char c) {
     } else if (c == '3') {
         mapState[y][x] = TILE_OBSTACLE;
         TileMapImages[y][x] = (new Engine::Image("play/flowers3.png", x * BlockSize, y * BlockSize, BlockSize, BlockSize));
+    } else if (c == '4') {
+        mapState[y][x] = TILE_WATER;
+        TileMapImages[y][x] = (new Engine::Image("play/water.png", x * BlockSize, y * BlockSize, BlockSize, BlockSize));
     } else if (c == '5') {
         mapState[y][x] = TILE_GOLD;
         TileMapImages[y][x] = (new Engine::Image("play/gold.png", x * BlockSize, y * BlockSize, BlockSize, BlockSize));
@@ -935,5 +938,6 @@ bool PlayScene::canWalk(Engine::Point pos) const {
     pos.x = static_cast<int>(pos.x);
     pos.y = static_cast<int>(pos.y);
     if (pos.x < 0 || pos.x >= MapWidth || pos.y < 0 || pos.y >= MapHeight) return false;
-    return mapState[pos.y][pos.x] == TILE_DIRT || mapState[pos.y][pos.x] == TILE_FLOOR || mapState[pos.y][pos.x] == TILE_OCCUPIED;
+    return mapState[pos.y][pos.x] == TILE_DIRT || mapState[pos.y][pos.x] == TILE_FLOOR || 
+        mapState[pos.y][pos.x] == TILE_OCCUPIED || mapState[pos.y][pos.x] == TILE_WATER;
 }
