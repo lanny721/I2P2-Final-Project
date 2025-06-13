@@ -81,7 +81,7 @@ void Player::Update(float deltaTime) {
         0.02f : 0.001f, deltaTime);
     if (abs(movingSpeed.x) < 30.f) movingSpeed.x = 0.f;
     if (abs(movingSpeed.y) < 30.f) movingSpeed.y = 0.f;
-    // std::cout << movingSpeed << std::endl;
+    if (getPlayScene()->mapState[position.y/PlayScene::BlockSize][position.x/PlayScene::BlockSize] == PlayScene::TILE_DOOR) position = PlayScene::EndGridPoint * PlayScene::BlockSize;
 
     maxFrames = isMoving ? 4 : 2; // 如果正在移動，則有4幀動畫，否則只有2幀靜止動畫
     animationInterval = isMoving ? 0.1f : 0.5f; // 移動時每幀0.1秒，靜止時每幀0.5秒
@@ -93,7 +93,8 @@ void Player::Update(float deltaTime) {
         Engine::GameEngine::GetInstance().GetActiveScene()->camera; // 位移 (end - start)
     Engine::GameEngine::GetInstance().GetActiveScene()->camera = 
         Engine::GameEngine::GetInstance().GetActiveScene()->camera + 
-        Displacement * (1.f - powf(1.0004f, -Displacement.Magnitude()));
+        Displacement * //0.15f;
+        0.3 * (1.f - powf(1.01f, -Displacement.Magnitude()));
     if (Engine::GameEngine::GetInstance().GetActiveScene()->camera.x < -200) Engine::GameEngine::GetInstance().GetActiveScene()->camera.x = -200;
     if (Engine::GameEngine::GetInstance().GetActiveScene()->camera.x > (PlayScene::MapWidth - PlayScene::defW) * PlayScene::BlockSize + 200) 
         Engine::GameEngine::GetInstance().GetActiveScene()->camera.x = (PlayScene::MapWidth - PlayScene::defW) * PlayScene::BlockSize + 200;

@@ -43,7 +43,8 @@ public:
         TILE_OCCUPIED,
         TILE_OBSTACLE, 
         TILE_WATER,
-        TILE_GOLD
+        TILE_GOLD,
+        TILE_DOOR
     };
 
     static bool DebugMode;

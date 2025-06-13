@@ -321,7 +321,8 @@ void PlayScene::OnMouseDown(int button, int mx, int my) {
     const int y = (my + camera.y) / BlockSize;
     if (canReachInteract(x, y, mx, my)) {
         if (mapState[y][x] == TILE_GOLD) {
-
+            ++golds;
+            UIGoldLabel->Text = std::to_string(golds);
         }
         mapState[y][x] = PlayScene::TILE_DIRT;
         TileMapGroup->RemoveObject(TileMapImages[y][x]->GetObjectIterator());
@@ -820,6 +821,9 @@ void PlayScene::readMapTiles(int y, int x, char c) {
     } else if (c == '5') {
         mapState[y][x] = TILE_GOLD;
         TileMapImages[y][x] = (new Engine::Image("play/gold.png", x * BlockSize, y * BlockSize, BlockSize, BlockSize));
+    } else if (c == '6') {
+        mapState[y][x] = TILE_DOOR;
+        TileMapImages[y][x] = (new Engine::Image("play/door.png", (x - 1.5f / 7) * BlockSize, (y - 0.4f) * BlockSize, 1.5 * BlockSize, 1.5 * BlockSize));
     }
 }
 void PlayScene::ReadEnemyWave() {
@@ -983,7 +987,7 @@ bool PlayScene::canWalk(Engine::Point pos) const {
     if (pos.x < 0 || pos.x >= MapWidth || pos.y < 0 || pos.y >= MapHeight) return false;
     return mapState[pos.y][pos.x] == TILE_DIRT || mapState[pos.y][pos.x] == TILE_FLOOR || 
         mapState[pos.y][pos.x] == TILE_OCCUPIED || mapState[pos.y][pos.x] == TILE_WATER ||
-        mapState[pos.y][pos.x] == TILE_GOLD;
+        mapState[pos.y][pos.x] == TILE_GOLD || mapState[pos.y][pos.x] == TILE_DOOR;
 }
 bool PlayScene::canReachInteract(int x, int y, float mx, float my) const {
     if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) return false;
