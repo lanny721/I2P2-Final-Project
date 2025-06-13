@@ -40,6 +40,9 @@ void MapSelectScene::Initialize() {
     // Not safe if release resource while playing, however we only free while change scene, so it's fine.
     bgmInstance = AudioHelper::PlaySample("select.ogg", true, AudioHelper::BGMVolume);
 
+    customizedW=3;
+    customizedH=4;
+
     if(MapId==4) DrawCustomize();
     else DrawPreviewMap();
     
@@ -139,26 +142,26 @@ void MapSelectScene::DrawCustomize() {
 
     Engine::ImageButton *btn;   
     //WIDTH
-    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW +225, halfH -175, 50, 50);
+    //+
+    btn = new Engine::ImageButton("stage-select/button_add.png", "stage-select/button_add_pressed.png", halfW +200, halfH -185, 68, 68);
     btn->SetOnClickCallback(std::bind(&MapSelectScene::WidthPlusOnClick, this, 0));
     AddNewControlObject(btn);
-    AddNewObject(new Engine::Label("+", "pirulen.ttf", 40, halfW + 250 , halfH -150 , 0, 0, 0, 255, 0.5, 0.5));
 
-    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW - 260, halfH -175, 50, 50);
+    //-
+    btn = new Engine::ImageButton("stage-select/button_minus.png", "stage-select/button_minus_pressed.png", halfW - 245, halfH -185, 68, 68);
     btn->SetOnClickCallback(std::bind(&MapSelectScene::WidthMinusOnClick, this, 1));
     AddNewControlObject(btn);
-    AddNewObject(new Engine::Label("-", "pirulen.ttf", 40, halfW - 235 , halfH - 150,  0, 0, 0, 255, 0.5, 0.5));
 
     //HEIGHT
-    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW +225, halfH-25, 50, 50);
+    //+
+    btn = new Engine::ImageButton("stage-select/button_add.png", "stage-select/button_add_pressed.png", halfW +200, halfH-35, 68, 68);
     btn->SetOnClickCallback(std::bind(&MapSelectScene::HeigthPlusOnClick, this, 2));
     AddNewControlObject(btn);
-    AddNewObject(new Engine::Label("+", "pirulen.ttf", 40, halfW + 250 , halfH,  0, 0, 0, 255, 0.5, 0.5));
 
-    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW -260, halfH-25 , 50, 50);
+    //-
+    btn = new Engine::ImageButton("stage-select/button_minus.png", "stage-select/button_minus_pressed.png", halfW -245, halfH-35 , 68, 68);
     btn->SetOnClickCallback(std::bind(&MapSelectScene::HeigthMinusOnClick, this, 3));
     AddNewControlObject(btn);
-    AddNewObject(new Engine::Label("-", "pirulen.ttf", 40, halfW - 235, halfH, 0, 0, 0, 255, 0.5, 0.5));
 }
 void MapSelectScene::WidthPlusOnClick(int stage){
     if(customizedW < 10) {
