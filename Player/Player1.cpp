@@ -91,7 +91,12 @@ void Player::Update(float deltaTime) {
     Engine::GameEngine::GetInstance().GetActiveScene()->camera = 
         Engine::GameEngine::GetInstance().GetActiveScene()->camera + 
         Displacement * (1.f - powf(1.0004f, -Displacement.Magnitude()));
-
+    if (Engine::GameEngine::GetInstance().GetActiveScene()->camera.x < -200) Engine::GameEngine::GetInstance().GetActiveScene()->camera.x = -200;
+    if (Engine::GameEngine::GetInstance().GetActiveScene()->camera.x > (PlayScene::MapWidth - PlayScene::defW) * PlayScene::BlockSize + 200) 
+        Engine::GameEngine::GetInstance().GetActiveScene()->camera.x = (PlayScene::MapWidth - PlayScene::defW) * PlayScene::BlockSize + 200;
+    if (Engine::GameEngine::GetInstance().GetActiveScene()->camera.y < -200) Engine::GameEngine::GetInstance().GetActiveScene()->camera.y = -200;
+    if (Engine::GameEngine::GetInstance().GetActiveScene()->camera.y > (PlayScene::MapHeight - PlayScene::defH) * PlayScene::BlockSize + 200) 
+        Engine::GameEngine::GetInstance().GetActiveScene()->camera.y = (PlayScene::MapHeight - PlayScene::defH) * PlayScene::BlockSize + 200;
     // Engine::GameEngine::GetInstance().GetActiveScene()->camera = position - 
     //     Engine::Point(PlayScene::defW * PlayScene::BlockSize / 2.0f, 
     //                   PlayScene::defH * PlayScene::BlockSize / 2.0f);
