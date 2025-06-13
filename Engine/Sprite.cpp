@@ -5,7 +5,7 @@
 #include "Sprite.hpp"
 #include "UI/Component/Image.hpp"
 #include "Engine/GameEngine.hpp"
-#include "Engine/Iscene.hpp"
+#include "Engine/IScene.hpp"
 
 namespace Engine {
     Sprite::Sprite(std::string img, float x, float y, float w, float h, float anchorX, float anchorY,
