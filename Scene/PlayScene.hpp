@@ -59,7 +59,7 @@ public:
     int mapCombineW, mapCombineH;
     float ticks;
     float deathCountDown;
-    bool isRaining=false ;
+    bool isRaining = false;
     
     // Map tiles.
     Group *TileMapGroup;
@@ -75,6 +75,7 @@ public:
     Engine::Label *UISfps;
     Engine::Image *imgTarget;
     Engine::Sprite *dangerIndicator;
+    Engine::Sprite *UIcastle;
     Turret *preview;
     std::vector<std::vector<TileType>> mapState; // [y][x] important!!!!!!!!!!!!!! 
     std::vector<std::vector<int>> mapDistance;

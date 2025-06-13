@@ -88,6 +88,7 @@ void PlayScene::Initialize() {
     imgTarget->followCamera = true;
     preview = nullptr;
     UIGroup->AddNewObject(imgTarget);
+    UIcastle = new Engine::Sprite("play/castle.png", MapWidth * BlockSize / 2, MapHeight * BlockSize / 2);
     // Preload Lose Scene
     deathBGMInstance = Engine::Resources::GetInstance().GetSampleInstance("astronomia.ogg");
     Engine::Resources::GetInstance().GetBitmap("lose/benjamin-happy.png");
