@@ -206,10 +206,10 @@ void PlayScene::Update(float deltaTime) {
         rainTimer += deltaTime; // 累積時間
         while (rainTimer >= 5.f) { // 確保不會遺漏任何生成
             rainTimer -= 2.f; // 減去間隔
-            float x = static_cast<float>(rand() / RAND_MAX) * (Engine::GameEngine::GetInstance().GetScreenWidth() + 2000.f);
+            float x = static_cast<float>(rand()) / RAND_MAX * Engine::GameEngine::GetInstance().GetScreenWidth();
             float y = 0;
-            float speedY = 300.0f + static_cast<float>(rand() / RAND_MAX) * 100.0f;
-            float lifetime = 5.f + static_cast<float>(rand() / RAND_MAX) * 0.50f;
+            float speedY = 300.0f + static_cast<float>(rand()) / RAND_MAX * 100.0f;
+            float lifetime = 5.f + static_cast<float>(rand()) / RAND_MAX * 0.50f;
             EffectGroup->AddNewObject(new RainEffect(x, y, speedY, lifetime));
         Engine::LOG(Engine::LogType::INFO) << "rain generated";
         }
