@@ -97,7 +97,7 @@ public:
     void ConstructUI();
     void UIBtnClicked(int id);
     bool CheckSpaceValid(int x, int y);
-    bool canWalk(int y, int x) const;
+    bool canWalk(Engine::Point pos) const;
     Engine::Point GetRandomSpawnPoint() const;
     std::vector<std::vector<int>> CalculateBFSDistance();
 };

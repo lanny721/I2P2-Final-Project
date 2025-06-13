@@ -840,6 +840,7 @@ bool PlayScene::CheckSpaceValid(int x, int y) {
     else if(preview->isTool) {
         return (mapState[y][x] == TILE_FLOOR || mapState[y][x] == TILE_OCCUPIED);
     }
+    else return false; // not occur
     // auto map00 = mapState[y][x];
     // mapState[y][x] = TILE_OCCUPIED;
     // std::vector<std::vector<int>> map = CalculateBFSDistance();
@@ -896,7 +897,9 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
     }
     return map;
 }
-bool PlayScene::canWalk(int y, int x) const {
-    if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) return false;
-    return mapState[y][x] == TILE_DIRT || mapState[y][x] == TILE_FLOOR || mapState[y][x] == TILE_OCCUPIED;
+bool PlayScene::canWalk(Engine::Point pos) const {
+    pos.x = static_cast<int>(pos.x);
+    pos.y = static_cast<int>(pos.y);
+    if (pos.x < 0 || pos.x >= MapWidth || pos.y < 0 || pos.y >= MapHeight) return false;
+    return mapState[pos.y][pos.x] == TILE_DIRT || mapState[pos.y][pos.x] == TILE_FLOOR || mapState[pos.y][pos.x] == TILE_OCCUPIED;
 }

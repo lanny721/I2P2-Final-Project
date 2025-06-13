@@ -38,33 +38,31 @@ void Player::Update(float deltaTime) {
         int leftBound = PlayerWidth / 2;
         int rightBound = PlayScene::MapWidth * PlayScene::BlockSize - PlayerWidth / 2;
 
+        Engine::Point newPos = position;
         if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_W] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || 
             Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN]) {
-                float newy = position.y + speed * deltaTime *
+                newPos.y = position.y + speed * deltaTime *
                     (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_S] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN] ? 1 : -1);
-                int targetGridY = (int)(newy / PlayScene::BlockSize);
-                int targetGridX = (int)(position.x / PlayScene::BlockSize);
-                if (newy >= upBound && newy <= downBound) { // since draw in center
-                    if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
-                        upDownAngle += (newy - position.y) / (float)(frameHeight / 2);
-                        position.y = newy;
+                if (newPos.y >= upBound && newPos.y <= downBound) { // since draw in center
+                    if(getPlayScene()->canWalk(newPos / PlayScene::BlockSize)) {
+                        upDownAngle += (newPos.y - position.y) / (float)(frameHeight / 2);
+                        position = newPos;
                     } 
-                } else if (newy < upBound) position.y = upBound;
+                } else if (newPos.y < upBound) position.y = upBound;
                   else position.y = downBound;
         } 
-        else if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] || 
+        newPos = position;
+        if (Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] || 
             Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
                 leftRight = Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]; // 判斷左右移動
-                float newx = position.x + speed * deltaTime * (leftRight ? 1 : -1); // 根據左右移動決定x座標增量
-                int targetGridY = (int)(position.y / PlayScene::BlockSize);
-                int targetGridX = (int)(newx / PlayScene::BlockSize);
-                if (newx >= leftBound && newx <= rightBound) {
-                    if(getPlayScene()->canWalk(targetGridY, targetGridX)) {
+                newPos.x = position.x + speed * deltaTime * (leftRight ? 1 : -1);
+                if (newPos.x >= leftBound && newPos.x <= rightBound) {
+                    if(getPlayScene()->canWalk(newPos / PlayScene::BlockSize)) {
                         upDownAngle = 0.f; // Reset upDownAngle when moving left/right
-                        leftRightAngle += (newx - position.x) / (float)(frameWidth / 2);
-                        position.x = newx;
+                        leftRightAngle += (newPos.x - position.x) / (float)(frameWidth / 2);
+                        position = newPos;
                     } 
-                } else if (newx < leftBound) position.x = leftBound;
+                } else if (newPos.x < leftBound) position.x = leftBound;
                   else position.x = rightBound;
         } 
 
