@@ -97,6 +97,8 @@ add_executable(2025_I2P2_TowerDefense
     UI/Animation/ExplosionEffect.hpp
     UI/Animation/Plane.cpp
     UI/Animation/Plane.hpp
+    UI/Animation/RainEffect.cpp
+    UI/Animation/RainEffect.hpp
 
     UI/Component/Image.cpp
     UI/Component/Image.hpp

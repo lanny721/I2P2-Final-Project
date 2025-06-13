@@ -53,11 +53,14 @@ public:
     static const std::vector<int> cheatcode;
     static const std::vector<int> wincode;
     static const std::vector<int> losecode;
+    static const std::vector<int> raincode;
 
     int MapId;
     int mapCombineW, mapCombineH;
     float ticks;
     float deathCountDown;
+    bool isRaining=false ;
+    
     // Map tiles.
     Group *TileMapGroup;
     Group *GroundEffectGroup;
