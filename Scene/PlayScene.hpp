@@ -79,7 +79,7 @@ public:
     Engine::Label *UISfps;
     Engine::Image *imgTarget;
     Engine::Sprite *dangerIndicator;
-    Engine::Sprite *UIcastle;
+    Engine::Sprite *effectcastle;
     Turret *preview;
     std::vector<std::vector<TileType>> mapState; // [y][x] important!!!!!!!!!!!!!! 
     std::vector<std::vector<int>> mapDistance;
@@ -107,6 +107,8 @@ public:
     bool CheckSpaceValid(int x, int y);
     bool canWalk(Engine::Point pos) const;
     void DrawHealthBar() const;
+    bool canInteract(int x, int y) const;
+    bool canReachInteract(int x, int y, float mx, float my) const;
     Engine::Point GetRandomSpawnPoint() const;
     std::vector<std::vector<int>> CalculateBFSDistance();
 };

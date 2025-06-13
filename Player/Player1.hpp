@@ -20,7 +20,7 @@ private:
     bool rotate = true; // 是否旋轉
     bool isKeyMoving() const ;
     Engine::Point movingSpeed;
-    PlayScene* getPlayScene();
+    PlayScene* getPlayScene() const;
 
 public:
     Engine::Point position; // 角色座標
@@ -32,6 +32,8 @@ public:
     float animationTimer; // 計時器
     float animationInterval; // 每幀切換的間隔
     bool isMoving; // 是否正在移動
+    int getGridPosX() const;
+    int getGridPosY() const;
 
     Player(const char* spriteSheetPath, Engine::Point initialPosition, float speed, float interval);
     ~Player();

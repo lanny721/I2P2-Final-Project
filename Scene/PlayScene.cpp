@@ -13,6 +13,8 @@
 #include "Enemy/Enemy.hpp"
 #include "Enemy/SoldierEnemy.hpp"
 #include "Enemy/TankEnemy.hpp"
+#include "Enemy/PlaneEnemy.hpp"
+#include "Enemy/RedcarEnemy.hpp"
 #include "Engine/AudioHelper.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Group.hpp"
@@ -22,16 +24,13 @@
 #include "Turret/LaserTurret.hpp"
 #include "Turret/MachineGunTurret.hpp"
 #include "Turret/TurretButton.hpp"
+#include "Turret/SniperTurret.hpp"
+#include "Turret/ShovelTool.hpp"
 #include "UI/Animation/DirtyEffect.hpp"
 #include "UI/Animation/Plane.hpp"
 #include "UI/Component/Label.hpp"
 #include "UI/Animation/RainEffect.hpp"
-
-#include "Enemy/PlaneEnemy.hpp"
 #include <algorithm>
-#include "Enemy/RedcarEnemy.hpp"
-#include "Turret/SniperTurret.hpp"
-#include "Turret/ShovelTool.hpp"
 // #include "Tool/ShovelTool.hpp"
 // #include "Tool/ToolButton.hpp"
 
@@ -95,9 +94,9 @@ void PlayScene::Initialize() {
     imgTarget->followCamera = true;
     preview = nullptr;
     UIGroup->AddNewObject(imgTarget);
-    UIcastle = new Engine::Sprite("play/castle.png", MapWidth * BlockSize / 2, (MapHeight - 2) * BlockSize / 2, BlockSize * 6, BlockSize * 6);
-    UIcastle->followCamera = true;
-    TowerGroup->AddNewObject(UIcastle);
+    effectcastle = new Engine::Sprite("play/castle.png", MapWidth * BlockSize / 2, (MapHeight - 2) * BlockSize / 2, BlockSize * 6, BlockSize * 6);
+    effectcastle->followCamera = true;
+    TowerGroup->AddNewObject(effectcastle);
     // Preload Lose Scene
     deathBGMInstance = Engine::Resources::GetInstance().GetSampleInstance("astronomia.ogg");
     Engine::Resources::GetInstance().GetBitmap("lose/benjamin-happy.png");
@@ -316,6 +315,19 @@ void PlayScene::OnMouseDown(int button, int mx, int my) {
         preview = nullptr;
     }
     IScene::OnMouseDown(button, mx, my);
+
+    const int x = (mx + camera.x) / BlockSize;
+    const int y = (my + camera.y) / BlockSize;
+    if (canReachInteract(x, y, mx, my)) {
+        if (mapState[y][x] == TILE_GOLD) {
+
+        }
+        mapState[y][x] = PlayScene::TILE_DIRT;
+        TileMapGroup->RemoveObject(TileMapImages[y][x]->GetObjectIterator());
+        TileMapImages[y][x] = new Engine::Image("play/grass2.png", x * PlayScene::BlockSize, y * PlayScene::BlockSize, PlayScene::BlockSize, PlayScene::BlockSize);
+        TileMapImages[y][x]->followCamera = true;
+        TileMapGroup->AddNewObject(TileMapImages[y][x]);
+    }
 }
 void PlayScene::OnMouseMove(int mx, int my) {
     IScene::OnMouseMove(mx, my);
@@ -323,11 +335,26 @@ void PlayScene::OnMouseMove(int mx, int my) {
     const int y = (my + camera.y) / BlockSize;
     if (!preview || x < 0 || x >= MapWidth || y < 0 || y >= MapHeight || mx >= uiBoundaryX) {
         imgTarget->Visible = false;
-        return;
+    } else {
+        imgTarget->Visible = true;
+        imgTarget->Position.x = x * BlockSize;
+        imgTarget->Position.y = y * BlockSize;
     }
-    imgTarget->Visible = true;
-    imgTarget->Position.x = x * BlockSize;
-    imgTarget->Position.y = y * BlockSize;
+    for (int i = -3; i <= 3; i++) {
+        for (int j=-3;j<=3;j++) {
+            int nx=x+i,ny=y+j;
+            if(nx < 0 || nx >= MapWidth || ny < 0 || ny >= MapHeight || mx >= uiBoundaryX) continue;
+            TileMapImages[ny][nx]->color = al_map_rgb(255, 255, 255);
+        }
+    }
+    if (canReachInteract(x, y, mx, my)) {
+        // Engine::LOG(Engine::LogType::INFO) << x << ' ' << y << ' ' << "canInteract";
+        // std::cout << x * BlockSize - camera.x << std::endl;
+        TileMapImages[y][x]->color = al_map_rgb(200, 200, 255);
+    }
+}
+bool PlayScene::canReachInteract(int x, int y, float mx, float my) const {
+    return canInteract(x, y) && (Engine::Point(mx, my) + camera - player->position).Magnitude() <= 5 * BlockSize;
 }
 void PlayScene::OnMouseUp(int button, int mx, int my) {
     IScene::OnMouseUp(button, mx, my);
@@ -955,7 +982,11 @@ bool PlayScene::canWalk(Engine::Point pos) const {
     pos.y = static_cast<int>(pos.y);
     if (pos.x < 0 || pos.x >= MapWidth || pos.y < 0 || pos.y >= MapHeight) return false;
     return mapState[pos.y][pos.x] == TILE_DIRT || mapState[pos.y][pos.x] == TILE_FLOOR || 
-        mapState[pos.y][pos.x] == TILE_OCCUPIED || mapState[pos.y][pos.x] == TILE_WATER;
+        mapState[pos.y][pos.x] == TILE_OCCUPIED || mapState[pos.y][pos.x] == TILE_WATER ||
+        mapState[pos.y][pos.x] == TILE_GOLD;
+}
+bool PlayScene::canInteract(int x, int y) const {
+    return mapState[y][x] == TILE_GOLD;
 }
 void PlayScene::DrawHealthBar() const {
     const int barWidth = 170;
