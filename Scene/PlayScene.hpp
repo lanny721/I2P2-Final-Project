@@ -25,11 +25,13 @@ private:
     Player* player;
     int uiBoundaryX = 1280; // UI boundary X coordinate, used to determine if the mouse is in the UI area.
     float fpsTicks = 0.f; // Ticks for FPS calculation.
+    float raintick;
     void ReadSpecialMap(int mapId);
     void readMapTiles(int y, int x, char c);
     void putThings(int button, int mx, int my);
     bool showHealthBar = false;
     Engine::Image* skyBackground; // 背景圖片。
+
 protected:
     int lives;
     int money;

@@ -69,6 +69,7 @@ void PlayScene::Initialize() {
     money = 150;
     SpeedMult = 1;
     golds = 0;
+    raintick = 0.f;
     // Add groups from bottom to top.
     AddNewObject(TileMapGroup = new Group());
     AddNewObject(GroundEffectGroup = new Group());
@@ -115,6 +116,13 @@ void PlayScene::Terminate() {
     IScene::Terminate();
 }
 void PlayScene::Update(float deltaTime) {
+    raintick += deltaTime;
+    if (raintick > 15.f) isRaining = true;
+    if (raintick > 25.f) {
+        isRaining = false;
+        raintick -= 25.f;
+    }
+
     Engine::Point distance = player->position - EndGridPoint*BlockSize;
     if(distance.Magnitude() < 400) showHealthBar = true;
     else showHealthBar = false;
