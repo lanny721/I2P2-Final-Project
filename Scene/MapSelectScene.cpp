@@ -77,7 +77,8 @@ void MapSelectScene::DrawPreviewMap() {
         
     while (std::getline(fin, line)) {
         if (line.empty() || line[0] == '#') continue;
-        lines.push_back(line);
+        if(MapId==3) lines.push_back("00000000000000000000");
+        else lines.push_back(line);
     }
     fin.close();
         
@@ -133,10 +134,17 @@ void MapSelectScene::DrawPreviewMap() {
             AddNewObject(tileImage);
         }
     }
-        
-    AddNewObject(new Engine::Label(std::string("Map ") + std::to_string(MapId), 
-        "pirulen.ttf", 48, halfW, previewY - 50, 255, 255, 255, 255, 0.5, 0.5));
-    
+
+    if(MapId==3){
+        AddNewObject(new Engine::Label(std::string("Create your"), "pirulen.ttf", 52, halfW, previewY + mapHeight*previewBlockSize/2 -30 , 255, 255, 255, 255, 0.5, 0.5));
+        AddNewObject(new Engine::Label(std::string("own map!"), "pirulen.ttf", 52, halfW, previewY +mapHeight*previewBlockSize/2 + 30 , 255, 255, 255, 255, 0.5, 0.5));
+        AddNewObject(new Engine::Label(std::string("sand box mode"), 
+            "pirulen.ttf", 48, halfW, previewY - 60, 255, 255, 255, 255, 0.5, 0.5));
+    }
+    else {
+        AddNewObject(new Engine::Label(std::string("Map ") + std::to_string(MapId), 
+            "pirulen.ttf", 48, halfW, previewY - 50, 255, 255, 255, 255, 0.5, 0.5));
+    }
 }
 void MapSelectScene::DrawCustomize() {
     int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
