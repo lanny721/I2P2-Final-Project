@@ -34,6 +34,7 @@ protected:
     int lives;
     int money;
     int SpeedMult;
+    int golds;
 
 public:
     enum TileType {
@@ -73,12 +74,13 @@ public:
     Group *EnemyGroup;
     Group *EffectGroup;
     Group *UIGroup;
-    Engine::Image *UIMoneyImage;
     Engine::Label *UIMoneyLabel;
     Engine::Label *UILives;
     Engine::Label *UISfps;
+    Engine::Image *UIMoneyImage;
     Engine::Image *imgTarget;
     Engine::Image *healthBar= nullptr;
+    Engine::Image *UIGoldImage;
     Engine::Sprite *dangerIndicator;
     Engine::Sprite *effectcastle;
     Turret *preview;
@@ -107,10 +109,7 @@ public:
     void UIBtnClicked(int id);
     bool CheckSpaceValid(int x, int y);
     bool canWalk(Engine::Point pos) const;
-<<<<<<< Updated upstream
     void DrawHealthBar() const;
-=======
->>>>>>> Stashed changes
     bool canInteract(int x, int y) const;
     bool canReachInteract(int x, int y, float mx, float my) const;
     Engine::Point GetRandomSpawnPoint() const;
