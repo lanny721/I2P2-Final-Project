@@ -107,7 +107,10 @@ public:
     void UIBtnClicked(int id);
     bool CheckSpaceValid(int x, int y);
     bool canWalk(Engine::Point pos) const;
+<<<<<<< Updated upstream
     void DrawHealthBar() const;
+=======
+>>>>>>> Stashed changes
     bool canInteract(int x, int y) const;
     bool canReachInteract(int x, int y, float mx, float my) const;
     Engine::Point GetRandomSpawnPoint() const;

@@ -994,6 +994,9 @@ bool PlayScene::canInteract(int x, int y) const {
 bool PlayScene::canInteract(int x, int y) const {
     return mapState[y][x] == TILE_GOLD;
 }
+bool PlayScene::canInteract(int x, int y) const {
+    return mapState[y][x] == TILE_GOLD;
+}
 void PlayScene::DrawHealthBar() const {
     const int barWidth = 170;
     const int barHeight = 24;
