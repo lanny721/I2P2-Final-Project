@@ -3,6 +3,7 @@
 #include "Engine/IScene.hpp"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_primitives.h>
 #include <stdexcept>
 #include <iostream>
 #include "Engine/LOG.hpp"
@@ -77,7 +78,7 @@ void Player::Update(float deltaTime) {
     } 
     movingSpeed = movingSpeed * powf(getPlayScene()->isRaining || 
         getPlayScene()->mapState[position.y/PlayScene::BlockSize][position.x/PlayScene::BlockSize] == PlayScene::TILE_WATER ? 
-        0.02f : 0.002f, deltaTime);
+        0.02f : 0.001f, deltaTime);
     if (abs(movingSpeed.x) < 30.f) movingSpeed.x = 0.f;
     if (abs(movingSpeed.y) < 30.f) movingSpeed.y = 0.f;
     // std::cout << movingSpeed << std::endl;
@@ -114,19 +115,13 @@ void Player::Draw() const {
                                                 position.y - Engine::GameEngine::GetInstance().GetActiveScene()->camera.y, 
                                                 scale, scale * (rotate ? cos(upDownAngle) : 1), // 放大後的位置和大小
                                                 rotate * leftRightAngle, leftRight);
-
-    // al_draw_scaled_bitmap(spriteSheet, 
-    //                       currentFrame * frameWidth, row * frameHeight, frameWidth, frameHeight, // 原始圖片區域
-    //                       position.x - Engine::GameEngine::GetInstance().GetActiveScene()->camera.x, 
-    //                       position.y - Engine::GameEngine::GetInstance().GetActiveScene()->camera.y, 
-    //                       frameWidth * scale, frameHeight * scale, // 放大後的位置和大小
-    //                       leftRight);
-                          
+    if (getPlayScene()->DebugMode) al_draw_filled_circle(position.x - getPlayScene()->camera.x, position.y - getPlayScene()->camera.y, 
+                                                         5 * PlayScene::BlockSize, al_map_rgba(200, 255, 200, 150));
 }
 void Player::OnKeyDown(int keyCode) {
     if (keyCode == ALLEGRO_KEY_SPACE) rotate = !rotate; // 按空格鍵切換旋轉狀態
 }
-PlayScene* Player::getPlayScene() {
+PlayScene* Player::getPlayScene() const {
     return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
 }
 bool Player::isKeyMoving() const {
@@ -134,4 +129,10 @@ bool Player::isKeyMoving() const {
            Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_A] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] ||
            Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_UP] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_LEFT] ||
            Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_DOWN];
+}
+int Player::getGridPosX() const {
+    return position.x / PlayScene::BlockSize;
+}
+int Player::getGridPosY() const {
+    return position.y / PlayScene::BlockSize;
 }
