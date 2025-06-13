@@ -554,7 +554,7 @@ void PlayScene::ReadMap() {
     }
 }
 void PlayScene::ReadSpecialMap(int mapId) {
-    if( mapId == 3) {
+    if(mapId == 3) {
         std::string filename1 = std::string("Resource/map1.txt");
         std::string filename2 = std::string("Resource/map2.txt");
         std::ifstream fin1(filename1);
@@ -650,7 +650,7 @@ void PlayScene::ReadSpecialMap(int mapId) {
         }
     }
     else if (mapId == 4) { // map height should equal
-        const int mapNumber = 2;
+        const int mapNumber = 3;
 
         std::vector<std::vector<std::string>> lines(mapNumber + 1);
         // std::vector<std::string> lines1, lines2;
@@ -691,7 +691,8 @@ void PlayScene::ReadSpecialMap(int mapId) {
 
         //const int mapCombineW = 3, mapCombineH = 4;
         std::vector<std::vector<int>> mapCombineTable(mapCombineH, std::vector<int>(mapCombineW));
-        std::vector<int> candidates = {1, 2};
+        std::vector<int> candidates(mapNumber);
+        for(int i = 0; i < mapNumber; i++) candidates[i] = i + 1;
 
         MapWidth = 0;
         int tmpWidth;
