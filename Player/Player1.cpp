@@ -78,7 +78,7 @@ void Player::Update(float deltaTime) {
     movingSpeed = movingSpeed * powf(0.01f, deltaTime);
     if (abs(movingSpeed.x) < 30.f) movingSpeed.x = 0.f;
     if (abs(movingSpeed.y) < 30.f) movingSpeed.y = 0.f;
-    std::cout << movingSpeed << std::endl;
+    // std::cout << movingSpeed << std::endl;
 
     maxFrames = isMoving ? 4 : 2; // 如果正在移動，則有4幀動畫，否則只有2幀靜止動畫
     animationInterval = isMoving ? 0.1f : 0.5f; // 移動時每幀0.1秒，靜止時每幀0.5秒
