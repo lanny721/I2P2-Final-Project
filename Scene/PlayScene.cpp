@@ -441,7 +441,7 @@ void PlayScene::OnKeyDown(int keyCode) {
             if (!isRaining) {
                 isRaining = true; // 防止重複啟動。
                 std::cout << "Rain effect activated!" << std::endl;
-            }
+            } else isRaining = false;
                 
         }
     }

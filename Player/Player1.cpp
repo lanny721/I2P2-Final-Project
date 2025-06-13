@@ -60,22 +60,22 @@ void Player::Update(float deltaTime) {
         //     Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_D] || Engine::GameEngine::GetInstance().keyStates[ALLEGRO_KEY_RIGHT]) {
         if (movingSpeed.x != 0.f) {
                 leftRight = movingSpeed.x > 0.f; // 判斷左右移動
-                newPos.x = position.x + movingSpeed.x * deltaTime * (leftRight ? 1 : 1);
+                newPos.x = position.x + movingSpeed.x * deltaTime;
                 if (newPos.x >= leftBound && newPos.x <= rightBound) {
                     if(getPlayScene()->canWalk(newPos / PlayScene::BlockSize)) {
-                        upDownAngle = 0.f; // Reset upDownAngle when moving left/right
-                        leftRightAngle += (newPos.x - position.x) / (float)(frameWidth / 2);
+                        leftRightAngle += (newPos.x - position.x) / (((float)frameWidth) / 1.2f);
                         position = newPos;
                     } 
                 } else if (newPos.x < leftBound) position.x = leftBound;
                   else position.x = rightBound;
         } 
+        if (abs(movingSpeed.x) >= abs(movingSpeed.y)) upDownAngle = 0.f; // Reset upDownAngle when moving left/right
 
         Engine::GameEngine::GetInstance().GetActiveScene()->OnMouseMove(
             Engine::GameEngine::GetInstance().GetMousePosition().x, 
             Engine::GameEngine::GetInstance().GetMousePosition().y);
     } 
-    movingSpeed = movingSpeed * powf(0.01f, deltaTime);
+    movingSpeed = movingSpeed * powf(0.02f, deltaTime);
     if (abs(movingSpeed.x) < 30.f) movingSpeed.x = 0.f;
     if (abs(movingSpeed.y) < 30.f) movingSpeed.y = 0.f;
     // std::cout << movingSpeed << std::endl;
