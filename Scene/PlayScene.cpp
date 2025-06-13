@@ -124,9 +124,9 @@ void PlayScene::Update(float deltaTime) {
     else showHealthBar = false;
     arrow->Visible=!showHealthBar;
     if(arrow){
-        float dx =EndGridPoint.x*BlockSize - arrow->Position.x;
-        float dy =EndGridPoint.y*BlockSize - arrow->Position.y;
-        float angle = atan2(dy, dx) - ALLEGRO_PI / 2;
+        float dx =EndGridPoint.x*BlockSize - player->position.x;
+        float dy =EndGridPoint.y*BlockSize - player->position.y;
+        float angle = atan2(dy, dx) + ALLEGRO_PI / 2;
         arrow->angle = angle; // 更新箭頭的角度
     }
 
