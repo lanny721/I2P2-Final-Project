@@ -146,14 +146,18 @@ void MapSelectScene::DrawCustomize() {
 
     AddNewObject(new Engine::Label("Customize", "pirulen.ttf", 60, halfW, halfH - 350, 255, 255, 255, 255, 0.5, 0.5));
     AddNewObject(new Engine::Label("Width :", "pirulen.ttf", 48, halfW-300, halfH - 150, 255, 255, 255, 255, 1, 0.5));
-    AddNewObject(new Engine::Label("maps", "pirulen.ttf", 48, halfW+400, halfH - 150, 255, 255, 255, 255, 0.5, 0.5));
-    AddNewObject(new Engine::Label("Height :", "pirulen.ttf", 48, halfW-300, halfH , 255, 255, 255, 255, 1, 0.5));
-    AddNewObject(new Engine::Label("maps", "pirulen.ttf", 48, halfW+400, halfH , 255, 255, 255, 255, 0.5, 0.5));
+    AddNewObject(new Engine::Label("maps", "pirulen.ttf", 48, halfW+400, halfH - 150, 255, 255, 255, 255, 0, 0.5));
+    AddNewObject(new Engine::Label("Height :", "pirulen.ttf", 48, halfW-300, halfH - 50, 255, 255, 255, 255, 1, 0.5));
+    AddNewObject(new Engine::Label("maps", "pirulen.ttf", 48, halfW+400, halfH - 50, 255, 255, 255, 255, 0, 0.5));
+    AddNewObject(new Engine::Label("Enemy :", "pirulen.ttf", 48, halfW-300, halfH + 50, 255, 255, 255, 255, 1, 0.5));
+    AddNewObject(new Engine::Label("waves", "pirulen.ttf", 48, halfW+400, halfH + 50, 255, 255, 255, 255, 0, 0.5));
 
     WidthLabel= new  Engine::Label(std::to_string(customizedW), "pirulen.ttf", 48, halfW, halfH - 150, 255, 255, 255, 255, 0.5, 0.5);
     AddNewObject(WidthLabel);
-    HeightLabel = new Engine::Label(std::to_string(customizedH) , "pirulen.ttf", 48, halfW, halfH , 255, 255, 255, 255, 0.5, 0.5);
+    HeightLabel = new Engine::Label(std::to_string(customizedH) , "pirulen.ttf", 48, halfW, halfH - 50, 255, 255, 255, 255, 0.5, 0.5);
     AddNewObject(HeightLabel);
+    EnemyLabel = new Engine::Label(std::to_string(customizedEnemy), "pirulen.ttf", 48, halfW, halfH + 50, 255, 255, 255, 255, 0.5, 0.5);
+    AddNewObject(EnemyLabel);
 
     Engine::ImageButton *btn;   
     //WIDTH
@@ -169,13 +173,24 @@ void MapSelectScene::DrawCustomize() {
 
     //HEIGHT
     //+
-    btn = new Engine::ImageButton("stage-select/button_add.png", "stage-select/button_add_pressed.png", halfW +200, halfH-35, 68, 68);
+    btn = new Engine::ImageButton("stage-select/button_add.png", "stage-select/button_add_pressed.png", halfW +200, halfH-85, 68, 68);
     btn->SetOnClickCallback(std::bind(&MapSelectScene::HeigthPlusOnClick, this, 2));
     AddNewControlObject(btn);
 
     //-
-    btn = new Engine::ImageButton("stage-select/button_minus.png", "stage-select/button_minus_pressed.png", halfW -245, halfH-35 , 68, 68);
+    btn = new Engine::ImageButton("stage-select/button_minus.png", "stage-select/button_minus_pressed.png", halfW -245, halfH-85 , 68, 68);
     btn->SetOnClickCallback(std::bind(&MapSelectScene::HeigthMinusOnClick, this, 3));
+    AddNewControlObject(btn);
+
+    //enemy waves
+    //+
+    btn = new Engine::ImageButton("stage-select/button_add.png", "stage-select/button_add_pressed.png", halfW +200, halfH+15, 68, 68);
+    btn->SetOnClickCallback(std::bind(&MapSelectScene::EnemyPlusOnClick, this, 4));
+    AddNewControlObject(btn);
+
+    //-
+    btn = new Engine::ImageButton("stage-select/button_minus.png", "stage-select/button_minus_pressed.png", halfW -245, halfH+15 , 68, 68);
+    btn->SetOnClickCallback(std::bind(&MapSelectScene::EnemyMinusOnClick, this, 5));
     AddNewControlObject(btn);
 }
 void MapSelectScene::WidthPlusOnClick(int stage){
@@ -200,5 +215,17 @@ void MapSelectScene::HeigthMinusOnClick(int stage){
     if(customizedH > 1) {
         customizedH--;
         HeightLabel->Text = std::to_string(customizedH);
+    }
+}
+void MapSelectScene::EnemyPlusOnClick(int stage){
+    if(customizedEnemy < 25) {
+        customizedEnemy++;
+        EnemyLabel->Text = std::to_string(customizedEnemy);
+    }
+}
+void MapSelectScene::EnemyMinusOnClick(int stage){
+    if(customizedEnemy > 1) {
+        customizedEnemy--;
+        EnemyLabel->Text = std::to_string(customizedEnemy);
     }
 }
