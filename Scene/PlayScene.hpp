@@ -28,6 +28,7 @@ private:
     void ReadSpecialMap(int mapId);
     void readMapTiles(int y, int x, char c);
     void putThings(int button, int mx, int my);
+    int isHealthBar = 0;
 
 protected:
     int lives;
