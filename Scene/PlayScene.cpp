@@ -124,6 +124,12 @@ void PlayScene::Terminate() {
     IScene::Terminate();
 }
 void PlayScene::Update(float deltaTime) {
+    if(golds >= 10){
+        golds = 0;
+        UIGoldLabel->Text = std::to_string(golds);
+        printf("Got 10 golds and call cheat Plane!\n");
+        UIGroup->AddNewObject(new Plane());
+    }
     raintick += deltaTime;
     if (raintick > 15.f) isRaining = true;
     if (raintick > 25.f) {
@@ -234,11 +240,6 @@ void PlayScene::Update(float deltaTime) {
         enemy->UpdatePath(mapDistance);
         // Compensate the time lost.
         enemy->Update(ticks);
-        if(golds >= 10){
-            golds = 0;
-            printf("Got 10 golds and call cheat Plane!\n");
-            UIGroup->AddNewObject(new Plane());
-        }
     }
     static float rainTimer;
     rainTimer += deltaTime;
