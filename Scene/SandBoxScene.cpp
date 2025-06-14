@@ -66,7 +66,7 @@ void SandBoxScene::Draw() const {
     IScene::Draw();
 }
 void SandBoxScene::SaveOnClick(int stage) {
-    std::string filename = "Resource/mapNumber.txt";
+    std::string filename = "../Resource/mapNumber.txt";
     std::ifstream fin(filename);
     int mapNumber ;
     fin >> mapNumber;
@@ -75,7 +75,7 @@ void SandBoxScene::SaveOnClick(int stage) {
     fout << ++mapNumber;
     fout.close();
 
-    std::string mapFileName = "Resource/map" + std::to_string(mapNumber) + ".txt";
+    std::string mapFileName = "../Resource/map" + std::to_string(mapNumber) + ".txt";
     std::ofstream mapFile(mapFileName);
     for(int i=0;i<MapHeight;i++) {
         for(int j=0;j<MapWidth;j++) {
@@ -88,7 +88,7 @@ void SandBoxScene::SaveOnClick(int stage) {
             else if(mapState[i][j] == PlayScene::TileType::TILE_DOOR) mapFile << '6';
             else{
                 printf("Unknown tile type at (%d, %d): %d\n", i, j, mapState[i][j]);
-                exit(1);// Unknown tile
+                //exit(1);// Unknown tile
             }
         }
         mapFile << '\n';
@@ -260,6 +260,7 @@ void SandBoxScene::putThings(int button, int mx, int my) {
             TileMapImages[y][x] = new Engine::Image(dynamic_cast<SandBox*>(previewBox)->GetBitmapPath(dynamic_cast<SandBox*>(previewBox)->tileID), 
                 x * PlayScene::BlockSize, y * PlayScene::BlockSize, PlayScene::BlockSize, PlayScene::BlockSize);
             TileMapGroup->AddNewObject(TileMapImages[y][x]);
+            mapState[y][x] = static_cast<PlayScene::TileType>(dynamic_cast<SandBox*>(previewBox)->tileID);
             OnMouseMove(mx, my);
         }
         
