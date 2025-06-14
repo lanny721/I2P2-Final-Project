@@ -234,7 +234,11 @@ void PlayScene::Update(float deltaTime) {
         enemy->UpdatePath(mapDistance);
         // Compensate the time lost.
         enemy->Update(ticks);
-        
+        if(golds >= 10){
+            golds = 0;
+            printf("Got 10 golds and call cheat Plane!\n");
+            UIGroup->AddNewObject(new Plane());
+        }
     }
     static float rainTimer;
     rainTimer += deltaTime;
