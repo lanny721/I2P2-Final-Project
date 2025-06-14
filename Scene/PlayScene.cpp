@@ -651,9 +651,9 @@ void PlayScene::ReadSpecialMap(int mapId) {
     }
     else if (mapId == 4) { // map height should equal
         int mapNumber;
-        std::ifstream fin("Resource/mapNumber.txt");
-        fin >> mapNumber;
-        fin.close();
+        std::ifstream finNum("Resource/mapNumber.txt");
+        finNum >> mapNumber;
+        finNum.close();
 
         std::vector<std::vector<std::string>> lines(mapNumber + 1);
         // std::vector<std::string> lines1, lines2;
