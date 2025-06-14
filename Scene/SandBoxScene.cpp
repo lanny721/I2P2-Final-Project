@@ -13,10 +13,10 @@
 #include <string>
 
 void SandBoxScene::Initialize() {
-    imgTarget = new Engine::Image("play/target.png", 0, 0);
-    imgTarget->Visible = false;
-    imgTarget->followCamera = true;
-    AddNewObject(imgTarget);
+    // imgTarget = new Engine::Image("play/target.png", 0, 0);
+    // imgTarget->Visible = false;
+    // imgTarget->followCamera = true;
+    // AddNewObject(imgTarget);
     AddNewObject(TileMapGroup = new Group());
     AddNewControlObject(UIGroup = new Group());
     mapState = std::vector<std::vector<PlayScene::TileType>>(MapHeight, std::vector<PlayScene::TileType>(MapWidth, PlayScene::TileType::TILE_DIRT));
@@ -122,6 +122,11 @@ void SandBoxScene::ConstructUI() {
     btn = new Engine::ImageButton("play/door.png", "play/door.png", uiBoundaryX + 14 + bs*2, 80 + bs, PlayScene::BlockSize, PlayScene::BlockSize);
     btn->SetOnClickCallback(std::bind(&SandBoxScene::UIBtnClicked, this, 6));
     UIGroup->AddNewControlObject(btn);
+
+    previewBox = new SandBox(0, 0, "play/grass2.png");
+    previewBox->Preview = false; // Initially not a preview
+    previewBox->Tint = al_map_rgba(255, 255, 255, 200);
+    UIGroup->AddNewObject(previewBox);
 }
 void SandBoxScene::UIBtnClicked(int id) {
     Turret* new_preview = nullptr;
@@ -141,14 +146,13 @@ void SandBoxScene::UIBtnClicked(int id) {
         new_preview = new SandBox(0, 0, "play/door.png"); //door
 
     if (!new_preview) return;
-    if(previewBox) UIGroup->RemoveObject(previewBox->GetObjectIterator());
+    // if(previewBox) UIGroup->RemoveObject(previewBox->GetObjectIterator());
     previewBox = new_preview;
 
     previewBox->Position = Engine::GameEngine::GetInstance().GetMousePosition();
-    previewBox->Tint = al_map_rgba(255, 255, 255, 200);
     previewBox->Enabled = false;
     previewBox->Preview = true;
-    UIGroup->AddNewObject(previewBox);
+    // UIGroup->AddNewObject(previewBox);
     OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
 }
 // void PlayScene::readMapTiles(int y, int x, char c) {
@@ -177,38 +181,18 @@ void SandBoxScene::UIBtnClicked(int id) {
 //     }
 // }
 void SandBoxScene::OnMouseDown(int button, int mx, int my) {
-    if ((button & 1) && !imgTarget->Visible && previewBox) {
+    if ((button & 1) && previewBox->Preview && mx < uiBoundaryX) {
+        putThings(button, mx, my);
         // Cancel turret construct.
-        UIGroup->RemoveObject(preview->GetObjectIterator());
-        previewBox = nullptr;
+        // UIGroup->RemoveObject(preview->GetObjectIterator());
+        // previewBox = nullptr;
     }
     IScene::OnMouseDown(button, mx, my);
-
-    const int x = (mx + camera.x) / BlockSize;
-    const int y = (my + camera.y) / BlockSize;
-    if (canReachInteract(x, y, mx, my)) {
-        if (mapState[y][x] == TILE_GOLD) {
-            ++golds;
-            UIGoldLabel->Text = std::to_string(golds);
-        }
-        mapState[y][x] = PlayScene::TILE_DIRT;
-        TileMapGroup->RemoveObject(TileMapImages[y][x]->GetObjectIterator());
-        TileMapImages[y][x] = new Engine::Image("play/grass2.png", x * PlayScene::BlockSize, y * PlayScene::BlockSize, PlayScene::BlockSize, PlayScene::BlockSize);
-        TileMapImages[y][x]->followCamera = true;
-        TileMapGroup->AddNewObject(TileMapImages[y][x]);
-    }
 }
 void SandBoxScene::OnMouseMove(int mx, int my) {
     IScene::OnMouseMove(mx, my);
-    const int x = (mx + camera.x) / BlockSize;
-    const int y = (my + camera.y) / BlockSize;
-    if (!previewBox || x < 0 || x >= MapWidth || y < 0 || y >= MapHeight || mx >= uiBoundaryX) {
-        imgTarget->Visible = false;
-    } else {
-        imgTarget->Visible = true;
-        imgTarget->Position.x = x * BlockSize;
-        imgTarget->Position.y = y * BlockSize;
-    }
+    const int x = (mx) / PlayScene::BlockSize;
+    const int y = (my ) / PlayScene::BlockSize;
     for (int i = -3; i <= 3; i++) {
         for (int j=-3;j<=3;j++) {
             int nx=x+i,ny=y+j;
@@ -216,50 +200,29 @@ void SandBoxScene::OnMouseMove(int mx, int my) {
             TileMapImages[ny][nx]->color = al_map_rgb(255, 255, 255);
         }
     }
-    if (canReachInteract(x, y, mx, my)) {
-        // Engine::LOG(Engine::LogType::INFO) << x << ' ' << y << ' ' << "canInteract";
-        // std::cout << x * BlockSize - camera.x << std::endl;
-        TileMapImages[y][x]->color = al_map_rgb(200, 200, 255);
-    }
+    std::cout << "Mouse Position: (" << mx << ", " << my << ")" << std::endl;
 }
 void SandBoxScene::OnMouseUp(int button, int mx, int my) {
     IScene::OnMouseUp(button, mx, my);
-    putThings(button, mx, my);
+    // putThings(button, mx, my);
 }
 void SandBoxScene::putThings(int button, int mx, int my) {
-    if (!imgTarget->Visible)
-        return;
-    const int x = (mx + camera.x) / BlockSize;
-    const int y = (my + camera.y) / BlockSize;
+    const int x = (mx) / PlayScene::BlockSize;
+    const int y = (my ) / PlayScene::BlockSize;
     if ((button & 1) && mx < uiBoundaryX) {
-        if (mapState[y][x] == TILE_FLOOR || preview->isTool || 1) { // deal in CheckSpaceValid
             if (!previewBox)
                 return;
-            //Turret* newpreview = preview;
-            // Remove Preview.
-            previewBox->GetObjectIterator()->first = false;
-            UIGroup->RemoveObject(previewBox->GetObjectIterator());
-            // Construct real turret.
-            previewBox->Position.x = x * BlockSize + BlockSize / 2;
-            previewBox->Position.y = y * BlockSize + BlockSize / 2;
-            previewBox->Enabled = true;
-            previewBox->Preview = false;
-            previewBox->Tint = al_map_rgba(255, 255, 255, 255);
+            // UIGroup->RemoveObject(previewBox->GetObjectIterator());
+            // // Construct real turret.
+            // previewBox->Position.x = x * PlayScene::BlockSize + PlayScene::BlockSize / 2;
+            // previewBox->Position.y = y * PlayScene::BlockSize + PlayScene::BlockSize / 2;
+            // previewBox->Tint = al_map_rgba(255, 255, 255, 255);
 
-            previewBox->followCamera = previewBox->imgBase.followCamera = true;
-            if (!previewBox->isTool) {
-                TowerGroup->AddNewObject(previewBox);
-                Towers[y][x] = previewBox;
-            } else {
-                previewBox->Use();
-            }
             // To keep responding when paused.
             previewBox->Update(0);
-            if (!previewBox->isTool) mapState[y][x] = TILE_OCCUPIED;
 
             // Remove Preview.
-            previewBox = nullptr;
+            previewBox->Preview = false;
             OnMouseMove(mx, my);
-        }
     }
 }
