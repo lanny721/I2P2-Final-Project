@@ -914,7 +914,7 @@ bool PlayScene::canInteract(int x, int y) const {
 void PlayScene::DrawHealthBar() const {
     const int barWidth = 170;
     const int barHeight = 24;
-    const float healthRatio = static_cast<float>(lives) / 100.0f;
+    const float healthRatio = static_cast<float>(lives) / 50.0f;
 
     int barX = EndGridPoint.x * BlockSize - barWidth / 2 - camera.x ;
     int barY = EndGridPoint.y * BlockSize - barHeight / 2 - 35 - camera.y; 
