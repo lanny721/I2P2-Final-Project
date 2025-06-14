@@ -96,6 +96,8 @@ add_executable(2025_I2P2_TowerDefense
     Turret/SniperTurret.hpp
     Turret/ShovelTool.cpp
     Turret/ShovelTool.hpp
+    Turret/SandBox.cpp
+    Turret/SandBox.hpp
 
     UI/Animation/DirtyEffect.cpp
     UI/Animation/DirtyEffect.hpp
