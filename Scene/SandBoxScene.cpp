@@ -36,6 +36,11 @@ void SandBoxScene::Terminate() {
 }
 void SandBoxScene::Update(float deltaTime) {
     IScene::Update(deltaTime);
+    if (Engine::GameEngine::GetInstance().isMouseDown && previewBox->Preview) {
+        if(Engine::GameEngine::GetInstance().GetMousePosition().x < uiBoundaryX) {
+            putThings(1, Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
+        } //else if (previewBox->Preview) previewBox->Preview = false; // Stop previewing when mouse is outside the UI boundary
+    }
 }
 void SandBoxScene::Draw() const {
     IScene::Draw();
@@ -71,7 +76,10 @@ void SandBoxScene::SaveOnClick(int stage) {
     mapFile.close();
 }
 void SandBoxScene::OnKeyDown(int keyCode) {
-
+    IScene::OnKeyDown(keyCode);
+    if (keyCode == ALLEGRO_KEY_ESCAPE) {
+        previewBox->Preview = false; // Stop previewing when escape is pressed
+    }
 }
 // void SandBoxScene::OnMouseDown(int button, int mx, int my) {
 //     IScene::OnMouseDown(button, mx, my);
@@ -148,6 +156,7 @@ void SandBoxScene::UIBtnClicked(int id) {
     previewBox->Position = Engine::GameEngine::GetInstance().GetMousePosition();
     previewBox->Enabled = false;
     previewBox->Preview = true;
+    dynamic_cast<SandBox*>(previewBox)->tileID = id;
     // UIGroup->AddNewObject(previewBox);
     // OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
 }
@@ -177,12 +186,9 @@ void SandBoxScene::UIBtnClicked(int id) {
 //     }
 // }
 void SandBoxScene::OnMouseDown(int button, int mx, int my) {
-    if ((button & 1) && previewBox->Preview) {
-        putThings(button, mx, my);
-        // Cancel turret construct.
-        // UIGroup->RemoveObject(preview->GetObjectIterator());
-        // previewBox = nullptr;
-    }
+    // if ((button & 1) && previewBox->Preview) {
+    //     putThings(button, mx, my);
+    // }
     IScene::OnMouseDown(button, mx, my);
 }
 void SandBoxScene::OnMouseMove(int mx, int my) {
@@ -202,24 +208,26 @@ void SandBoxScene::OnMouseMove(int mx, int my) {
         return;
     }
     TileMapImages[y][x]->color = al_map_rgb(255, 255, 100); // Highlight the tile where the preview box is placed
-    std::cout << "Mouse Position: (" << mx << ", " << my << ")" << std::endl;
+    // std::cout << "Set color at (" << x << "," << y << ")\n";
+    // std::cout << "Mouse Position: (" << mx << ", " << my << ")" << std::endl;
 
 }
 void SandBoxScene::OnMouseUp(int button, int mx, int my) {
     IScene::OnMouseUp(button, mx, my);
-    // putThings(button, mx, my);
 }
 void SandBoxScene::putThings(int button, int mx, int my) {
     if (previewBox->Preview) {
         const int x = (mx) / PlayScene::BlockSize;
         const int y = (my) / PlayScene::BlockSize;
         previewBox->Update(0);
-        if (mx >= uiBoundaryX) previewBox->Preview = false;
-        if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight || mx >= uiBoundaryX) {
-            std::cout << "Invalid position for placing: (" << x << ", " << y << ")" << std::endl;
-            return; // Invalid position
+        //if (mx >= uiBoundaryX) previewBox->Preview = false;
+        if (!(x < 0 || x >= MapWidth || y < 0 || y >= MapHeight || mx >= uiBoundaryX)) {
+            TileMapGroup->RemoveObject(TileMapImages[y][x]->GetObjectIterator());
+            TileMapImages[y][x] = new Engine::Image(dynamic_cast<SandBox*>(previewBox)->GetBitmapPath(dynamic_cast<SandBox*>(previewBox)->tileID), 
+                x * PlayScene::BlockSize, y * PlayScene::BlockSize, PlayScene::BlockSize, PlayScene::BlockSize);
+            TileMapGroup->AddNewObject(TileMapImages[y][x]);
+            OnMouseMove(mx, my);
         }
         
-        OnMouseMove(mx, my);
     }
 }

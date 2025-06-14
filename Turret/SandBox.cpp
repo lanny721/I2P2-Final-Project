@@ -27,3 +27,15 @@ void SandBox::Draw() const {
     if (!Preview) return;
     Turret::Draw();
 }
+std::string SandBox::GetBitmapPath(int id) const {
+    switch (id) {
+        case 0: return "play/grass2.png";
+        case 1: return "play/rock.png";
+        case 2: return "play/rock_grass.png";
+        case 3: return "play/flowers3.png";
+        case 4: return "play/water.png";
+        case 5: return "play/gold.png";
+        case 6: return "play/door.png";
+        default: return "";
+    }
+}
