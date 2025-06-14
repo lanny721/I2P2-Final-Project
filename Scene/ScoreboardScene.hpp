@@ -31,7 +31,7 @@ private:
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> bgmInstance;
     int w=Engine::GameEngine::GetInstance().GetScreenSize().x;
     int h=Engine::GameEngine::GetInstance().GetScreenSize().y;
-    Engine::Label *UIscoreboardTitle, *UIrank, *UIname, *UIscore, *UItime, *UIpage;
+    Engine::Label *UIscoreboardTitle, *UIrank, *UIname, *UIscore, *UItime, *UIpage, *UIwarning;
 
     const int cUp = 225;
     const int cLow = 175;
@@ -50,6 +50,9 @@ private:
     void OnMouseDown(int, int, int) override;
     void Draw() const override;
     int deleteRank = -1; // Rank to delete, -1 means no deletion
+
+    bool showWarning = false;
+    float warningDuration = 1.0f;
 };
 
 #endif // SCOREBOARD_SCENE_HPP

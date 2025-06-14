@@ -29,6 +29,7 @@ void ScoreboardScene::Initialize() {
     UIname = new Engine::Label("Player", "pirulen.ttf", 44, w / 2 - 100, 130, 255, 255, 255, 255, 0.5, 0.5);
     UIscore = new Engine::Label("Score", "pirulen.ttf", 44, w / 2 + 240, 130, 255, 255, 255, 255, 0.5, 0.5);
     UItime = new Engine::Label("Time", "pirulen.ttf", 44, w / 2 + 500, 130, 255, 255, 255, 255, 0.5, 0.5);
+
     AddNewObject(UIscoreboardTitle);
     AddNewObject(UIrank);
     AddNewObject(UIname);
@@ -93,7 +94,7 @@ void ScoreboardScene::OnKeyDown(int keyCode) {
             PlayerData chosenRecord=*(playerDataList.begin()+deleteRank-1);
             if(Engine::GameEngine::GetInstance().GetCurrentUsername()==chosenRecord.name)
                 DeletePlayerData(deleteRank);
-                
+            else showWarning = true;
             deleteRank = -1; // Reset delete rank after deletion
         }
     } else if (keyCode == ALLEGRO_KEY_LEFT) {
@@ -157,6 +158,22 @@ void ScoreboardScene::Update(float deltaTime) {
     if (ticks > 0.05f) {
         ticks -= 0.05f;
         updateColor();
+    }
+    if(showWarning){
+        warningDuration -= deltaTime;
+        if(warningDuration <= 0){
+            warningDuration = 1.0f;
+            showWarning = false;
+            if(UIwarning != nullptr){
+                RemoveObject(UIwarning->GetObjectIterator());
+                UIwarning = nullptr;
+            }
+        } else {
+            if(UIwarning == nullptr){
+                UIwarning = new Engine::Label("Don't delete other's records >:(", "pirulen.ttf",60 ,w/2, h/2, 255, 255, 255, 255, 0.5,0.5);
+                AddNewObject(UIwarning);
+            }
+        }
     }   
 }
 void ScoreboardScene::updateColor() {
