@@ -100,10 +100,11 @@ void PlayScene::Initialize() {
     effectcastle->followCamera = true;
     TowerGroup->AddNewObject(effectcastle);
 
-    
+    UIGroup->AddNewObject(new Engine::Image("play/compass.png", (uiBoundaryX + screenSize.x) /2 + 40, screenSize.y /2 + 50, 175, 175, 0.75, 0.75));
+    // AddNewObject(new Engine::Image("play/compass.png", (uiBoundaryX + screenSize.x) /2 + 50, screenSize.y /2 + 50, 175, 175, 0.75, 0.75));
     AddNewObject(new Engine::Label("Way back", "pirulen.ttf", 36, (uiBoundaryX + screenSize.x) /2,  screenSize.y /2 - 150, 255, 255, 255, 255, 0.5, 0.5));
     AddNewObject(new Engine::Label("home", "pirulen.ttf", 36, (uiBoundaryX + screenSize.x) /2, screenSize.y /2 - 100, 255, 255, 255, 255, 0.5, 0.5));
-    arrow = new Engine::Image("play/bullet-4.png", (uiBoundaryX + screenSize.x) /2 + 50, screenSize.y /2 + 50, 100, 100, 0.5, 0.5);
+    arrow = new Engine::Image("play/needle.png", (uiBoundaryX + screenSize.x) /2 + 50, screenSize.y /2 + 50, 100, 100, 0.5, 0.5);
     arrow->isArrow = true;
     UIGroup->AddNewObject(arrow);
     // Preload Lose Scene
