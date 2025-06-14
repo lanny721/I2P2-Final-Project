@@ -234,7 +234,11 @@ void PlayScene::Update(float deltaTime) {
         enemy->UpdatePath(mapDistance);
         // Compensate the time lost.
         enemy->Update(ticks);
-        
+        if(golds >= 10){
+            golds = 0;
+            printf("Got 10 golds and call cheat Plane!\n");
+            UIGroup->AddNewObject(new Plane());
+        }
     }
     static float rainTimer;
     rainTimer += deltaTime;
@@ -646,7 +650,10 @@ void PlayScene::ReadSpecialMap(int mapId) {
         }
     }
     else if (mapId == 4) { // map height should equal
-        const int mapNumber = 4;
+        int mapNumber;
+        std::ifstream finNum("Resource/mapNumber.txt");
+        finNum >> mapNumber;
+        finNum.close();
 
         std::vector<std::vector<std::string>> lines(mapNumber + 1);
         // std::vector<std::string> lines1, lines2;
