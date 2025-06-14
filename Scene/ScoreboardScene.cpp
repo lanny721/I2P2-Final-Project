@@ -90,7 +90,10 @@ void ScoreboardScene::OnKeyDown(int keyCode) {
     } else if (keyCode == ALLEGRO_KEY_BACKSPACE) {
         // Handle backspace key
         if (deleteRank != -1) {
-            DeletePlayerData(deleteRank);
+            PlayerData chosenRecord=*(playerDataList.begin()+deleteRank-1);
+            if(Engine::GameEngine::GetInstance().GetCurrentUsername()==chosenRecord.name)
+                DeletePlayerData(deleteRank);
+                
             deleteRank = -1; // Reset delete rank after deletion
         }
     } else if (keyCode == ALLEGRO_KEY_LEFT) {
@@ -222,8 +225,6 @@ void ScoreboardScene::LoadPlayerData() {
 }
 void ScoreboardScene::OnMouseDown(int button, int mx, int my) {
     IScene::OnMouseDown(button, mx, my);
-
-    
     
     // Check if click is in the scoreboard area
     int itemY;
@@ -257,13 +258,24 @@ void ScoreboardScene::Draw() const {
     IScene::Draw();
     int selectedIndex = deleteRank - (page-1)*10 ;
     if (selectedIndex > 0 && selectedIndex > 0) {
-        al_draw_filled_rectangle(
-            w/2 - 750,        // x1
-            selectionBoxY - 24,         // y1
-            w/2 + 750,        // x2
-            selectionBoxY + 24,         // y2
-            al_map_rgba(0, 0, 255, 64)  // Semi-transparent blue
-        );
+        PlayerData chosenRecord=*(playerDataList.begin()+deleteRank-1);
+        if(Engine::GameEngine::GetInstance().GetCurrentUsername()==chosenRecord.name){
+            al_draw_filled_rectangle(
+                w/2 - 750,        // x1
+                selectionBoxY - 24,         // y1
+                w/2 + 750,        // x2
+                selectionBoxY + 24,         // y2
+                al_map_rgba(0, 0, 255, 64)  // Semi-transparent blue
+            );
+        } else {
+            al_draw_filled_rectangle(
+                w/2 - 750,        // x1
+                selectionBoxY - 24,         // y1
+                w/2 + 750,        // x2
+                selectionBoxY + 24,         // y2
+                al_map_rgba(255, 0, 0, 64)  // Semi-transparent blue
+            );
+        }
     }
 }
 /*
