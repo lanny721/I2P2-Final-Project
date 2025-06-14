@@ -128,7 +128,7 @@ void PlayScene::Update(float deltaTime) {
         golds = 0;
         UIGoldLabel->Text = std::to_string(golds);
         printf("Got 10 golds and call cheat Plane!\n");
-        UIGroup->AddNewObject(new Plane());
+        EffectGroup->AddNewObject(new Plane());
     }
     raintick += deltaTime;
     if (raintick > 15.f) isRaining = true;
@@ -490,7 +490,7 @@ void PlayScene::OnKeyDown(int keyCode) {
              (std::equal(std::prev(keyStrokes.end(), cheatcode.size()), keyStrokes.end(), cheatcode.begin()))) ||
             keyCode == ALLEGRO_KEY_ENTER) {
                 std::cout << "Cheat code entered!" << std::endl;
-                UIGroup->AddNewObject(new Plane());
+                EffectGroup->AddNewObject(new Plane());
                 EarnMoney(10000);
         }
         if (keyStrokes.size() >= wincode.size() && 
