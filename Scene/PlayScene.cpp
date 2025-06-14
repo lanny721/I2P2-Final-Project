@@ -659,7 +659,7 @@ void PlayScene::ReadSpecialMap(int mapId) {
         std::vector<std::vector<std::string>> lines(mapNumber + 1);
         // std::vector<std::string> lines1, lines2;
         for (int i = 1; i <= mapNumber; i++) {
-            std::string filename= std::string("Resource/map") + std::to_string(i) + ".txt";
+            std::string filename= std::string("../Resource/map") + std::to_string(i) + ".txt";
             std::ifstream fin;
             fin.open(filename);
             if (!fin.is_open()) Engine::LOG(Engine::LogType::ERROR) << "Map file not found: " << filename;
