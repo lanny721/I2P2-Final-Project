@@ -13,7 +13,7 @@
 class MapSelectScene final : public Engine::IScene {
 private:
     std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> bgmInstance;
-    int customizedW=3, customizedH=4, customizedEnemy=10;
+    int customizedW=3, customizedH=4, customizedEnemy=13;
     //int cusWEntered = 0, cusHEntered = 0;
     Engine::Label *WidthLabel = nullptr;
     Engine::Label *HeightLabel = nullptr;
@@ -40,7 +40,7 @@ public:
     void HeigthMinusOnClick(int stage);
     void EnemyPlusOnClick(int stage);
     void EnemyMinusOnClick(int stage);
-    void Update(float deltaTime) override ;
+    //void Update(float deltaTime) override ;
     int MapId;
 };
 #endif   // MAPSELECTSCENE_HPP

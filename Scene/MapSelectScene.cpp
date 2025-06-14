@@ -175,34 +175,34 @@ void MapSelectScene::DrawCustomize() {
     //WIDTH
     //+
     WidthPlusButton = new Engine::ImageButton("stage-select/button_add.png", "stage-select/button_add_pressed.png", halfW +200, halfH -185, 68, 68);
-    //btn->SetOnClickCallback(std::bind(&MapSelectScene::WidthPlusOnClick, this, 0));
+    WidthPlusButton->SetOnClickCallback(std::bind(&MapSelectScene::WidthPlusOnClick, this, 0));
     AddNewControlObject(WidthPlusButton);
 
     //-
     WidthMinusButton = new Engine::ImageButton("stage-select/button_minus.png", "stage-select/button_minus_pressed.png", halfW - 245, halfH -185, 68, 68);
-    //btn->SetOnClickCallback(std::bind(&MapSelectScene::WidthMinusOnClick, this, 1));
+    WidthMinusButton->SetOnClickCallback(std::bind(&MapSelectScene::WidthMinusOnClick, this, 1));
     AddNewControlObject(WidthMinusButton);
 
     //HEIGHT
     //+
     HeightPlusButton = new Engine::ImageButton("stage-select/button_add.png", "stage-select/button_add_pressed.png", halfW +200, halfH-85, 68, 68);
-    //btn->SetOnClickCallback(std::bind(&MapSelectScene::HeigthPlusOnClick, this, 2));
+    HeightPlusButton->SetOnClickCallback(std::bind(&MapSelectScene::HeigthPlusOnClick, this, 2));
     AddNewControlObject(HeightPlusButton);
 
     //-
     HeightMinusButton = new Engine::ImageButton("stage-select/button_minus.png", "stage-select/button_minus_pressed.png", halfW -245, halfH-85 , 68, 68);
-    //btn->SetOnClickCallback(std::bind(&MapSelectScene::HeigthMinusOnClick, this, 3));
+    HeightMinusButton->SetOnClickCallback(std::bind(&MapSelectScene::HeigthMinusOnClick, this, 3));
     AddNewControlObject(HeightMinusButton);
 
     //enemy waves
     //+
     EnemyPlusButton = new Engine::ImageButton("stage-select/button_add.png", "stage-select/button_add_pressed.png", halfW +200, halfH+15, 68, 68);
-    //EnemyPlusButton->SetOnClickCallback(std::bind(&MapSelectScene::EnemyPlusOnClick, this, 4));
+    EnemyPlusButton->SetOnClickCallback(std::bind(&MapSelectScene::EnemyPlusOnClick, this, 4));
     AddNewControlObject(EnemyPlusButton);
 
     //-
     EnemyMinusButton = new Engine::ImageButton("stage-select/button_minus.png", "stage-select/button_minus_pressed.png", halfW -245, halfH+15 , 68, 68);
-    //EnemyMinusButton->SetOnClickCallback(std::bind(&MapSelectScene::EnemyMinusOnClick, this, 5));
+    EnemyMinusButton->SetOnClickCallback(std::bind(&MapSelectScene::EnemyMinusOnClick, this, 5));
     AddNewControlObject(EnemyMinusButton);
 }
 void MapSelectScene::WidthPlusOnClick(int stage){
@@ -241,27 +241,27 @@ void MapSelectScene::EnemyMinusOnClick(int stage){
         EnemyLabel->Text = std::to_string(customizedEnemy);
     }
 }
-void MapSelectScene::Update(float deltaTime) {
-    buttonCoolDown -= deltaTime;
-    if(buttonCoolDown < 0) buttonCoolDown = 0;
+// void MapSelectScene::Update(float deltaTime) {
+//     buttonCoolDown -= deltaTime;
+//     if(buttonCoolDown < 0) buttonCoolDown = 0;
 
-    // //bool isDown = Engine::GameEngine::GetInstance().isMouseDown;
-    // if(buttonCoolDown == 0){
-    //     if(Engine::GameEngine::GetInstance().isMouseDown) {
-    //         if(EnemyPlusButton->IsMouseIn()) {
-    //             EnemyPlusOnClick(4);
-    //         } else if(EnemyMinusButton->IsMouseIn()) {
-    //             EnemyMinusOnClick(5);
-    //         } else if(WidthPlusButton->IsMouseIn()) {
-    //             WidthPlusOnClick(0);
-    //         } else if(WidthMinusButton->IsMouseIn()) {
-    //             WidthMinusOnClick(1);
-    //         } else if(HeightPlusButton->IsMouseIn()) {
-    //             HeigthPlusOnClick(2);
-    //         } else if(HeightMinusButton->IsMouseIn()) {
-    //             HeigthMinusOnClick(3);
-    //         }
-    //         buttonCoolDown = 0.15f;
-    //     }
-    // }
-}
+//     //bool isDown = Engine::GameEngine::GetInstance().isMouseDown;
+//     if(buttonCoolDown == 0){
+//         if(Engine::GameEngine::GetInstance().isMouseDown) {
+//             if(EnemyPlusButton->IsMouseIn()) {
+//                 EnemyPlusOnClick(4);
+//             } else if(EnemyMinusButton->IsMouseIn()) {
+//                 EnemyMinusOnClick(5);
+//             } else if(WidthPlusButton->IsMouseIn()) {
+//                 WidthPlusOnClick(0);
+//             } else if(WidthMinusButton->IsMouseIn()) {
+//                 WidthMinusOnClick(1);
+//             } else if(HeightPlusButton->IsMouseIn()) {
+//                 HeigthPlusOnClick(2);
+//             } else if(HeightMinusButton->IsMouseIn()) {
+//                 HeigthMinusOnClick(3);
+//             }
+//             buttonCoolDown = 0.15f;
+//         }
+//     }
+// }
