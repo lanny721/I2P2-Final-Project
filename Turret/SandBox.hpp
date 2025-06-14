@@ -1,11 +1,11 @@
-#ifndef SNIPER_TURRET_HPP
-#define SNIPER_TURRET_HPP
+#ifndef SANDBOX_HPP
+#define SANDBOX_HPP
+#include <string>
 #include "Turret.hpp"
 
-class SniperTurret : public Turret {
+class SandBox : public Turret {
 public:
-    static const int Price;
-    SniperTurret(float x, float y);
-    void CreateBullet() override;
+    SandBox(float x, float y, std::string path);
+    void CreateBullet() override {};
 };
-#endif // SNIPER_TURRET_HPP
+#endif // SANDBOX_HPP

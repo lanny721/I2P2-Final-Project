@@ -46,7 +46,9 @@ public:
         TILE_OBSTACLE, 
         TILE_WATER,
         TILE_GOLD,
-        TILE_DOOR
+        TILE_DOOR,
+        TILE_FLOWER,
+        TILE_STONE
     };
 
     static bool DebugMode;
