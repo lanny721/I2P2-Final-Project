@@ -13,12 +13,10 @@
 #include <string>
 
 void SandBoxScene::Initialize() {
-    // imgTarget = new Engine::Image("play/target.png", 0, 0);
-    // imgTarget->Visible = false;
-    // imgTarget->followCamera = true;
-    // AddNewObject(imgTarget);
     AddNewObject(TileMapGroup = new Group());
     AddNewControlObject(UIGroup = new Group());
+
+
     mapState = std::vector<std::vector<PlayScene::TileType>>(MapHeight, std::vector<PlayScene::TileType>(MapWidth, PlayScene::TileType::TILE_DIRT));
     TileMapImages = std::vector<std::vector<Engine::Image*>>(MapHeight, std::vector<Engine::Image*>(MapWidth));
     for(int i=0;i<MapHeight;i++) {
@@ -28,12 +26,16 @@ void SandBoxScene::Initialize() {
         }
     }
     ConstructUI();
+    previewBox = new SandBox(0, 0, "play/grass2.png");
+    previewBox->Preview = false; // Initially not a preview
+    previewBox->Tint = al_map_rgba(255, 255, 255, 200);
+    UIGroup->AddNewObject(previewBox);
 }
 void SandBoxScene::Terminate() {
     IScene::Terminate();
 }
 void SandBoxScene::Update(float deltaTime) {
-
+    IScene::Update(deltaTime);
 }
 void SandBoxScene::Draw() const {
     IScene::Draw();
@@ -122,38 +124,32 @@ void SandBoxScene::ConstructUI() {
     btn = new Engine::ImageButton("play/door.png", "play/door.png", uiBoundaryX + 14 + bs*2, 80 + bs, PlayScene::BlockSize, PlayScene::BlockSize);
     btn->SetOnClickCallback(std::bind(&SandBoxScene::UIBtnClicked, this, 6));
     UIGroup->AddNewControlObject(btn);
-
-    previewBox = new SandBox(0, 0, "play/grass2.png");
-    previewBox->Preview = false; // Initially not a preview
-    previewBox->Tint = al_map_rgba(255, 255, 255, 200);
-    UIGroup->AddNewObject(previewBox);
 }
 void SandBoxScene::UIBtnClicked(int id) {
-    Turret* new_preview = nullptr;
-    if (id == 0 )
-        new_preview = new SandBox(0, 0, "play/grass2.png"); //grass
-    else if (id == 1)
-        new_preview = new SandBox(0, 0, "play/rock.png"); //rock
-    else if (id == 2)
-        new_preview = new SandBox(0, 0, "play/rock_grass.png"); //rock_grass
-    else if (id == 3 )
-        new_preview = new SandBox(0, 0, "play/flowers3.png"); //flower
-    else if (id == 4 )
-        new_preview = new SandBox(0, 0, "play/water.png"); //water
-    else if (id == 5 )
-        new_preview = new SandBox(0, 0, "play/gold.png"); //gold
-    else if (id == 6 )
-        new_preview = new SandBox(0, 0, "play/door.png"); //door
-
-    if (!new_preview) return;
-    // if(previewBox) UIGroup->RemoveObject(previewBox->GetObjectIterator());
-    previewBox = new_preview;
-
+    // Turret* new_preview = nullptr;
+    // if (id == 0 )
+    //     new_preview = new SandBox(0, 0, "play/grass2.png"); //grass
+    // else if (id == 1)
+    //     new_preview = new SandBox(0, 0, "play/rock.png"); //rock
+    // else if (id == 2)
+    //     new_preview = new SandBox(0, 0, "play/rock_grass.png"); //rock_grass
+    // else if (id == 3 )
+    //     new_preview = new SandBox(0, 0, "play/flowers3.png"); //flower
+    // else if (id == 4 )
+    //     new_preview = new SandBox(0, 0, "play/water.png"); //water
+    // else if (id == 5 )
+    //     new_preview = new SandBox(0, 0, "play/gold.png"); //gold
+    // else if (id == 6 )
+    //     new_preview = new SandBox(0, 0, "play/door.png"); //door
+    // if (!new_preview) return;
+    // // if(previewBox) UIGroup->RemoveObject(previewBox->GetObjectIterator());
+    // previewBox = new_preview;
+    previewBox->bmp = dynamic_cast<SandBox*>(previewBox)->bmps[id];
     previewBox->Position = Engine::GameEngine::GetInstance().GetMousePosition();
     previewBox->Enabled = false;
     previewBox->Preview = true;
     // UIGroup->AddNewObject(previewBox);
-    OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
+    // OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
 }
 // void PlayScene::readMapTiles(int y, int x, char c) {
 //     if (c == '\0') Engine::LOG(Engine::LogType::ERROR) << "Map data is corrupted: empty tile at " << Engine::Point(x, y);
@@ -181,7 +177,7 @@ void SandBoxScene::UIBtnClicked(int id) {
 //     }
 // }
 void SandBoxScene::OnMouseDown(int button, int mx, int my) {
-    if ((button & 1) && previewBox->Preview && mx < uiBoundaryX) {
+    if ((button & 1) && previewBox->Preview) {
         putThings(button, mx, my);
         // Cancel turret construct.
         // UIGroup->RemoveObject(preview->GetObjectIterator());
@@ -191,8 +187,10 @@ void SandBoxScene::OnMouseDown(int button, int mx, int my) {
 }
 void SandBoxScene::OnMouseMove(int mx, int my) {
     IScene::OnMouseMove(mx, my);
+    previewBox->Position = Engine::Point(mx, my);
+
     const int x = (mx) / PlayScene::BlockSize;
-    const int y = (my ) / PlayScene::BlockSize;
+    const int y = (my) / PlayScene::BlockSize;
     for (int i = -3; i <= 3; i++) {
         for (int j=-3;j<=3;j++) {
             int nx=x+i,ny=y+j;
@@ -200,29 +198,28 @@ void SandBoxScene::OnMouseMove(int mx, int my) {
             TileMapImages[ny][nx]->color = al_map_rgb(255, 255, 255);
         }
     }
+    if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) {
+        return;
+    }
+    TileMapImages[y][x]->color = al_map_rgb(255, 255, 100); // Highlight the tile where the preview box is placed
     std::cout << "Mouse Position: (" << mx << ", " << my << ")" << std::endl;
+
 }
 void SandBoxScene::OnMouseUp(int button, int mx, int my) {
     IScene::OnMouseUp(button, mx, my);
     // putThings(button, mx, my);
 }
 void SandBoxScene::putThings(int button, int mx, int my) {
-    const int x = (mx) / PlayScene::BlockSize;
-    const int y = (my ) / PlayScene::BlockSize;
-    if ((button & 1) && mx < uiBoundaryX) {
-            if (!previewBox)
-                return;
-            // UIGroup->RemoveObject(previewBox->GetObjectIterator());
-            // // Construct real turret.
-            // previewBox->Position.x = x * PlayScene::BlockSize + PlayScene::BlockSize / 2;
-            // previewBox->Position.y = y * PlayScene::BlockSize + PlayScene::BlockSize / 2;
-            // previewBox->Tint = al_map_rgba(255, 255, 255, 255);
-
-            // To keep responding when paused.
-            previewBox->Update(0);
-
-            // Remove Preview.
-            previewBox->Preview = false;
-            OnMouseMove(mx, my);
+    if (previewBox->Preview) {
+        const int x = (mx) / PlayScene::BlockSize;
+        const int y = (my) / PlayScene::BlockSize;
+        previewBox->Update(0);
+        if (mx >= uiBoundaryX) previewBox->Preview = false;
+        if (x < 0 || x >= MapWidth || y < 0 || y >= MapHeight || mx >= uiBoundaryX) {
+            std::cout << "Invalid position for placing: (" << x << ", " << y << ")" << std::endl;
+            return; // Invalid position
+        }
+        
+        OnMouseMove(mx, my);
     }
 }

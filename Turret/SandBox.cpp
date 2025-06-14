@@ -20,17 +20,10 @@ SandBox::SandBox(float x, float y, std::string path): Turret(path, path, x, y, 0
     bmps[5] = Engine::Resources::GetInstance().GetBitmap("play/gold.png", Size.x, Size.y);
     bmps[6] = Engine::Resources::GetInstance().GetBitmap("play/door.png", Size.x, Size.y);
 }
-    // if (id == 0 )
-    //     new_preview = new SandBox(0, 0, "play/grass2.png"); //grass
-    // else if (id == 1)
-    //     new_preview = new SandBox(0, 0, "play/rock.png"); //rock
-    // else if (id == 2)
-    //     new_preview = new SandBox(0, 0, "play/rock_grass.png"); //rock_grass
-    // else if (id == 3 )
-    //     new_preview = new SandBox(0, 0, "play/flowers3.png"); //flower
-    // else if (id == 4 )
-    //     new_preview = new SandBox(0, 0, "play/water.png"); //water
-    // else if (id == 5 )
-    //     new_preview = new SandBox(0, 0, "play/gold.png"); //gold
-    // else if (id == 6 )
-    //     new_preview = new SandBox(0, 0, "play/door.png"); //door
+void SandBox::Update(float deltaTime) {
+    
+}
+void SandBox::Draw() const {
+    if (!Preview) return;
+    Turret::Draw();
+}
