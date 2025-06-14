@@ -19,8 +19,11 @@ private:
     void ConstructUI();
     void UIBtnClicked(int id);
     void SaveOnClick(int stage);
+    void BackOnClick(int stage);
     void putThings(int button, int mx, int my);
     Turret*previewBox = nullptr;
+
+    bool checked = false; //check if user is sure about leave without saving map
 
 public:
     explicit SandBoxScene() = default;
