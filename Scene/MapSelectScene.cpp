@@ -43,7 +43,7 @@ void MapSelectScene::Initialize() {
     customizedW=3;
     customizedH=4;
     buttonCoolDown = 0.15f;
-    customizedEnemy=10;
+    customizedEnemy=13;
 
     if(MapId==4) DrawCustomize();
     else DrawPreviewMap();    
