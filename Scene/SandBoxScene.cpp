@@ -13,8 +13,28 @@
 #include <string>
 
 void SandBoxScene::Initialize() {
+    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
+    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
+    int halfW = w / 2;
+    int halfH = h / 2;
     AddNewObject(TileMapGroup = new Group());
     AddNewControlObject(UIGroup = new Group());
+
+    Engine::ImageButton *btn;
+    //  btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW - 200, halfH / 2 + 100, 400, 100);
+    // btn->SetOnClickCallback(std::bind(&StageSelectScene::PlayOnClick, this, 2));
+    // AddNewControlObject(btn);
+    // AddNewObject(new Engine::Label("Stage 2", "pirulen.ttf", 48, halfW, halfH / 2 + 150, 0, 0, 0, 255, 0.5, 0.5));
+
+    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", uiBoundaryX + 10, h - 220, 300, 75);
+    btn->SetOnClickCallback(std::bind(&SandBoxScene::BackOnClick, this, 1));
+    AddNewControlObject(btn);
+    AddNewObject(new Engine::Label("back", "pirulen.ttf", 48, (w + uiBoundaryX) / 2 , h - 185, 0, 0, 0, 255, 0.5, 0.5));
+
+    btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", uiBoundaryX + 10, h - 115, 300, 75);
+    btn->SetOnClickCallback(std::bind(&SandBoxScene::SaveOnClick, this, 2));
+    AddNewControlObject(btn);
+    AddNewObject(new Engine::Label("save", "pirulen.ttf", 48, (w + uiBoundaryX) / 2, h - 80, 0, 0, 0, 255, 0.5, 0.5));
 
 
     mapState = std::vector<std::vector<PlayScene::TileType>>(MapHeight, std::vector<PlayScene::TileType>(MapWidth, PlayScene::TileType::TILE_DIRT));
@@ -74,6 +94,20 @@ void SandBoxScene::SaveOnClick(int stage) {
         mapFile << '\n';
     }
     mapFile.close();
+    Engine::GameEngine::GetInstance().ChangeScene("stage-select");
+}
+void SandBoxScene::BackOnClick(int stage){
+    if(checked){
+        Engine::GameEngine::GetInstance().ChangeScene("stage-select");
+    }
+    else{
+        checked = true;
+        int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
+        int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
+        int halfW = w / 2;
+        int halfH = h / 2;
+        AddNewObject(new Engine::Label("leave without saving map ?", "pirulen.ttf", 60, halfW, halfH, 255, 0, 0, 230, 0.5, 0.5));
+    }
 }
 void SandBoxScene::OnKeyDown(int keyCode) {
     IScene::OnKeyDown(keyCode);
