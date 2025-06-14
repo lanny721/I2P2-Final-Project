@@ -14,13 +14,12 @@ private:
     Group *TileMapGroup;
     Group *UIGroup;
     Engine::Image *preview;
-    Engine::Image *imgTarget;
     std::vector<std::vector<PlayScene::TileType>> mapState; // [y][x] important!!!!!!!!!!!!!! 
     std::vector<std::vector<Engine::Image*>> TileMapImages; // [y][x]
     void ConstructUI();
     void UIBtnClicked(int id);
     void SaveOnClick(int stage);
-
+    void putThings(int button, int mx, int my);
     Turret *previewBox = nullptr;
 
 public:
