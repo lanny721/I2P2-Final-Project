@@ -19,7 +19,7 @@ void SandBoxScene::Initialize() {
     ConstructUI();
 }
 void SandBoxScene::Terminate() {
-
+    IScene::Terminate();
 }
 void SandBoxScene::Update(float deltaTime) {
 
@@ -51,18 +51,38 @@ void SandBoxScene::ConstructUI() {
 
     Engine::ImageButton *btn;
     const int bs=76;// Button size
-    // Button 1
+    // Button 1 grass
     btn = new Engine::ImageButton("play/grass2.png", "play/grass2.png", uiBoundaryX + 14, 80, PlayScene::BlockSize, PlayScene::BlockSize);
     btn->SetOnClickCallback(std::bind(&SandBoxScene::UIBtnClicked, this, 0));
     UIGroup->AddNewControlObject(btn);
-    // Button 2
+    // Button 2 rock
     btn = new Engine::ImageButton("play/rock.png", "play/rock.png", uiBoundaryX + 14 + bs, 80, PlayScene::BlockSize, PlayScene::BlockSize);
     btn->SetOnClickCallback(std::bind(&SandBoxScene::UIBtnClicked, this, 1));
     UIGroup->AddNewControlObject(btn);
 
-    //Button 3
+    //Button 3 rock+grass (obstacle)
     btn = new Engine::ImageButton("play/rock_grass.png", "play/rock_grass.png", uiBoundaryX + 14 + bs * 2, 80, PlayScene::BlockSize, PlayScene::BlockSize);
     btn->SetOnClickCallback(std::bind(&SandBoxScene::UIBtnClicked, this, 2));
+    UIGroup->AddNewControlObject(btn);
+
+    //Button 4 flower
+    btn = new Engine::ImageButton("play/flowers3.png", "play/flowers3.png", uiBoundaryX + 14 + bs*3, 80, PlayScene::BlockSize, PlayScene::BlockSize);
+    btn->SetOnClickCallback(std::bind(&SandBoxScene::UIBtnClicked, this, 3));
+    UIGroup->AddNewControlObject(btn);
+
+    //Button 5 water
+    btn = new Engine::ImageButton("play/water.png", "play/water.png", uiBoundaryX + 14 , 80 + bs, PlayScene::BlockSize, PlayScene::BlockSize);
+    btn->SetOnClickCallback(std::bind(&SandBoxScene::UIBtnClicked, this, 4));
+    UIGroup->AddNewControlObject(btn);
+
+    //Button 6 gold
+    btn = new Engine::ImageButton("play/gold.png", "play/gold.png", uiBoundaryX + 14 + bs , 80 + bs, PlayScene::BlockSize, PlayScene::BlockSize);
+    btn->SetOnClickCallback(std::bind(&SandBoxScene::UIBtnClicked, this, 5));
+    UIGroup->AddNewControlObject(btn);
+
+    //Button 7 door
+    btn = new Engine::ImageButton("play/door.png", "play/door.png", uiBoundaryX + 14 + bs*2, 80 + bs, PlayScene::BlockSize, PlayScene::BlockSize);
+    btn->SetOnClickCallback(std::bind(&SandBoxScene::UIBtnClicked, this, 6));
     UIGroup->AddNewControlObject(btn);
 }
 void SandBoxScene::UIBtnClicked(int id) {
