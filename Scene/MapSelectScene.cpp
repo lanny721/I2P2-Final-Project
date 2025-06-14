@@ -44,8 +44,7 @@ void MapSelectScene::Initialize() {
     customizedH=4;
 
     if(MapId==4) DrawCustomize();
-    else DrawPreviewMap();
-    
+    else DrawPreviewMap();    
 }
 void MapSelectScene::Terminate() {
     AudioHelper::StopSample(bgmInstance);
@@ -242,25 +241,25 @@ void MapSelectScene::EnemyMinusOnClick(int stage){
 }
 void MapSelectScene::Update(float deltaTime) {
     buttonCoolDown -= deltaTime;
-    if(buttonCoolDown > 0) return;
-    else if(buttonCoolDown < 0) buttonCoolDown = 0;
+    if(buttonCoolDown < 0) buttonCoolDown = 0;
 
     //bool isDown = Engine::GameEngine::GetInstance().isMouseDown;
-
-    if(Engine::GameEngine::GetInstance().isMouseDown) {
-        if(EnemyPlusButton->IsMouseIn()) {
-            EnemyPlusOnClick(4);
-        } else if(EnemyMinusButton->IsMouseIn()) {
-            EnemyMinusOnClick(5);
-        } else if(WidthPlusButton->IsMouseIn()) {
-            WidthPlusOnClick(0);
-        } else if(WidthMinusButton->IsMouseIn()) {
-            WidthMinusOnClick(1);
-        } else if(HeightPlusButton->IsMouseIn()) {
-            HeigthPlusOnClick(2);
-        } else if(HeightMinusButton->IsMouseIn()) {
-            HeigthMinusOnClick(3);
+    if(buttonCoolDown == 0){
+        if(Engine::GameEngine::GetInstance().isMouseDown) {
+            if(EnemyPlusButton->IsMouseIn()) {
+                EnemyPlusOnClick(4);
+            } else if(EnemyMinusButton->IsMouseIn()) {
+                EnemyMinusOnClick(5);
+            } else if(WidthPlusButton->IsMouseIn()) {
+                WidthPlusOnClick(0);
+            } else if(WidthMinusButton->IsMouseIn()) {
+                WidthMinusOnClick(1);
+            } else if(HeightPlusButton->IsMouseIn()) {
+                HeigthPlusOnClick(2);
+            } else if(HeightMinusButton->IsMouseIn()) {
+                HeigthMinusOnClick(3);
+            }
+            buttonCoolDown = 0.15f;
         }
-        buttonCoolDown = 0.15f;
     }
 }
