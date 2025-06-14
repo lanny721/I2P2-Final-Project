@@ -42,13 +42,13 @@ public:
     enum TileType {
         TILE_DIRT,
         TILE_FLOOR,
-        TILE_OCCUPIED,
-        TILE_OBSTACLE, 
+        TILE_STONE,
+        TILE_FLOWER,
         TILE_WATER,
         TILE_GOLD,
         TILE_DOOR,
-        TILE_FLOWER,
-        TILE_STONE
+        TILE_OBSTACLE, 
+        TILE_OCCUPIED
     };
 
     static bool DebugMode;

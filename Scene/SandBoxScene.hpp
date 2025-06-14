@@ -3,6 +3,7 @@
 #include "Engine/IScene.hpp"
 #include "UI/Component/Image.hpp"
 #include "Scene/PlayScene.hpp"
+#include "Turret/SandBox.hpp"
 #include <vector>
 class PlayScene;
 
@@ -13,14 +14,16 @@ private:
     int uiBoundaryX = 1280;
     Group *TileMapGroup;
     Group *UIGroup;
-    Engine::Image *preview;
     std::vector<std::vector<PlayScene::TileType>> mapState; // [y][x] important!!!!!!!!!!!!!! 
     std::vector<std::vector<Engine::Image*>> TileMapImages; // [y][x]
     void ConstructUI();
     void UIBtnClicked(int id);
     void SaveOnClick(int stage);
+    void BackOnClick(int stage);
     void putThings(int button, int mx, int my);
-    Turret *previewBox = nullptr;
+    Turret*previewBox = nullptr;
+
+    bool checked = false; //check if user is sure about leave without saving map
 
 public:
     explicit SandBoxScene() = default;
