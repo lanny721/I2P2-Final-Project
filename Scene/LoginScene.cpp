@@ -101,12 +101,19 @@ void LoginScene::SubmitOnClick() {
         UIPassword->Color = al_map_rgba(255, 255, 255, 255);
         Engine::GameEngine::GetInstance().SetCurrentUsername(username);
         Engine::GameEngine::GetInstance().ChangeScene("win");
-    } else if (!accountExists) {
-        std::cout << "Account doesn't exist!\n";
-        AddNewObject(new Engine::Label("Account doesn't exist", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
-    }else {
-        std::cout << "Login failed!\n";
-        AddNewObject(new Engine::Label("Login Failed", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
+    } else {
+        // 重置密碼輸入狀態以允許重新輸入密碼
+        passwordEntered = false;
+        password.clear();
+        UIPassword->Text = "Password: ";
+        UIPassword->Color = al_map_rgba(255, 255, 100, 255); // 恢復初始顏色
+        if (!accountExists) {
+            std::cout << "Account doesn't exist!\n";
+            AddNewObject(new Engine::Label("Account doesn't exist", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
+        } else {
+            std::cout << "Login failed!\n";
+            AddNewObject(new Engine::Label("Login Failed", "pirulen.ttf", 40, Engine::GameEngine::GetInstance().GetScreenSize().x / 2, Engine::GameEngine::GetInstance().GetScreenSize().y / 2 + 350, 255, 0, 0, 255, 0.5, 0.5));
+        }
     }
 }
 
